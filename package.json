@@ -1,0 +1,12 @@
+{
+  "name": "aba",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite --port 3000"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

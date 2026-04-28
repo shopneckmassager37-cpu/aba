@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — Chefaleh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
+        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+      }}
+    }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
+    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
+    .gold-bar-left{height:2px;width:50px;background:#D4AF37}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:#F9F7F2}
+    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
+  <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+    <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+    <div class="flex items-center gap-4 md:gap-8 text-[10px] md:text-xs tracking-[.1em] md:tracking-[.2em] uppercase font-light">
+      <a href="index.html"    class="text-charcoal/50 hover:text-gold transition-colors">Home</a>
+      <a href="about.html"    class="text-gold transition-colors">About</a>
+      <a href="menu.html"     class="text-charcoal/50 hover:text-gold transition-colors">Menu</a>
+      <a href="order.html"    class="relative flex items-center gap-2 bg-gold text-charcoal px-3 md:px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
+        Order
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<section class="pt-40 pb-20 bg-charcoal text-center relative overflow-hidden">
+  <div class="absolute inset-0 opacity-20">
+    <img src="images/food1.jpg" alt="" class="w-full h-full object-cover"/>
+  </div>
+  <div class="relative z-10">
+    <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Our Story</p>
+    <h1 class="font-serif text-cream font-light" style="font-size:clamp(2.5rem,6vw,5rem)">About Chefaleh</h1>
+    <div class="gold-bar max-w-xs mx-auto my-6"></div>
+  </div>
+</section>
+
+<!-- STANDARDS -->
+<section id="standards" class="py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div>
+        <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Our Philosophy</p>
+        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(2.2rem,4vw,3.5rem)">We Cook With<br/><em>Intention</em></h2>
+        <div class="gold-bar-left mb-10"></div>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">At Chefaleh, we don't just focus on flavor — we focus on what goes into every ingredient. We cook exclusively with extra virgin olive oil and avocado oil — never seed oils.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">We use unbleached, organic flours and avoid processed shortcuts. No soy-based fillers, no unnecessary additives, no compromises.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Real ingredients, properly sourced, cooked with intention. This isn't about trends — it's about quality, digestion, and how food should actually be prepared.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">Clean Oils Only</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">EVOO & avocado oil. Never seed oils.</p>
+          </div>
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">Organic Flour</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Unbleached, organic. No shortcuts.</p>
+          </div>
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">Zero Fillers</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">No soy fillers or additives.</p>
+          </div>
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">ORB Certified</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Kosher certified. No compromises.</p>
+          </div>
+        </div>
+        <div class="overflow-hidden" style="height:250px">
+          <img src="images/food6.png" alt="Fresh ingredients" class="w-full h-full object-cover object-center"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section id="about" class="py-24 bg-cream-dark">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="overflow-hidden mb-16" style="height:420px">
+      <img src="images/food2.png" alt="Chefaleh cuisine" class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"/>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div>
+        <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Elevated Traditions</p>
+        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(2rem,4vw,3.2rem)">Curated for<br/><em>Your Table</em></h2>
+        <div class="gold-bar-left mb-8"></div>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">Chefaleh is a private chef–driven culinary studio focused on refined, high-quality Shabbat and event dining. Our roots are in hospitality at the highest level — from curated travel experiences to private villa programs — where food is not just served, but orchestrated.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Built by a team with experience producing high-end culinary programs across the U.S. and Europe, our style is rooted in bold, clean flavors with an Israeli and Mediterranean influence.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Best food I've had in South Florida. We ordered for an office party — simply unbelievable!"</p>
+          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Eli Meyer · Google Review</p>
+        </div>
+        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Delicious food! Packaging was nice. You can tell they put a lot of love and thought into their food."</p>
+          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Mordechai Levenberg · Google Review</p>
+        </div>
+        <a href="menu.html" class="inline-block bg-charcoal text-cream px-10 py-4 text-xs tracking-[.25em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">View This Week's Menu</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-charcoal border-t border-cream/5 py-16">
+  <div class="max-w-7xl mx-auto px-8 text-center">
+    <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
+    <p class="text-cream/30 text-xs font-light mb-8 max-w-xs mx-auto">Private chef–driven Shabbat & event catering. South Florida's finest kosher culinary experience.</p>
+    <div class="flex justify-center gap-8 text-xs tracking-[.2em] uppercase font-light text-cream/40 mb-12">
+      <a href="index.html" class="hover:text-gold transition-colors">Home</a>
+      <a href="about.html" class="text-gold">About</a>
+      <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
+      <a href="order.html" class="hover:text-gold transition-colors">Order</a>
+    </div>
+    <div class="gold-bar mb-8"></div>
+    <p class="text-cream/20 text-[10px] uppercase tracking-widest">© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

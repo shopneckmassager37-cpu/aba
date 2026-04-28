@@ -60,13 +60,14 @@
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
   <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
     <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
-    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-light">
-      <a href="index.html#how-it-works" class="text-charcoal/50 hover:text-gold transition-colors">Process</a>
-      <a href="index.html#about"        class="text-charcoal/50 hover:text-gold transition-colors">About</a>
-      <a href="menu.html"               class="text-gold">Menu</a>
-      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 hover:bg-charcoal hover:text-cream transition-all font-medium">
+    <div class="flex items-center gap-4 md:gap-8 text-[10px] md:text-xs tracking-[.1em] md:tracking-[.2em] uppercase font-light">
+      <a href="index.html"    class="text-charcoal/50 hover:text-gold transition-colors">Home</a>
+      <a href="about.html"    class="text-charcoal/50 hover:text-gold transition-colors">About</a>
+      <a href="menu.html"     class="text-gold">Menu</a>
+      <a href="order.html"    class="text-charcoal/50 hover:text-gold transition-colors">Order</a>
+      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-3 md:px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Cart
-        <span id="cart-badge" class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
+        <span id="cart-badge" class="cart-count-badge hidden w-4 h-4 md:w-5 md:h-5 rounded-full bg-charcoal text-cream text-[9px] md:text-[10px] items-center justify-center font-medium">0</span>
       </button>
     </div>
   </div>
@@ -237,47 +238,44 @@ const GRAD = {
   side2:'linear-gradient(135deg,#B8D0A0,#90B070)',
   side3:'linear-gradient(135deg,#D8C890,#B8A870)',
   side4:'linear-gradient(135deg,#F0C890,#D0A060)',
-  sal4:'linear-gradient(135deg,#F0D0B0,#D0A878)',
-  sal5:'linear-gradient(135deg,#C8E0C0,#A0C090)',
-  sal6:'linear-gradient(135deg,#E8D8A8,#C8B878)',
 };
 
 const menu = {
   bread:[
     {name:'Classic Challah',       price:18, badge:'Whole Loaf',     desc:'Hand-braided with organic flour, honey-glazed to a golden finish', img:IMGS.food1, tag:''},
     {name:'Everything Challah',    price:20, badge:'Whole Loaf',     desc:'Seeded crust — sesame, poppy, onion & garlic, soft pillowy interior', img:IMGS.food2, tag:''},
-    {name:'Mini Challah Rolls',    price:24, badge:'12-Pack',        desc:'Individual braided rolls, ideal for larger Shabbat gatherings', grad:GRAD.bread3, tag:'Bestseller'},
+    {name:'Mini Challah Rolls',    price:24, badge:'12-Pack',        desc:'Individual braided rolls, ideal for larger Shabbat gatherings', img:IMGS.food3, tag:'Bestseller'},
   ],
   salads:[
-    {name:'Roasted Beet & Orange', price:32, badge:'9×13 Tray',     desc:'Slow-roasted beets, blood orange, pistachio & fresh herbs', img:IMGS.food3, tag:''},
-    {name:'Israeli Chopped Salad', price:28, badge:'9×13 Tray',     desc:'Finely diced cucumber, tomato, herbs — dressed with lemon & EVOO', img:IMGS.food4, tag:''},
-    {name:'Signature Hummus',      price:22, badge:'32oz Container', desc:'Stone-ground chickpeas, slow-cooked 12 hours, tahini reserve', img:IMGS.food5, tag:''},
-    {name:'Moroccan Carrots',      price:18, badge:'16oz Container', desc:'Harissa-spiced, slow-roasted with cumin, lemon & cilantro', img:IMGS.food6, tag:''},
-    {name:'Matbucha',              price:16, badge:'16oz Container', desc:'Slow-cooked tomato & roasted pepper spread, Moroccan style', grad:GRAD.sal5, tag:''},
-    {name:'Eggplant Salad',        price:16, badge:'16oz Container', desc:'Fire-roasted eggplant, charred garlic, lemon & EVOO — silky smooth', grad:GRAD.sal6, tag:''},
+    {name:'Roasted Beet & Orange', price:32, badge:'9×13 Tray',     desc:'Slow-roasted beets, blood orange, pistachio & fresh herbs', img:IMGS.food4, tag:''},
+    {name:'Israeli Chopped Salad', price:28, badge:'9×13 Tray',     desc:'Finely diced cucumber, tomato, herbs — dressed with lemon & EVOO', img:IMGS.food5, tag:''},
+    {name:'Signature Hummus',      price:22, badge:'32oz Container', desc:'Stone-ground chickpeas, slow-cooked 12 hours, tahini reserve', img:IMGS.food6, tag:''},
+    {name:'Moroccan Carrots',      price:18, badge:'16oz Container', desc:'Harissa-spiced, slow-roasted with cumin, lemon & cilantro', img:IMGS.food1, tag:''},
+    {name:'Matbucha',              price:16, badge:'16oz Container', desc:'Slow-cooked tomato & roasted pepper spread, Moroccan style', img:IMGS.food2, tag:''},
+    {name:'Eggplant Salad',        price:16, badge:'16oz Container', desc:'Fire-roasted eggplant, charred garlic, lemon & EVOO — silky smooth', img:IMGS.food3, tag:''},
   ],
   soups:[
-    {name:'Chicken Soup',           price:38, badge:'64oz Container', desc:'Slow-simmered 6 hours with garden vegetables, celery & fresh dill', grad:GRAD.soup1, tag:'Classic'},
-    {name:'Roasted Butternut Bisque',price:34, badge:'64oz Container', desc:'Caramelized squash, warming spice blend, finished with avocado oil', grad:GRAD.soup2, tag:''},
+    {name:'Chicken Soup',           price:38, badge:'64oz Container', desc:'Slow-simmered 6 hours with garden vegetables, celery & fresh dill', img:IMGS.food4, tag:'Classic'},
+    {name:'Roasted Butternut Bisque',price:34, badge:'64oz Container', desc:'Caramelized squash, warming spice blend, finished with avocado oil', img:IMGS.food5, tag:''},
   ],
   fish:[
-    {name:'Herb-Crusted Salmon',    price:65, badge:'9×13 Tray',     desc:'Wild-caught Atlantic, Dijon herb crust, roasted lemon & capers', grad:GRAD.fish1, tag:''},
-    {name:'Mediterranean Sea Bass', price:72, badge:'9×13 Tray',     desc:'Whole-roasted, preserved lemon, capers, olive & tomato confit', grad:GRAD.fish2, tag:''},
+    {name:'Herb-Crusted Salmon',    price:65, badge:'9×13 Tray',     desc:'Wild-caught Atlantic, Dijon herb crust, roasted lemon & capers', img:IMGS.food6, tag:''},
+    {name:'Mediterranean Sea Bass', price:72, badge:'9×13 Tray',     desc:'Whole-roasted, preserved lemon, capers, olive & tomato confit', img:IMGS.food1, tag:''},
   ],
   poultry:[
-    {name:'Braised Chicken Thighs', price:58, badge:'9×13 Tray',     desc:'Bone-in, slow-braised with caramelized onion, garlic & rich au jus', grad:GRAD.poultry1, tag:'Bestseller'},
-    {name:'Herb-Roasted Whole Chicken',price:62,badge:'Whole Bird',   desc:'Spatchcocked, marinated 24 hours, high-heat roasted to crispy perfection', grad:GRAD.poultry2, tag:''},
+    {name:'Braised Chicken Thighs', price:58, badge:'9×13 Tray',     desc:'Bone-in, slow-braised with caramelized onion, garlic & rich au jus', img:IMGS.food2, tag:'Bestseller'},
+    {name:'Herb-Roasted Whole Chicken',price:62,badge:'Whole Bird',   desc:'Spatchcocked, marinated 24 hours, high-heat roasted to crispy perfection', img:IMGS.food3, tag:''},
   ],
   meat:[
-    {name:'12-Hour Short Rib',      price:145,badge:'9×13 Tray · Serves 6–8',  desc:'Braised in red wine reduction, bone-in, fork-tender', grad:GRAD.meat1, tag:'Signature', dark:true},
-    {name:'Prime Brisket',          price:165,badge:'9×13 Tray · Serves 8–10', desc:'First-cut, low & slow 14 hours with natural jus', grad:GRAD.meat2, tag:'', dark:true},
-    {name:'Flanken Ribs',           price:98, badge:'9×13 Tray · Serves 4–6',  desc:'Cross-cut, spice-rubbed, finished with pomegranate glaze', grad:GRAD.meat3, tag:'', dark:true},
+    {name:'12-Hour Short Rib',      price:145,badge:'9×13 Tray · Serves 6–8',  desc:'Braised in red wine reduction, bone-in, fork-tender', img:IMGS.food4, tag:'Signature', dark:true},
+    {name:'Prime Brisket',          price:165,badge:'9×13 Tray · Serves 8–10', desc:'First-cut, low & slow 14 hours with natural jus', img:IMGS.food5, tag:'', dark:true},
+    {name:'Flanken Ribs',           price:98, badge:'9×13 Tray · Serves 4–6',  desc:'Cross-cut, spice-rubbed, finished with pomegranate glaze', img:IMGS.food6, tag:'', dark:true},
   ],
   sides:[
-    {name:'Roasted Fingerlings',    price:28, badge:'9×13 Tray', desc:'Herbs, garlic, crispy skin', grad:GRAD.side1, tag:'', small:true},
-    {name:'Haricots Verts',         price:26, badge:'9×13 Tray', desc:'French green beans, toasted almond', grad:GRAD.side2, tag:'', small:true},
-    {name:'Saffron Rice Pilaf',     price:24, badge:'9×13 Tray', desc:'Saffron-touched, caramelized onion', grad:GRAD.side3, tag:'', small:true},
-    {name:'Glazed Rainbow Carrots', price:26, badge:'9×13 Tray', desc:'Honey-harissa glaze, fresh thyme', grad:GRAD.side4, tag:'', small:true},
+    {name:'Roasted Fingerlings',    price:28, badge:'9×13 Tray', desc:'Herbs, garlic, crispy skin', img:IMGS.food1, tag:'', small:true},
+    {name:'Haricots Verts',         price:26, badge:'9×13 Tray', desc:'French green beans, toasted almond', img:IMGS.food2, tag:'', small:true},
+    {name:'Saffron Rice Pilaf',     price:24, badge:'9×13 Tray', desc:'Saffron-touched, caramelized onion', img:IMGS.food3, tag:'', small:true},
+    {name:'Glazed Rainbow Carrots', price:26, badge:'9×13 Tray', desc:'Honey-harissa glaze, fresh thyme', img:IMGS.food4, tag:'', small:true},
   ],
 };
 

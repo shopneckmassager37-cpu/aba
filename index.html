@@ -44,26 +44,15 @@
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
   <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
     <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
-    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-light">
-      <a href="#how-it-works" class="text-charcoal/50 hover:text-gold transition-colors">Process</a>
-      <a href="#standards"    class="text-charcoal/50 hover:text-gold transition-colors">Standards</a>
-      <a href="#about"        class="text-charcoal/50 hover:text-gold transition-colors">About</a>
+    <div class="flex items-center gap-4 md:gap-8 text-[10px] md:text-xs tracking-[.1em] md:tracking-[.2em] uppercase font-light">
+      <a href="index.html"    class="text-gold">Home</a>
+      <a href="about.html"    class="text-charcoal/50 hover:text-gold transition-colors">About</a>
       <a href="menu.html"     class="text-charcoal/50 hover:text-gold transition-colors">Menu</a>
-      <a href="order.html" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 hover:bg-charcoal hover:text-cream transition-all font-medium">
+      <a href="order.html" class="relative flex items-center gap-2 bg-gold text-charcoal px-3 md:px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Order
-        <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
+        <span class="cart-count-badge hidden w-4 h-4 md:w-5 md:h-5 rounded-full bg-charcoal text-cream text-[9px] md:text-[10px] items-center justify-center font-medium">0</span>
       </a>
     </div>
-    <button class="md:hidden text-charcoal" onclick="document.getElementById('mob').classList.toggle('hidden')">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-  </div>
-  <div id="mob" class="hidden md:hidden bg-cream border-t border-charcoal/8 px-8 py-6 flex flex-col gap-5 text-xs tracking-widest uppercase font-light">
-    <a href="#how-it-works" class="text-charcoal/50 hover:text-gold">Process</a>
-    <a href="#standards"    class="text-charcoal/50 hover:text-gold">Standards</a>
-    <a href="#about"        class="text-charcoal/50 hover:text-gold">About</a>
-    <a href="menu.html"     class="text-charcoal/50 hover:text-gold">Menu</a>
-    <a href="order.html"    class="bg-gold text-charcoal px-5 py-2.5 text-center font-medium hover:bg-charcoal hover:text-cream transition-all">Order Now</a>
   </div>
 </nav>
 
@@ -111,14 +100,11 @@
   </div>
 </div>
 
-<!-- GALLERY STRIP -->
-<div class="grid grid-cols-3 md:grid-cols-6 overflow-hidden" style="height:220px">
-  <div class="overflow-hidden"><img src="images/food1.jpg" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
-  <div class="overflow-hidden"><img src="images/food2.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
-  <div class="overflow-hidden"><img src="images/food3.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
-  <div class="overflow-hidden hidden md:block"><img src="images/food4.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
-  <div class="overflow-hidden hidden md:block"><img src="images/food5.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
-  <div class="overflow-hidden hidden md:block"><img src="images/food6.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
+<!-- GALLERY STRIP — Fixed cropping -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-cream">
+  <div class="overflow-hidden aspect-video"><img src="images/food1.jpg" alt="" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/></div>
+  <div class="overflow-hidden aspect-video"><img src="images/food2.png" alt="" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/></div>
+  <div class="overflow-hidden aspect-video"><img src="images/food3.png" alt="" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/></div>
 </div>
 
 <!-- HOW IT WORKS -->
@@ -327,12 +313,12 @@
 <!-- SMOOTH TRANSITION: charcoal → cream -->
 <div style="height:80px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
 
-<!-- CTA — full image, no crop, no "This Week Only" -->
+<!-- CTA — full image, uncropped -->
 <section class="bg-cream py-0">
   <div class="grid grid-cols-1 lg:grid-cols-2">
     <!-- Image side — full, uncropped -->
-    <div class="overflow-hidden" style="min-height:500px">
-      <img src="images/food3.png" alt="Chefaleh food" class="w-full h-full object-contain object-center bg-cream-dark"/>
+    <div class="bg-cream-dark">
+      <img src="images/food1.jpg" alt="Chefaleh food" class="w-full h-full object-cover min-h-[500px]"/>
     </div>
     <!-- Text side -->
     <div class="flex flex-col justify-center px-12 py-20 bg-charcoal">
@@ -358,10 +344,10 @@
       <div>
         <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-5 font-light">Navigate</p>
         <div class="flex flex-col gap-3 text-sm font-light text-cream/30">
+          <a href="index.html" class="hover:text-gold transition-colors">Home</a>
+          <a href="about.html" class="hover:text-gold transition-colors">About</a>
           <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
           <a href="order.html" class="hover:text-gold transition-colors">Order</a>
-          <a href="#about"     class="hover:text-gold transition-colors">About</a>
-          <a href="#how-it-works" class="hover:text-gold transition-colors">How It Works</a>
         </div>
       </div>
       <div>
