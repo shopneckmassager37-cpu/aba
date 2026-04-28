@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu — Chefaleh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
+        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+      }}
+    }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
+    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
+    .gold-bar-left{height:2px;width:50px;background:#D4AF37}
+    /* CARD */
+    .mcard{transition:transform .3s ease,box-shadow .3s ease}
+    .mcard:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(26,26,26,.12)}
+    .mcard .cimg{transition:transform .6s ease}
+    .mcard:hover .cimg{transform:scale(1.07)}
+    .mcard .cta-row{max-height:0;overflow:hidden;transition:max-height .3s ease,opacity .3s ease;opacity:0}
+    .mcard:hover .cta-row{max-height:60px;opacity:1}
+    /* SUBNAV */
+    .snav a{border-bottom:2px solid transparent;transition:all .2s}
+    .snav a:hover,.snav a.act{color:#D4AF37;border-bottom-color:#D4AF37}
+    /* DRAWER */
+    #drawer{transition:transform .35s ease}
+    #drawer.open{transform:translateX(0)!important}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:#F9F7F2}
+    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
+  </style>
+</head>
+<body>
+
+<!-- CART DRAWER -->
+<div id="drawer-overlay" class="fixed inset-0 bg-charcoal/40 z-50 hidden" onclick="closeDrawer()"></div>
+<div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl" style="transform:translateX(100%)">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
+    <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
+    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+  </div>
+  <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
+  <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
+    <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
+    <a href="order.html" class="block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
+  <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+    <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-light">
+      <a href="index.html#how-it-works" class="text-charcoal/50 hover:text-gold transition-colors">Process</a>
+      <a href="index.html#about"        class="text-charcoal/50 hover:text-gold transition-colors">About</a>
+      <a href="menu.html"               class="text-gold">Menu</a>
+      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 hover:bg-charcoal hover:text-cream transition-all font-medium">
+        Cart
+        <span id="cart-badge" class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MENU HEADER -->
+<div class="pt-24 pb-12 bg-charcoal text-center">
+  <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">This Week's Offering</p>
+  <h1 class="font-serif text-cream font-light" style="font-size:clamp(2.5rem,6vw,5rem)">The Menu</h1>
+  <div class="gold-bar max-w-xs mx-auto my-6"></div>
+  <p class="text-cream/30 text-xs tracking-wider font-light">Orders close Wednesday 4:00 PM · Delivery Friday 3–5 PM</p>
+</div>
+
+<!-- STICKY SUBNAV -->
+<div class="snav sticky top-[72px] z-30 bg-cream border-b border-charcoal/8 overflow-x-auto">
+  <div class="max-w-7xl mx-auto px-8 flex">
+    <a href="#bread"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Bread</a>
+    <a href="#salads"  class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Salads</a>
+    <a href="#soups"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Soups</a>
+    <a href="#fish"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Fish</a>
+    <a href="#poultry" class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Poultry</a>
+    <a href="#meat"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Meat</a>
+    <a href="#sides"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Sides</a>
+  </div>
+</div>
+
+<!-- helper macro — repeated card structure via JS below each section -->
+
+<!-- ===== BREAD ===== -->
+<section id="bread" class="py-20 bg-cream">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Bakery</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Bread & Challah</h2>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g-bread"></div>
+  </div>
+</section>
+
+<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+
+<!-- ===== SALADS ===== -->
+<section id="salads" class="py-20 bg-cream-dark">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Garden</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Salads & Dips</h2>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g-salads"></div>
+  </div>
+</section>
+
+<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
+
+<!-- ===== SOUPS ===== -->
+<section id="soups" class="py-20 bg-cream">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Warm & Nourishing</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Soups</h2>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g-soups"></div>
+  </div>
+</section>
+
+<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+
+<!-- ===== FISH ===== -->
+<section id="fish" class="py-20 bg-cream-dark">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">From the Sea</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Fish</h2>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g-fish"></div>
+  </div>
+</section>
+
+<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
+
+<!-- ===== POULTRY ===== -->
+<section id="poultry" class="py-20 bg-cream">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Traditional with a Chef's Twist</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Poultry</h2>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g-poultry"></div>
+  </div>
+</section>
+
+<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
+
+<!-- ===== MEAT ===== -->
+<section id="meat" class="py-20 bg-charcoal">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Centerpiece</p>
+      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2rem,4vw,3rem)">The Signature Meat</h2>
+      <p class="text-cream/30 text-xs font-light mt-2">Premium beef — the crown of your Shabbat table</p>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5" id="g-meat"></div>
+  </div>
+</section>
+
+<div style="height:60px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
+
+<!-- ===== SIDES ===== -->
+<section id="sides" class="py-20 bg-cream">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Complete the Table</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Sides</h2>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="g-sides"></div>
+  </div>
+</section>
+
+<!-- ORDER CTA -->
+<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
+<section class="py-20 bg-charcoal text-center">
+  <h2 class="font-serif text-cream font-light mb-3" style="font-size:clamp(1.8rem,4vw,3rem)">Orders close Wednesday at 4:00 PM</h2>
+  <p class="text-cream/30 text-xs font-light tracking-wider mb-10">No cancellations after deadline · Limited weekly production</p>
+  <a href="order.html" class="inline-block bg-gold text-charcoal px-12 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">Proceed to Order</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-charcoal border-t border-cream/5 py-10">
+  <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <a href="index.html" class="font-serif text-xl tracking-[.2em] text-cream font-light">CHEFALEH</a>
+    <div class="flex gap-6 text-xs font-light text-cream/20">
+      <a href="#" class="hover:text-gold transition-colors">Privacy</a>
+      <a href="#" class="hover:text-gold transition-colors">Terms</a>
+      <a href="#" class="hover:text-gold transition-colors">Cookies</a>
+    </div>
+    <p class="text-cream/15 text-xs font-light">© 2026 Chefaleh</p>
+  </div>
+</footer>
+
+<script src="cart.js"></script>
+<script>
+// ── MENU DATA ──
+const IMGS = {
+  food1:'images/food1.jpg', food2:'images/food2.png', food3:'images/food3.png',
+  food4:'images/food4.png', food5:'images/food5.png', food6:'images/food6.png',
+};
+const GRAD = {
+  bread1:'linear-gradient(135deg,#EFE6D0,#DDD0B0)',
+  bread2:'linear-gradient(135deg,#E8D8B0,#D4C090)',
+  bread3:'linear-gradient(135deg,#F0E8D0,#E0D4B0)',
+  soup1:'linear-gradient(135deg,#E8D090,#C8A850)',
+  soup2:'linear-gradient(135deg,#E88860,#C86040)',
+  fish1:'linear-gradient(135deg,#90B8C8,#6090A8)',
+  fish2:'linear-gradient(135deg,#A8C8D8,#78A0B8)',
+  poultry1:'linear-gradient(135deg,#D8A850,#B88030)',
+  poultry2:'linear-gradient(135deg,#C89848,#A87828)',
+  meat1:'linear-gradient(135deg,#3A1510,#180A08)',
+  meat2:'linear-gradient(135deg,#2A1008,#100500)',
+  meat3:'linear-gradient(135deg,#4A2018,#2A1008)',
+  side1:'linear-gradient(135deg,#DED0A8,#C0B080)',
+  side2:'linear-gradient(135deg,#B8D0A0,#90B070)',
+  side3:'linear-gradient(135deg,#D8C890,#B8A870)',
+  side4:'linear-gradient(135deg,#F0C890,#D0A060)',
+  sal4:'linear-gradient(135deg,#F0D0B0,#D0A878)',
+  sal5:'linear-gradient(135deg,#C8E0C0,#A0C090)',
+  sal6:'linear-gradient(135deg,#E8D8A8,#C8B878)',
+};
+
+const menu = {
+  bread:[
+    {name:'Classic Challah',       price:18, badge:'Whole Loaf',     desc:'Hand-braided with organic flour, honey-glazed to a golden finish', img:IMGS.food1, tag:''},
+    {name:'Everything Challah',    price:20, badge:'Whole Loaf',     desc:'Seeded crust — sesame, poppy, onion & garlic, soft pillowy interior', img:IMGS.food2, tag:''},
+    {name:'Mini Challah Rolls',    price:24, badge:'12-Pack',        desc:'Individual braided rolls, ideal for larger Shabbat gatherings', grad:GRAD.bread3, tag:'Bestseller'},
+  ],
+  salads:[
+    {name:'Roasted Beet & Orange', price:32, badge:'9×13 Tray',     desc:'Slow-roasted beets, blood orange, pistachio & fresh herbs', img:IMGS.food3, tag:''},
+    {name:'Israeli Chopped Salad', price:28, badge:'9×13 Tray',     desc:'Finely diced cucumber, tomato, herbs — dressed with lemon & EVOO', img:IMGS.food4, tag:''},
+    {name:'Signature Hummus',      price:22, badge:'32oz Container', desc:'Stone-ground chickpeas, slow-cooked 12 hours, tahini reserve', img:IMGS.food5, tag:''},
+    {name:'Moroccan Carrots',      price:18, badge:'16oz Container', desc:'Harissa-spiced, slow-roasted with cumin, lemon & cilantro', img:IMGS.food6, tag:''},
+    {name:'Matbucha',              price:16, badge:'16oz Container', desc:'Slow-cooked tomato & roasted pepper spread, Moroccan style', grad:GRAD.sal5, tag:''},
+    {name:'Eggplant Salad',        price:16, badge:'16oz Container', desc:'Fire-roasted eggplant, charred garlic, lemon & EVOO — silky smooth', grad:GRAD.sal6, tag:''},
+  ],
+  soups:[
+    {name:'Chicken Soup',           price:38, badge:'64oz Container', desc:'Slow-simmered 6 hours with garden vegetables, celery & fresh dill', grad:GRAD.soup1, tag:'Classic'},
+    {name:'Roasted Butternut Bisque',price:34, badge:'64oz Container', desc:'Caramelized squash, warming spice blend, finished with avocado oil', grad:GRAD.soup2, tag:''},
+  ],
+  fish:[
+    {name:'Herb-Crusted Salmon',    price:65, badge:'9×13 Tray',     desc:'Wild-caught Atlantic, Dijon herb crust, roasted lemon & capers', grad:GRAD.fish1, tag:''},
+    {name:'Mediterranean Sea Bass', price:72, badge:'9×13 Tray',     desc:'Whole-roasted, preserved lemon, capers, olive & tomato confit', grad:GRAD.fish2, tag:''},
+  ],
+  poultry:[
+    {name:'Braised Chicken Thighs', price:58, badge:'9×13 Tray',     desc:'Bone-in, slow-braised with caramelized onion, garlic & rich au jus', grad:GRAD.poultry1, tag:'Bestseller'},
+    {name:'Herb-Roasted Whole Chicken',price:62,badge:'Whole Bird',   desc:'Spatchcocked, marinated 24 hours, high-heat roasted to crispy perfection', grad:GRAD.poultry2, tag:''},
+  ],
+  meat:[
+    {name:'12-Hour Short Rib',      price:145,badge:'9×13 Tray · Serves 6–8',  desc:'Braised in red wine reduction, bone-in, fork-tender', grad:GRAD.meat1, tag:'Signature', dark:true},
+    {name:'Prime Brisket',          price:165,badge:'9×13 Tray · Serves 8–10', desc:'First-cut, low & slow 14 hours with natural jus', grad:GRAD.meat2, tag:'', dark:true},
+    {name:'Flanken Ribs',           price:98, badge:'9×13 Tray · Serves 4–6',  desc:'Cross-cut, spice-rubbed, finished with pomegranate glaze', grad:GRAD.meat3, tag:'', dark:true},
+  ],
+  sides:[
+    {name:'Roasted Fingerlings',    price:28, badge:'9×13 Tray', desc:'Herbs, garlic, crispy skin', grad:GRAD.side1, tag:'', small:true},
+    {name:'Haricots Verts',         price:26, badge:'9×13 Tray', desc:'French green beans, toasted almond', grad:GRAD.side2, tag:'', small:true},
+    {name:'Saffron Rice Pilaf',     price:24, badge:'9×13 Tray', desc:'Saffron-touched, caramelized onion', grad:GRAD.side3, tag:'', small:true},
+    {name:'Glazed Rainbow Carrots', price:26, badge:'9×13 Tray', desc:'Honey-harissa glaze, fresh thyme', grad:GRAD.side4, tag:'', small:true},
+  ],
+};
+
+// ── CARD RENDERER ──
+function makeCard(item, bg) {
+  const dark = item.dark;
+  const imgH = item.small ? 'height:180px' : 'height:230px';
+  const imgEl = item.img
+    ? `<img src="${item.img}" alt="${item.name}" class="cimg w-full h-full object-cover object-center" onerror="this.style.display='none'"/>`
+    : '';
+  const tagEl = item.tag
+    ? `<span class="absolute top-4 left-4 z-10 ${item.tag==='Signature'?'bg-gold text-charcoal':'bg-charcoal text-cream'} text-[10px] px-3 py-1 tracking-wider font-medium">${item.tag}</span>`
+    : '';
+  const priceColor = dark ? 'text-gold' : 'text-charcoal';
+  const titleColor = dark ? 'text-cream' : 'text-charcoal';
+  const descColor  = dark ? 'text-cream/40' : 'text-charcoal/40';
+  const badgeColor = dark ? 'text-gold/60 bg-gold/10' : 'text-gold/60 bg-gold/8';
+  const borderColor= dark ? 'border-cream/8' : 'border-charcoal/6';
+  const btnBase    = dark
+    ? 'border-gold/20 text-cream hover:bg-gold hover:text-charcoal'
+    : 'border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal';
+  const cardBg     = dark ? 'background:#1F1F1F' : 'background:white';
+  const qty = getItemQty(item.name);
+
+  return `
+  <div class="mcard overflow-hidden" style="${cardBg}">
+    <div class="overflow-hidden relative" style="${imgH};${item.grad?'background:'+item.grad:''}">
+      ${imgEl}${tagEl}
+    </div>
+    <div class="${item.small?'p-5':'p-6'}">
+      <div class="flex justify-between items-start mb-1 gap-2">
+        <h3 class="font-serif ${titleColor} ${item.small?'text-lg':'text-xl'} font-light leading-tight">${item.name}</h3>
+        <span class="text-[10px] ${badgeColor} px-2 py-1 tracking-wider shrink-0">${item.badge}</span>
+      </div>
+      <p class="${descColor} text-xs font-light mb-4 leading-relaxed">${item.desc}</p>
+      <div class="flex items-center justify-between pt-4 border-t ${borderColor}">
+        <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
+        <div class="cta-row flex items-center gap-2">
+          ${qty > 0 ? `
+          <button onclick="deck('${item.name}',-1,${item.price},'${item.badge}')" class="w-8 h-8 border ${btnBase} transition-all text-sm leading-none">−</button>
+          <span class="qty-display text-sm font-light w-5 text-center ${dark?'text-cream':'text-charcoal'}">${qty}</span>
+          <button onclick="deck('${item.name}',1,${item.price},'${item.badge}')"  class="w-8 h-8 border ${btnBase} transition-all text-sm leading-none">+</button>
+          ` : `
+          <button onclick="deck('${item.name}',1,${item.price},'${item.badge}')" class="px-4 py-2 text-[10px] tracking-wider uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
+          `}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getItemQty(name) {
+  const found = getCart().find(i => i.name === name);
+  return found ? found.qty : 0;
+}
+
+function deck(name, delta, price, badge) {
+  const cart = getCart();
+  const found = cart.find(i => i.name === name);
+  const newQty = found ? found.qty + delta : delta;
+  if (newQty <= 0) setQty(name, 0);
+  else if (found) setQty(name, newQty);
+  else addItem(name, price, badge);
+  renderAll();
+}
+
+function renderAll() {
+  Object.keys(menu).forEach(sec => {
+    const el = document.getElementById('g-'+sec);
+    if (!el) return;
+    el.innerHTML = menu[sec].map(item => makeCard(item)).join('');
+  });
+  refreshCartUI();
+}
+
+// ── DRAWER ──
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.remove('hidden');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.add('hidden');
+}
+
+function renderDrawer() {
+  const cart = getCart();
+  const sub = getSubtotal();
+  const tax = sub * 0.07;
+  const tot = sub + tax;
+  const el = document.getElementById('drawer-items');
+  if (!el) return;
+  if (cart.length === 0) {
+    el.innerHTML = '<p class="text-charcoal/40 text-sm font-light text-center py-8">Your cart is empty.</p>';
+  } else {
+    el.innerHTML = cart.map(i => `
+      <div class="flex items-start gap-3 py-3 border-b border-charcoal/8">
+        <div class="flex-1 min-w-0">
+          <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
+          <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="deck('${i.name}',-1,${i.price},'${i.badge}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
+          <span class="text-xs font-light w-4 text-center">${i.qty}</span>
+          <button onclick="deck('${i.name}',1,${i.price},'${i.badge}')"  class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal transition-all text-xs leading-none">+</button>
+        </div>
+        <span class="text-sm font-light text-charcoal w-14 text-right shrink-0">$${(i.price*i.qty).toFixed(2)}</span>
+      </div>`).join('');
+  }
+  const d = (id,v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
+  d('d-sub', '$'+sub.toFixed(2));
+  d('d-tax', '$'+tax.toFixed(2));
+  d('d-tot', '$'+tot.toFixed(2));
+  // badge
+  const b = document.getElementById('cart-badge');
+  if(b){ const c=getCount(); b.textContent=c; b.style.display=c>0?'flex':'none'; }
+}
+
+// ── SUBNAV ACTIVE ──
+function updateSubnav() {
+  const secs = ['bread','salads','soups','fish','poultry','meat','sides'];
+  const links = document.querySelectorAll('.snav a');
+  let cur = '';
+  secs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 160) cur = id;
+  });
+  links.forEach(l => {
+    l.classList.remove('act');
+    if (l.getAttribute('href') === '#'+cur) l.classList.add('act');
+  });
+}
+window.addEventListener('scroll', updateSubnav);
+
+document.addEventListener('DOMContentLoaded', () => { renderAll(); renderDrawer(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order — Chefaleh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
+        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+      }}
+    }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
+    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
+    input,textarea,select{outline:none;transition:border-color .2s}
+    input:focus,textarea:focus,select:focus{border-color:#D4AF37}
+    .zone-card{cursor:pointer;transition:all .2s;border:2px solid transparent}
+    .zone-card.sel{border-color:#D4AF37;background:#FBF9F3}
+    .tip-btn{cursor:pointer;transition:all .2s;border:1px solid #d4d0c8}
+    .tip-btn.sel{border-color:#D4AF37;background:#D4AF37;color:#1A1A1A}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:#F9F7F2}
+    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
+    #pending{display:none}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
+  <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+    <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-light">
+      <a href="menu.html"  class="text-charcoal/50 hover:text-gold transition-colors">Menu</a>
+      <a href="order.html" class="text-gold">Order</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ORDER FORM -->
+<div id="order-screen" class="min-h-screen pt-28 pb-20">
+  <div class="max-w-4xl mx-auto px-6">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Place Your Order</p>
+      <h1 class="font-serif text-charcoal font-light" style="font-size:clamp(2.5rem,5vw,4rem)">Order Form</h1>
+      <div class="gold-bar max-w-xs mx-auto my-6"></div>
+      <div class="border border-gold/40 bg-gold/5 px-6 py-4 text-sm text-charcoal/70 font-light leading-relaxed max-w-xl mx-auto">
+        <span class="text-gold font-medium tracking-wide">Orders close Wednesday at 4:00 PM.</span><br/>
+        No cancellations after the deadline. Orders confirmed upon payment receipt only.
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+
+      <!-- LEFT: FORM -->
+      <div class="lg:col-span-3 space-y-10">
+
+        <!-- Contact -->
+        <div>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-6">Contact Information</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">First Name *</label>
+              <input type="text" id="fn" placeholder="Sarah" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+            <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Last Name *</label>
+              <input type="text" id="ln" placeholder="Cohen" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+            <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Email *</label>
+              <input type="email" id="em" placeholder="sarah@example.com" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+            <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Phone *</label>
+              <input type="tel" id="ph" placeholder="(555) 000-0000" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+          </div>
+        </div>
+
+        <div class="gold-bar"></div>
+
+        <!-- Delivery Zone -->
+        <div>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-2">Delivery Zone</h2>
+          <p class="text-charcoal/40 text-xs font-light mb-6">Select the zone that matches your delivery address</p>
+          <div class="space-y-3">
+            <div class="zone-card p-5 bg-white border-charcoal/10" data-fee="15" onclick="selectZone(this,15,'Zone 1 — Local')">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-3">
+                  <div class="zone-dot w-4 h-4 rounded-full border-2 border-charcoal/20 flex items-center justify-center"><div class="zone-inner w-2 h-2 rounded-full bg-gold hidden"></div></div>
+                  <span class="font-serif text-charcoal text-lg font-light">Zone 1 — Local</span>
+                </div>
+                <span class="font-serif text-gold text-xl font-light">$15</span>
+              </div>
+              <p class="text-charcoal/40 text-xs font-light ml-7">Miami Beach · Surfside · Bal Harbour · North Bay Village</p>
+            </div>
+            <div class="zone-card p-5 bg-white border-charcoal/10" data-fee="30" onclick="selectZone(this,30,'Zone 2 — Mid Range')">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-3">
+                  <div class="zone-dot w-4 h-4 rounded-full border-2 border-charcoal/20 flex items-center justify-center"><div class="zone-inner w-2 h-2 rounded-full bg-gold hidden"></div></div>
+                  <span class="font-serif text-charcoal text-lg font-light">Zone 2 — Mid Range</span>
+                </div>
+                <span class="font-serif text-gold text-xl font-light">$30</span>
+              </div>
+              <p class="text-charcoal/40 text-xs font-light ml-7">Aventura · Sunny Isles Beach · North Miami Beach · Hollywood · Hallandale Beach</p>
+            </div>
+            <div class="zone-card p-5 bg-white border-charcoal/10" data-fee="60" onclick="selectZone(this,60,'Zone 3 — Long Range')">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-3">
+                  <div class="zone-dot w-4 h-4 rounded-full border-2 border-charcoal/20 flex items-center justify-center"><div class="zone-inner w-2 h-2 rounded-full bg-gold hidden"></div></div>
+                  <span class="font-serif text-charcoal text-lg font-light">Zone 3 — Long Range</span>
+                </div>
+                <span class="font-serif text-gold text-xl font-light">$60</span>
+              </div>
+              <p class="text-charcoal/40 text-xs font-light ml-7">Fort Lauderdale · Pompano Beach · Boca Raton</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="gold-bar"></div>
+
+        <!-- Delivery Address -->
+        <div>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-6">Delivery Address</h2>
+          <div class="space-y-4">
+            <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Street Address *</label>
+              <input type="text" id="addr" placeholder="123 Maple Street" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+            <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Apt / Suite</label>
+              <input type="text" id="apt" placeholder="Apt 4B" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="col-span-1"><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">City *</label>
+                <input type="text" id="city" placeholder="Miami Beach" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+              <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">State *</label>
+                <input type="text" id="state" placeholder="FL" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+              <div><label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">ZIP *</label>
+                <input type="text" id="zip" placeholder="33139" class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light"/></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gold-bar"></div>
+
+        <!-- Tip -->
+        <div>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-2">Add a Tip</h2>
+          <p class="text-charcoal/40 text-xs font-light mb-6">Show appreciation for your driver & chef team</p>
+          <div class="flex gap-3 flex-wrap">
+            <button class="tip-btn px-6 py-2.5 text-sm font-light tracking-wider" data-pct="0"  onclick="selectTip(this,0)">No Tip</button>
+            <button class="tip-btn px-6 py-2.5 text-sm font-light tracking-wider" data-pct="10" onclick="selectTip(this,10)">10%</button>
+            <button class="tip-btn sel px-6 py-2.5 text-sm font-light tracking-wider" data-pct="15" onclick="selectTip(this,15)">15%</button>
+            <button class="tip-btn px-6 py-2.5 text-sm font-light tracking-wider" data-pct="20" onclick="selectTip(this,20)">20%</button>
+          </div>
+          <p class="text-charcoal/30 text-xs font-light mt-3">Tip amount: <span id="tip-display">—</span></p>
+        </div>
+
+        <div class="gold-bar"></div>
+
+        <!-- Special Notes -->
+        <div>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-6">Special Notes</h2>
+          <textarea id="notes" rows="4" placeholder="Allergies, dietary restrictions, gate codes, delivery instructions..." class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light resize-none"></textarea>
+        </div>
+
+        <div class="gold-bar"></div>
+
+        <!-- Payment Method -->
+        <div>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-2">Payment</h2>
+          <p class="text-charcoal/40 text-xs font-light mb-6">Payment instructions will be shown after submitting your order</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="border border-charcoal/10 bg-white p-5 flex items-center gap-4 opacity-60 cursor-not-allowed">
+              <div class="w-10 h-10 rounded-full bg-cream-dark flex items-center justify-center text-charcoal font-serif font-light text-lg">Z</div>
+              <div><p class="text-sm font-light text-charcoal">Zelle</p><p class="text-xs text-charcoal/40 font-light">Instructions after order</p></div>
+            </div>
+            <div class="border border-charcoal/10 bg-white p-5 flex items-center gap-4 opacity-60 cursor-not-allowed">
+              <div class="w-10 h-10 rounded-full bg-cream-dark flex items-center justify-center text-charcoal font-serif font-light text-lg">V</div>
+              <div><p class="text-sm font-light text-charcoal">Venmo</p><p class="text-xs text-charcoal/40 font-light">Instructions after order</p></div>
+            </div>
+          </div>
+          <!-- PAYMENT INTEGRATION POINT -->
+          <!-- Replace the block above with your payment processor (Stripe, Square, etc.) -->
+          <!-- <div id="stripe-card-element"></div> -->
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center pt-4">
+          <p class="text-xs text-charcoal/30 font-light mb-6 leading-relaxed">
+            By submitting, you agree to our terms. Your order is not confirmed until payment is received.<br/>No cancellations after Wednesday 4:00 PM.
+          </p>
+          <button onclick="submitOrder()" class="w-full bg-charcoal text-cream py-4 text-xs tracking-[.25em] uppercase hover:bg-gold hover:text-charcoal transition-all duration-300 font-medium">
+            Submit Order
+          </button>
+        </div>
+
+      </div><!-- /LEFT -->
+
+      <!-- RIGHT: ORDER SUMMARY -->
+      <div class="lg:col-span-2">
+        <div class="sticky top-24">
+          <div class="bg-white border border-charcoal/8">
+            <div class="px-6 py-5 border-b border-charcoal/8">
+              <h3 class="font-serif text-xl text-charcoal font-light">Order Summary</h3>
+            </div>
+            <div id="summary-items" class="px-6 py-4 space-y-3 max-h-72 overflow-y-auto"></div>
+            <div class="px-6 py-5 space-y-2 bg-cream-dark border-t border-charcoal/8">
+              <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="s-sub">$0.00</span></div>
+              <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="s-tax">$0.00</span></div>
+              <div class="flex justify-between text-xs text-charcoal/50 font-light"><span id="s-zone-label">Delivery</span><span id="s-delivery">—</span></div>
+              <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tip</span><span id="s-tip">—</span></div>
+              <div class="flex justify-between text-base text-charcoal font-medium pt-3 border-t border-charcoal/10">
+                <span class="font-serif">Total</span>
+                <span class="font-serif" id="s-total">$0.00</span>
+              </div>
+            </div>
+            <div class="px-6 py-4 border-t border-charcoal/8">
+              <p class="text-[10px] text-charcoal/30 font-light leading-relaxed">
+                Cart is empty? <a href="menu.html" class="underline hover:text-gold transition-colors">Browse the menu</a> to add items.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </div>
+</div>
+
+<!-- PENDING SCREEN -->
+<div id="pending" class="min-h-screen pt-28 pb-20">
+  <div class="max-w-2xl mx-auto px-6 text-center">
+    <div class="w-16 h-16 border-2 border-gold mx-auto flex items-center justify-center mb-8">
+      <span class="text-gold text-2xl">✓</span>
+    </div>
+    <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Order Received</p>
+    <h1 class="font-serif text-charcoal font-light mb-4" style="font-size:clamp(2rem,5vw,4rem)">Pending Payment</h1>
+    <div class="gold-bar max-w-xs mx-auto my-6"></div>
+    <p class="text-charcoal/60 font-light leading-relaxed mb-10">Thank you! Your order has been submitted. Complete payment below to confirm your spot.</p>
+
+    <div class="border border-charcoal/10 bg-white mb-8 text-left">
+      <div class="p-8 border-b border-charcoal/8">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-serif text-xl text-charcoal font-light">Pay via Zelle</h3>
+          <span class="text-[10px] tracking-widest bg-gold/10 text-gold px-3 py-1">Preferred</span>
+        </div>
+        <p class="text-charcoal/50 text-sm font-light mb-2">Send payment to:</p>
+        <p class="font-serif text-xl text-charcoal mb-2">chefaleh@gmail.com</p>
+        <p class="text-charcoal/30 text-xs font-light">Include your full name and order number in the memo.</p>
+      </div>
+      <div class="p-8">
+        <h3 class="font-serif text-xl text-charcoal font-light mb-4">Pay via Venmo</h3>
+        <p class="text-charcoal/50 text-sm font-light mb-2">Send payment to:</p>
+        <p class="font-serif text-xl text-charcoal mb-2">@Chefaleh</p>
+        <p class="text-charcoal/30 text-xs font-light">Set to <strong>Friends & Family</strong>. Include your name and order number.</p>
+      </div>
+    </div>
+
+    <!-- Summary shown on pending screen -->
+    <div id="pending-summary" class="border border-gold/30 bg-gold/5 p-6 mb-8 text-left text-sm"></div>
+
+    <div class="border border-charcoal/10 bg-cream-dark p-5 text-sm text-charcoal/60 font-light leading-relaxed mb-10">
+      <strong class="text-charcoal font-medium">Important:</strong> Your order is not confirmed until payment is received. Delivery confirmed via email once payment clears. Delivery: Friday 3:00–5:00 PM.
+    </div>
+    <a href="menu.html" class="inline-block border border-charcoal text-charcoal px-10 py-3 text-xs tracking-[.2em] uppercase hover:border-gold hover:text-gold transition-all duration-300">Return to Menu</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-charcoal border-t border-cream/5 py-10">
+  <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <a href="index.html" class="font-serif text-xl tracking-[.2em] text-cream font-light">CHEFALEH</a>
+    <div class="flex gap-6 text-xs font-light text-cream/20">
+      <a href="#" class="hover:text-gold transition-colors">Privacy</a>
+      <a href="#" class="hover:text-gold transition-colors">Terms</a>
+      <a href="#" class="hover:text-gold transition-colors">Cookies</a>
+    </div>
+    <p class="text-cream/15 text-xs font-light">© 2026 Chefaleh</p>
+  </div>
+</footer>
+
+<script src="cart.js"></script>
+<script>
+const TAX_RATE = 0.07;
+let deliveryFee = null;
+let deliveryLabel = '';
+let tipPct = 15; // default 15%
+
+// ── ZONE SELECTION ──
+function selectZone(el, fee, label) {
+  document.querySelectorAll('.zone-card').forEach(c => {
+    c.classList.remove('sel');
+    c.querySelector('.zone-inner').classList.add('hidden');
+  });
+  el.classList.add('sel');
+  el.querySelector('.zone-inner').classList.remove('hidden');
+  deliveryFee = fee;
+  deliveryLabel = label;
+  renderOrderSummary();
+}
+
+// ── TIP SELECTION ──
+function selectTip(el, pct) {
+  document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  tipPct = pct;
+  renderOrderSummary();
+}
+
+// ── RENDER ORDER SUMMARY ──
+function renderOrderSummary() {
+  const cart = getCart();
+  const sub = getSubtotal();
+  const tax = sub * TAX_RATE;
+  const tip = sub * (tipPct / 100);
+  const delivery = deliveryFee !== null ? deliveryFee : 0;
+  const total = sub + tax + tip + delivery;
+
+  // Tip display
+  const td = document.getElementById('tip-display');
+  if (td) td.textContent = tipPct > 0 ? `$${tip.toFixed(2)} (${tipPct}%)` : 'No tip';
+
+  // Items
+  const si = document.getElementById('summary-items');
+  if (si) {
+    if (cart.length === 0) {
+      si.innerHTML = '<p class="text-charcoal/30 text-xs font-light py-3">No items yet. <a href="menu.html" class="underline hover:text-gold">Browse menu</a></p>';
+    } else {
+      si.innerHTML = cart.map(i => `
+        <div class="flex justify-between items-start gap-2">
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-charcoal font-light leading-snug">${i.name}</p>
+            <p class="text-[10px] text-charcoal/30">× ${i.qty}</p>
+          </div>
+          <span class="text-xs font-light text-charcoal shrink-0">$${(i.price*i.qty).toFixed(2)}</span>
+        </div>`).join('');
+    }
+  }
+
+  const set = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
+  set('s-sub', '$'+sub.toFixed(2));
+  set('s-tax', '$'+tax.toFixed(2));
+  set('s-delivery', deliveryFee !== null ? '$'+delivery.toFixed(2) : '—');
+  set('s-zone-label', deliveryLabel ? deliveryLabel : 'Delivery');
+  set('s-tip', tipPct > 0 ? '$'+tip.toFixed(2) : '$0.00');
+  set('s-total', '$'+total.toFixed(2));
+}
+
+// ── SUBMIT ──
+function submitOrder() {
+  const req = [
+    {id:'fn',label:'First Name'},{id:'ln',label:'Last Name'},
+    {id:'em',label:'Email'},{id:'ph',label:'Phone'},
+    {id:'addr',label:'Street Address'},{id:'city',label:'City'},
+    {id:'state',label:'State'},{id:'zip',label:'ZIP'}
+  ];
+  let ok = true;
+  req.forEach(r => {
+    const el = document.getElementById(r.id);
+    if (!el.value.trim()) { el.style.borderColor='#C0392B'; ok=false; }
+    else el.style.borderColor='';
+  });
+  if (!ok) { alert('Please fill in all required fields.'); return; }
+  if (deliveryFee === null) { alert('Please select a delivery zone.'); return; }
+  if (getCart().length === 0) { alert('Your cart is empty. Please add items from the menu.'); return; }
+
+  buildPendingSummary();
+  document.getElementById('order-screen').style.display = 'none';
+  document.getElementById('pending').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildPendingSummary() {
+  const cart = getCart();
+  const sub = getSubtotal();
+  const tax = sub * TAX_RATE;
+  const tip = sub * (tipPct / 100);
+  const delivery = deliveryFee || 0;
+  const total = sub + tax + tip + delivery;
+  const fn = document.getElementById('fn').value;
+  const ln = document.getElementById('ln').value;
+  const el = document.getElementById('pending-summary');
+  if (!el) return;
+  el.innerHTML = `
+    <p class="text-[10px] tracking-widest text-charcoal/40 uppercase mb-4">Order Summary</p>
+    ${cart.map(i=>`<div class="flex justify-between mb-2"><span class="text-charcoal/60 font-light text-sm">${i.name} × ${i.qty}</span><span class="text-sm text-charcoal">$${(i.price*i.qty).toFixed(2)}</span></div>`).join('')}
+    <div class="border-t border-gold/20 mt-3 pt-3 space-y-1 text-xs text-charcoal/50 font-light">
+      <div class="flex justify-between"><span>Subtotal</span><span>$${sub.toFixed(2)}</span></div>
+      <div class="flex justify-between"><span>Tax (7%)</span><span>$${tax.toFixed(2)}</span></div>
+      <div class="flex justify-between"><span>${deliveryLabel}</span><span>$${delivery.toFixed(2)}</span></div>
+      <div class="flex justify-between"><span>Tip (${tipPct}%)</span><span>$${tip.toFixed(2)}</span></div>
+    </div>
+    <div class="flex justify-between pt-3 border-t border-gold/20 mt-3">
+      <span class="font-serif text-charcoal text-base">Total Due</span>
+      <span class="font-serif text-charcoal text-xl">$${total.toFixed(2)}</span>
+    </div>
+    <p class="text-[10px] text-charcoal/30 font-light mt-3">Order for: ${fn} ${ln}</p>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderOrderSummary();
+  // Pre-select 15% tip button
+  const tip15 = document.querySelector('[data-pct="15"]');
+  if (tip15) tip15.classList.add('sel');
+});
+</script>
+</body>
+</html>

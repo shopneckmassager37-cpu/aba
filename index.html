@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chefaleh — Private Chef Shabbat Delivery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
+        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+      }}
+    }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
+    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
+    .gold-bar-left{height:2px;width:50px;background:#D4AF37}
+    .section-fade{position:relative}
+    .section-fade::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:inherit;pointer-events:none}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:#F9F7F2}
+    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    .fade-up{animation:fadeUp .8s ease forwards}
+    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,26,26,.6) 0%,rgba(26,26,26,.25) 45%,rgba(26,26,26,.8) 100%)}
+  </style>
+</head>
+<body>
+
+<!-- COOKIE BANNER -->
+<div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
+  <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="#" class="underline hover:text-gold transition-colors">Learn more</a></p>
+  <button onclick="document.getElementById('cookie').remove()" class="text-xs tracking-widest uppercase border border-gold text-gold px-6 py-2 hover:bg-gold hover:text-charcoal transition-all shrink-0">Accept</button>
+</div>
+
+<!-- NAV — always cream, fixed style -->
+<nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
+  <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+    <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-light">
+      <a href="#how-it-works" class="text-charcoal/50 hover:text-gold transition-colors">Process</a>
+      <a href="#standards"    class="text-charcoal/50 hover:text-gold transition-colors">Standards</a>
+      <a href="#about"        class="text-charcoal/50 hover:text-gold transition-colors">About</a>
+      <a href="menu.html"     class="text-charcoal/50 hover:text-gold transition-colors">Menu</a>
+      <a href="order.html" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 hover:bg-charcoal hover:text-cream transition-all font-medium">
+        Order
+        <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
+      </a>
+    </div>
+    <button class="md:hidden text-charcoal" onclick="document.getElementById('mob').classList.toggle('hidden')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mob" class="hidden md:hidden bg-cream border-t border-charcoal/8 px-8 py-6 flex flex-col gap-5 text-xs tracking-widest uppercase font-light">
+    <a href="#how-it-works" class="text-charcoal/50 hover:text-gold">Process</a>
+    <a href="#standards"    class="text-charcoal/50 hover:text-gold">Standards</a>
+    <a href="#about"        class="text-charcoal/50 hover:text-gold">About</a>
+    <a href="menu.html"     class="text-charcoal/50 hover:text-gold">Menu</a>
+    <a href="order.html"    class="bg-gold text-charcoal px-5 py-2.5 text-center font-medium hover:bg-charcoal hover:text-cream transition-all">Order Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="relative min-h-screen flex items-end overflow-hidden">
+  <img src="images/hero.jpg" alt="Shabbat Table" class="hero-img"
+       onerror="this.style.display='none';this.parentElement.style.background='#1A1A1A'"/>
+  <div class="hero-overlay"></div>
+  <div class="relative z-10 w-full max-w-7xl mx-auto px-8 pb-28 pt-40">
+    <div class="max-w-2xl fade-up">
+      <p class="text-gold text-xs tracking-[.4em] uppercase mb-6 font-light">Private Chef · Shabbat Delivery · South Florida</p>
+      <h1 class="font-serif text-cream font-light leading-[1.08] mb-6" style="font-size:clamp(2.8rem,7vw,6rem)">
+        A Better<br/>Shabbat Table<br/><em class="text-gold">Without the Work</em>
+      </h1>
+      <div class="gold-bar-left mb-8"></div>
+      <p class="text-cream/70 font-light text-lg leading-relaxed mb-3 max-w-xl">
+        A weekly, curated menu prepared by a private chef team and delivered fresh every Friday.
+      </p>
+      <p class="text-cream/40 text-sm font-light tracking-wide mb-12">Real ingredients. No shortcuts. Designed for how Shabbat should feel.</p>
+      <div class="flex flex-wrap gap-4">
+        <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">View This Week's Menu</a>
+        <a href="#how-it-works" class="border border-cream/40 text-cream px-10 py-4 text-xs tracking-[.25em] uppercase font-light hover:border-gold hover:text-gold transition-all duration-300">How It Works</a>
+      </div>
+    </div>
+  </div>
+  <div class="absolute bottom-8 right-10 z-10 opacity-40 flex flex-col items-center gap-3">
+    <div class="w-px h-14 bg-cream/50"></div>
+    <span class="text-cream text-[10px] tracking-[.3em] uppercase" style="writing-mode:vertical-rl">Scroll</span>
+  </div>
+</section>
+
+<!-- GOLD MARQUEE -->
+<div class="bg-gold py-3 overflow-hidden">
+  <div class="flex whitespace-nowrap" style="animation:marquee 20s linear infinite">
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Shabbat Delivery</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Fresh Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">ORB Certified Kosher</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Order by Wednesday 4PM</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">South Florida</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Israeli & Mediterranean</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Shabbat Delivery</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Fresh Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">ORB Certified Kosher</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Order by Wednesday 4PM</span><span class="text-charcoal/30 px-3">✦</span>
+  </div>
+</div>
+
+<!-- GALLERY STRIP -->
+<div class="grid grid-cols-3 md:grid-cols-6 overflow-hidden" style="height:220px">
+  <div class="overflow-hidden"><img src="images/food1.jpg" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
+  <div class="overflow-hidden"><img src="images/food2.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
+  <div class="overflow-hidden"><img src="images/food3.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
+  <div class="overflow-hidden hidden md:block"><img src="images/food4.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
+  <div class="overflow-hidden hidden md:block"><img src="images/food5.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
+  <div class="overflow-hidden hidden md:block"><img src="images/food6.png" alt="" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700 object-center"/></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="py-32 bg-charcoal">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="text-center mb-20">
+      <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">The Process</p>
+      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2.5rem,5vw,4rem)">How It Works</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
+      <div class="group bg-charcoal p-10 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-8 font-light">01</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-4">Weekly Menu</h3>
+        <p class="text-cream/40 text-sm font-light leading-relaxed">Each week, we release a curated Shabbat menu with a focused selection across every category.</p>
+      </div>
+      <div class="group bg-charcoal p-10 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-8 font-light">02</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-4">Order by Wednesday</h3>
+        <p class="text-cream/40 text-sm font-light leading-relaxed">Place your order by Wednesday at 4:00 PM. We prepare everything fresh based on that week's orders.</p>
+      </div>
+      <div class="group bg-charcoal p-10 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-8 font-light">03</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-4">Friday Delivery</h3>
+        <p class="text-cream/40 text-sm font-light leading-relaxed">Your order arrives Friday between 3:00–5:00 PM, ready to place on the table.</p>
+      </div>
+      <div class="group bg-charcoal p-10 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-8 font-light">04</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-4">Effortless Hosting</h3>
+        <p class="text-cream/40 text-sm font-light leading-relaxed">Tray format — abundant, effortless, designed for the Shabbat table.</p>
+      </div>
+    </div>
+    <div class="gold-bar mt-16 mb-8"></div>
+    <p class="text-center text-cream/25 text-xs font-light tracking-wider leading-relaxed max-w-lg mx-auto">
+      Pre-order model only · Orders confirmed upon payment receipt · Limited weekly production · Once orders close, the menu is no longer available
+    </p>
+  </div>
+</section>
+
+<!-- SMOOTH TRANSITION: charcoal → cream via gradient -->
+<div style="height:80px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
+
+<!-- OUR STANDARDS -->
+<section id="standards" class="py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div>
+        <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Our Philosophy</p>
+        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(2.2rem,4vw,3.5rem)">We Cook With<br/><em>Intention</em></h2>
+        <div class="gold-bar-left mb-10"></div>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">At Chefaleh, we don't just focus on flavor — we focus on what goes into every ingredient. We cook exclusively with extra virgin olive oil and avocado oil — never seed oils.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">We use unbleached, organic flours and avoid processed shortcuts. No soy-based fillers, no unnecessary additives, no compromises.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Real ingredients, properly sourced, cooked with intention. This isn't about trends — it's about quality, digestion, and how food should actually be prepared.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">Clean Oils Only</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">EVOO & avocado oil. Never seed oils.</p>
+          </div>
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">Organic Flour</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Unbleached, organic. No shortcuts.</p>
+          </div>
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">Zero Fillers</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">No soy fillers or additives.</p>
+          </div>
+          <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+            <p class="text-gold text-lg mb-3">✦</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">ORB Certified</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Kosher certified. No compromises.</p>
+          </div>
+        </div>
+        <div class="overflow-hidden" style="height:160px">
+          <img src="images/food6.png" alt="Fresh ingredients" class="w-full h-full object-cover object-center"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMOOTH TRANSITION: cream → charcoal -->
+<div style="height:80px;background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
+
+<!-- QUOTE -->
+<section class="py-24 bg-charcoal relative overflow-hidden">
+  <div class="absolute inset-0 opacity-8">
+    <img src="images/food1.jpg" alt="" class="w-full h-full object-cover object-center"/>
+    <div class="absolute inset-0 bg-charcoal/70"></div>
+  </div>
+  <div class="relative z-10 max-w-3xl mx-auto px-8 text-center">
+    <p class="text-gold font-serif text-5xl mb-6 font-light">"</p>
+    <blockquote class="font-serif text-cream font-light leading-relaxed mb-8" style="font-size:clamp(1.4rem,3vw,2.2rem)">
+      Stunning and beautiful presentation.<br/><em>Really delicious food!</em>
+    </blockquote>
+    <p class="text-cream/30 text-xs tracking-[.3em] uppercase font-light">— Chaya Gitlin, Google Review</p>
+  </div>
+</section>
+
+<!-- SMOOTH TRANSITION: charcoal → cream-dark -->
+<div style="height:80px;background:linear-gradient(to bottom,#1A1A1A,#EFEDE6)"></div>
+
+<!-- ABOUT -->
+<section id="about" class="py-24 bg-cream-dark">
+  <div class="max-w-7xl mx-auto px-8">
+    <!-- Full-width food image on top -->
+    <div class="overflow-hidden mb-16" style="height:420px">
+      <img src="images/food2.png" alt="Chefaleh cuisine" class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"/>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div>
+        <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Our Story</p>
+        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(2rem,4vw,3.2rem)">Elevated Traditions,<br/><em>Curated for Your Table</em></h2>
+        <div class="gold-bar-left mb-8"></div>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">Chefaleh is a private chef–driven culinary studio focused on refined, high-quality Shabbat and event dining. Our roots are in hospitality at the highest level — from curated travel experiences to private villa programs — where food is not just served, but orchestrated.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Built by a team with experience producing high-end culinary programs across the U.S. and Europe, our style is rooted in bold, clean flavors with an Israeli and Mediterranean influence.</p>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Best food I've had in South Florida. We ordered for an office party — simply unbelievable!"</p>
+          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Eli Meyer · Google Review</p>
+        </div>
+        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Delicious food! Packaging was nice. You can tell they put a lot of love and thought into their food."</p>
+          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Mordechai Levenberg · Google Review</p>
+        </div>
+        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Stunning and beautiful presentation. Really delicious food!"</p>
+          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Chaya Gitlin · Google Review</p>
+        </div>
+        <a href="menu.html" class="inline-block bg-charcoal text-cream px-10 py-4 text-xs tracking-[.25em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">View This Week's Menu</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMOOTH TRANSITION: cream-dark → charcoal -->
+<div style="height:80px;background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
+
+<!-- DELIVERY ZONES -->
+<section class="py-24 bg-charcoal">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="text-center mb-16">
+      <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Service Area</p>
+      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2rem,4vw,3rem)">Delivery Zones</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
+      <div class="bg-charcoal p-10 hover:bg-charcoal-soft transition-colors group">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Zone 1 · Local</p>
+            <h3 class="font-serif text-cream text-2xl font-light">Core Area</h3>
+          </div>
+          <span class="font-serif text-gold text-3xl font-light">$15</span>
+        </div>
+        <div class="gold-bar mb-6"></div>
+        <ul class="space-y-2 text-cream/40 text-sm font-light">
+          <li>Miami Beach (all)</li>
+          <li>Surfside</li>
+          <li>Bal Harbour</li>
+          <li>North Bay Village</li>
+        </ul>
+      </div>
+      <div class="bg-charcoal-soft p-10 hover:bg-charcoal-soft transition-colors border-t-2 border-gold group">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Zone 2 · Mid Range</p>
+            <h3 class="font-serif text-cream text-2xl font-light">Extended Area</h3>
+          </div>
+          <span class="font-serif text-gold text-3xl font-light">$30</span>
+        </div>
+        <div class="gold-bar mb-6"></div>
+        <ul class="space-y-2 text-cream/40 text-sm font-light">
+          <li>Aventura</li>
+          <li>Sunny Isles Beach</li>
+          <li>North Miami Beach</li>
+          <li>Hollywood</li>
+          <li>Hallandale Beach</li>
+        </ul>
+      </div>
+      <div class="bg-charcoal p-10 hover:bg-charcoal-soft transition-colors group">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Zone 3 · Premium</p>
+            <h3 class="font-serif text-cream text-2xl font-light">Long Range</h3>
+          </div>
+          <span class="font-serif text-gold text-3xl font-light">$60</span>
+        </div>
+        <div class="gold-bar mb-6"></div>
+        <ul class="space-y-2 text-cream/40 text-sm font-light">
+          <li>Fort Lauderdale</li>
+          <li>Pompano Beach</li>
+          <li>Boca Raton</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMOOTH TRANSITION: charcoal → cream -->
+<div style="height:80px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
+
+<!-- CTA — full image, no crop, no "This Week Only" -->
+<section class="bg-cream py-0">
+  <div class="grid grid-cols-1 lg:grid-cols-2">
+    <!-- Image side — full, uncropped -->
+    <div class="overflow-hidden" style="min-height:500px">
+      <img src="images/food3.png" alt="Chefaleh food" class="w-full h-full object-contain object-center bg-cream-dark"/>
+    </div>
+    <!-- Text side -->
+    <div class="flex flex-col justify-center px-12 py-20 bg-charcoal">
+      <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Ready?</p>
+      <h2 class="font-serif text-cream font-light mb-4" style="font-size:clamp(2rem,4vw,3rem)">Ready to Elevate<br/><em>Your Shabbat?</em></h2>
+      <div class="gold-bar-left mb-8"></div>
+      <p class="text-cream/50 text-sm font-light mb-2">Orders close Wednesday at 4:00 PM</p>
+      <p class="text-cream/30 text-xs font-light mb-10 tracking-wide">No cancellations after deadline · Limited weekly production</p>
+      <a href="order.html" class="self-start bg-gold text-charcoal px-12 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">Place Your Order</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-charcoal border-t border-cream/5 py-16">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div class="md:col-span-2">
+        <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
+        <p class="text-cream/30 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat & event catering. South Florida's finest kosher culinary experience.</p>
+        <p class="text-cream/20 text-xs mt-4 font-light">(305) 985-0770</p>
+      </div>
+      <div>
+        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-5 font-light">Navigate</p>
+        <div class="flex flex-col gap-3 text-sm font-light text-cream/30">
+          <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="order.html" class="hover:text-gold transition-colors">Order</a>
+          <a href="#about"     class="hover:text-gold transition-colors">About</a>
+          <a href="#how-it-works" class="hover:text-gold transition-colors">How It Works</a>
+        </div>
+      </div>
+      <div>
+        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-5 font-light">Order Info</p>
+        <div class="text-xs font-light text-cream/30 space-y-2">
+          <p>Deadline: <span class="text-gold">Wednesday 4:00 PM</span></p>
+          <p>Delivery: <span class="text-cream/50">Friday 3–5 PM</span></p>
+          <p class="mt-3 text-cream/20">1622 NE 205th Terrace<br/>Miami, FL 33179</p>
+        </div>
+      </div>
+    </div>
+    <div class="gold-bar mb-8"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/20">
+      <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-gold transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="#" class="hover:text-gold transition-colors">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="cart.js"></script>
+<script>
+  setTimeout(() => {
+    const c = document.getElementById('cookie');
+    if (c) c.classList.remove('translate-y-full');
+  }, 1500);
+</script>
+</body>
+</html>
