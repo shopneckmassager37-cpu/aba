@@ -4,6 +4,9 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Checkout — Chefaleh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -13,71 +16,320 @@
       }}
     }
   </script>
+  <style>
+    .card { background:#fff; border:1px solid rgba(26,26,26,.07); box-shadow:0 2px 20px rgba(26,26,26,.04); border-radius:2px; }
+    .zone-btn, .tip-btn {
+      border: 1.5px solid rgba(26,26,26,.15);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fff;
+      text-align: center;
+      user-select: none;
+    }
+    .zone-btn:hover, .tip-btn:hover { border-color: #D4AF37; }
+    .zone-btn.active, .tip-btn.active {
+      border-color: #D4AF37;
+      background: #D4AF37;
+      color: #1A1A1A;
+    }
+    input, textarea {
+      background: #F9F7F2;
+      border: 1.5px solid rgba(26,26,26,.12);
+      border-radius: 2px;
+      font-family: 'Jost', sans-serif;
+      font-size: .875rem;
+      font-weight: 300;
+      transition: border-color .2s;
+      outline: none;
+      width: 100%;
+      padding: .75rem 1rem;
+    }
+    input:focus, textarea:focus { border-color: #D4AF37; background: #fff; }
+    input::placeholder, textarea::placeholder { color: rgba(26,26,26,.35); }
+    .section-label {
+      font-family: 'Jost', sans-serif;
+      font-size: .65rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(26,26,26,.4);
+      margin-bottom: .75rem;
+    }
+  </style>
 </head>
-<body class="bg-cream text-charcoal font-sans">
+<body class="bg-cream text-charcoal font-sans min-h-screen">
 
-<nav class="bg-cream border-b border-charcoal/10 py-4">
-  <div class="max-w-4xl mx-auto px-5 text-center">
-    <a href="index.html" class="font-serif text-xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+<!-- NAV -->
+<nav class="bg-cream border-b border-charcoal/10 py-5 sticky top-0 z-10">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <a href="menu.html" class="text-xs tracking-widest text-charcoal/40 hover:text-charcoal transition-colors uppercase font-light">← Menu</a>
+    <a href="index.html" class="font-serif text-2xl tracking-[.25em] text-charcoal font-light">CHEFALEH</a>
+    <span class="text-xs tracking-widest text-charcoal/40 uppercase font-light">Checkout</span>
   </div>
 </nav>
 
-<main class="max-w-4xl mx-auto px-5 py-12">
-  <h1 class="font-serif text-4xl mb-8 text-center">Checkout Summary</h1>
-  
-  <div class="bg-white p-8 shadow-sm border border-charcoal/5 mb-8">
-    <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-    <div id="checkout-items" class="space-y-4 mb-6 text-sm">
-      <!-- Items -->
-    </div>
-    <div class="border-t border-charcoal/10 pt-4 space-y-2 text-sm">
-      <div class="flex justify-between">
-        <label>Delivery Zone:</label>
-        <select id="delivery-zone" onchange="updateTotals()" class="border p-1 w-40">
-          <option value="15">Zone 1 ($15)</option>
-          <option value="30">Zone 2 ($30)</option>
-          <option value="60">Zone 3 ($60)</option>
-        </select>
-      </div>
-      <div class="flex justify-between"><span>Subtotal</span><span id="co-sub">$0.00</span></div>
-      <div class="flex justify-between"><span>Tax (7%)</span><span id="co-tax">$0.00</span></div>
-      <div class="flex justify-between">
-        <label>Chef Tip:</label>
-        <select id="tip-chef" onchange="updateTotals()" class="border p-1">
-          <option value="0">0%</option><option value="5">5%</option><option value="10">10%</option>
-          <option value="15" selected>15%</option><option value="20">20%</option>
-        </select>
-      </div>
-      <div class="flex justify-between">
-        <label>Driver Tip ($):</label>
-        <input type="number" id="tip-driver" value="5" onchange="updateTotals()" class="border p-1 w-20">
-      </div>
-      <div class="flex justify-between text-2xl font-bold pt-4 text-gold border-t border-charcoal/10">
-        <span>Total</span>
-        <span id="co-tot">$0.00</span>
-      </div>
-    </div>  </div>
+<main class="max-w-7xl mx-auto px-6 py-12">
 
-  <div class="bg-white p-8 shadow-sm border border-charcoal/5 mb-8">
-    <h2 class="text-xl font-bold mb-4">Customer Details</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input type="text" placeholder="Full Name" class="border p-3 w-full">
-      <input type="tel" placeholder="Phone" class="border p-3 w-full">
-      <input type="email" placeholder="Email" class="border p-3 w-full">
-      <input type="text" placeholder="Delivery Address" class="border p-3 w-full">
-      <textarea placeholder="Notes (optional)" class="border p-3 w-full md:col-span-2"></textarea>
+  <h1 class="font-serif text-5xl font-light text-center mb-2">Complete Your Order</h1>
+  <p class="text-center text-charcoal/40 text-sm font-light tracking-wider mb-12">Review your items and enter delivery details</p>
+
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+    <!-- LEFT: Order Details -->
+    <div class="lg:col-span-3 space-y-6">
+
+      <!-- Order Items -->
+      <div class="card p-8">
+        <p class="section-label">Your Order</p>
+        <div id="checkout-items" class="divide-y divide-charcoal/8"></div>
+        <div id="empty-cart" class="hidden py-10 text-center">
+          <p class="text-charcoal/30 font-light text-sm">Your cart is empty.</p>
+          <a href="menu.html" class="inline-block mt-4 text-xs tracking-widest uppercase text-gold hover:underline">Browse Menu</a>
+        </div>
+      </div>
+
+      <!-- Delivery Zone -->
+      <div class="card p-8">
+        <p class="section-label">Delivery Zone</p>
+        <div class="grid grid-cols-3 gap-3">
+          <button class="zone-btn py-5 px-3" data-zone="15" onclick="selectZone(this)">
+            <div class="font-serif text-2xl font-light mb-1">Zone 1</div>
+            <div class="text-xs text-charcoal/50 font-light tracking-wide">$15</div>
+            <div class="text-[10px] text-charcoal/35 font-light mt-1 tracking-wide">Nearby</div>
+          </button>
+          <button class="zone-btn active py-5 px-3" data-zone="30" onclick="selectZone(this)">
+            <div class="font-serif text-2xl font-light mb-1">Zone 2</div>
+            <div class="text-xs font-light tracking-wide">$30</div>
+            <div class="text-[10px] font-light mt-1 tracking-wide opacity-70">Mid-range</div>
+          </button>
+          <button class="zone-btn py-5 px-3" data-zone="60" onclick="selectZone(this)">
+            <div class="font-serif text-2xl font-light mb-1">Zone 3</div>
+            <div class="text-xs text-charcoal/50 font-light tracking-wide">$60</div>
+            <div class="text-[10px] text-charcoal/35 font-light mt-1 tracking-wide">Extended</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="card p-8">
+        <p class="section-label">Tip for the Chef</p>
+        <div class="grid grid-cols-5 gap-2 mb-6">
+          <button class="tip-btn tip-chef-btn py-4" data-val="0" onclick="selectTip('chef',this)">
+            <div class="text-sm font-light">0%</div>
+          </button>
+          <button class="tip-btn tip-chef-btn py-4" data-val="5" onclick="selectTip('chef',this)">
+            <div class="text-sm font-light">5%</div>
+          </button>
+          <button class="tip-btn tip-chef-btn py-4" data-val="10" onclick="selectTip('chef',this)">
+            <div class="text-sm font-light">10%</div>
+          </button>
+          <button class="tip-btn tip-chef-btn active py-4" data-val="15" onclick="selectTip('chef',this)">
+            <div class="text-sm font-light">15%</div>
+          </button>
+          <button class="tip-btn tip-chef-btn py-4" data-val="20" onclick="selectTip('chef',this)">
+            <div class="text-sm font-light">20%</div>
+          </button>
+        </div>
+
+        <p class="section-label">Tip for the Driver</p>
+        <div class="grid grid-cols-5 gap-2">
+          <button class="tip-btn tip-driver-btn py-4" data-val="0" onclick="selectTip('driver',this)">
+            <div class="text-sm font-light">$0</div>
+          </button>
+          <button class="tip-btn tip-driver-btn py-4" data-val="3" onclick="selectTip('driver',this)">
+            <div class="text-sm font-light">$3</div>
+          </button>
+          <button class="tip-btn tip-driver-btn active py-4" data-val="5" onclick="selectTip('driver',this)">
+            <div class="text-sm font-light">$5</div>
+          </button>
+          <button class="tip-btn tip-driver-btn py-4" data-val="8" onclick="selectTip('driver',this)">
+            <div class="text-sm font-light">$8</div>
+          </button>
+          <button class="tip-btn tip-driver-btn py-4" data-val="10" onclick="selectTip('driver',this)">
+            <div class="text-sm font-light">$10</div>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Summary + Details -->
+    <div class="lg:col-span-2 space-y-6">
+
+      <!-- Price Summary -->
+      <div class="card p-8 sticky top-24">
+        <p class="section-label">Order Summary</p>
+        <div class="space-y-3 text-sm font-light">
+          <div class="flex justify-between text-charcoal/60">
+            <span>Subtotal</span><span id="co-sub">$0.00</span>
+          </div>
+          <div class="flex justify-between text-charcoal/60">
+            <span>Tax (7%)</span><span id="co-tax">$0.00</span>
+          </div>
+          <div class="flex justify-between text-charcoal/60">
+            <span>Delivery</span><span id="co-delivery">$30.00</span>
+          </div>
+          <div class="flex justify-between text-charcoal/60">
+            <span>Chef Tip</span><span id="co-chef-tip">$0.00</span>
+          </div>
+          <div class="flex justify-between text-charcoal/60">
+            <span>Driver Tip</span><span id="co-driver-tip">$5.00</span>
+          </div>
+          <div class="flex justify-between text-lg font-medium border-t border-charcoal/10 pt-4 mt-2">
+            <span class="font-serif text-2xl font-light">Total</span>
+            <span class="font-serif text-2xl text-gold" id="co-tot">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="mt-8 space-y-3">
+          <p class="section-label">Your Details</p>
+          <input type="text" id="co-name" placeholder="Full Name" required/>
+          <input type="tel" id="co-phone" placeholder="Phone Number" required/>
+          <input type="email" id="co-email" placeholder="Email Address" required/>
+          <input type="text" id="co-address" placeholder="Delivery Address" required/>
+          <textarea id="co-notes" placeholder="Special instructions (optional)" rows="3" style="resize:none"></textarea>
+        </div>
+
+        <!-- Notice -->
+        <div class="mt-6 bg-cream-dark border border-charcoal/8 p-4 rounded-sm">
+          <p class="text-xs text-charcoal/50 font-light leading-relaxed">
+            ⚠️ Orders are confirmed only upon payment receipt. You will receive a confirmation email with payment instructions.
+          </p>
+        </div>
+
+        <button id="submit-btn" onclick="submitOrder()" class="w-full mt-6 bg-charcoal text-cream py-4 uppercase tracking-[.2em] text-xs font-medium hover:bg-gold hover:text-charcoal transition-all duration-300">
+          Place Order
+        </button>
+      </div>
+
     </div>
   </div>
-
-  <div class="bg-amber-50 p-6 border border-amber-200 mb-8">
-    <h3 class="font-bold mb-2">Important Notice</h3>
-    <p class="text-sm">⚠️ Orders are confirmed only upon payment receipt. Please complete your payment immediately after submitting your order.</p>
-  </div>
-
-  <button onclick="window.location.href='confirmation.html'" class="w-full bg-charcoal text-cream py-4 uppercase tracking-widest font-medium hover:bg-gold transition-colors">
-    Submit Order
-  </button>
 </main>
 
+<script src="cart.js"></script>
+<script>
+  const CART_KEY = 'chefaleh_cart';
+  let deliveryZone = 30;
+  let chefTipPct = 15;
+  let driverTipAmt = 5;
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; }
+  }
+
+  function selectZone(btn) {
+    document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    deliveryZone = parseInt(btn.dataset.zone);
+    updateTotals();
+  }
+
+  function selectTip(type, btn) {
+    if (type === 'chef') {
+      document.querySelectorAll('.tip-chef-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      chefTipPct = parseInt(btn.dataset.val);
+    } else {
+      document.querySelectorAll('.tip-driver-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      driverTipAmt = parseInt(btn.dataset.val);
+    }
+    updateTotals();
+  }
+
+  function updateTotals() {
+    const cart = getCart();
+    const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const tax = sub * 0.07;
+    const chefTip = sub * chefTipPct / 100;
+    const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
+
+    const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = '$' + val.toFixed(2); };
+    set('co-sub', sub);
+    set('co-tax', tax);
+    set('co-delivery', deliveryZone);
+    set('co-chef-tip', chefTip);
+    set('co-driver-tip', driverTipAmt);
+    set('co-tot', total);
+  }
+
+  function renderItems() {
+    const cart = getCart();
+    const container = document.getElementById('checkout-items');
+    const empty = document.getElementById('empty-cart');
+    if (!cart.length) {
+      container.classList.add('hidden');
+      empty.classList.remove('hidden');
+      return;
+    }
+    container.classList.remove('hidden');
+    empty.classList.add('hidden');
+    container.innerHTML = cart.map(i => `
+      <div class="flex items-center justify-between py-4">
+        <div class="flex-1 min-w-0 pr-4">
+          <p class="text-sm font-light text-charcoal">${i.name}</p>
+          ${i.badge ? `<p class="text-xs text-charcoal/35 font-light mt-0.5">${i.badge}</p>` : ''}
+          ${i.instructions ? `<p class="text-xs text-gold/60 font-light italic mt-0.5">${i.instructions}</p>` : ''}
+        </div>
+        <div class="flex items-center gap-4 shrink-0">
+          <span class="text-xs text-charcoal/40 font-light">×${i.qty}</span>
+          <span class="text-sm font-light w-16 text-right">$${(i.price * i.qty).toFixed(2)}</span>
+        </div>
+      </div>
+    `).join('');
+    updateTotals();
+  }
+
+  function submitOrder() {
+    const name = document.getElementById('co-name').value.trim();
+    const phone = document.getElementById('co-phone').value.trim();
+    const email = document.getElementById('co-email').value.trim();
+    const address = document.getElementById('co-address').value.trim();
+    if (!name || !phone || !email || !address) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    const cart = getCart();
+    if (!cart.length) { alert('Your cart is empty.'); return; }
+
+    const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const tax = sub * 0.07;
+    const chefTip = sub * chefTipPct / 100;
+    const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
+
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Placing Order...';
+    btn.disabled = true;
+
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, phone, email, address,
+        zone: `Zone (${deliveryZone === 15 ? 1 : deliveryZone === 30 ? 2 : 3}) — $${deliveryZone}`,
+        cart,
+        subtotal: sub.toFixed(2),
+        tax: tax.toFixed(2),
+        delivery: deliveryZone.toFixed(2),
+        driverTip: driverTipAmt.toFixed(2),
+        chefTip: chefTip.toFixed(2),
+        total: total.toFixed(2),
+        notes: document.getElementById('co-notes').value.trim()
+      })
+    })
+    .then(r => r.json())
+    .then(() => {
+      localStorage.removeItem(CART_KEY);
+      window.location.href = '/confirmation.html';
+    })
+    .catch(() => {
+      localStorage.removeItem(CART_KEY);
+      window.location.href = '/confirmation.html';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', renderItems);
+</script>
 </body>
 </html>
