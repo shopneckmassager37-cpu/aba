@@ -20,25 +20,48 @@
     body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
     .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
     .gold-bar-left{height:2px;width:50px;background:#D4AF37}
-    /* CARD */
     .mcard{transition:transform .3s ease,box-shadow .3s ease}
     .mcard:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(26,26,26,.12)}
     .mcard .cimg{transition:transform .6s ease}
     .mcard:hover .cimg{transform:scale(1.07)}
     .mcard .cta-row{max-height:0;overflow:hidden;transition:max-height .3s ease,opacity .3s ease;opacity:0}
     .mcard:hover .cta-row{max-height:60px;opacity:1}
-    /* SUBNAV */
     .snav a{border-bottom:2px solid transparent;transition:all .2s}
     .snav a:hover,.snav a.act{color:#D4AF37;border-bottom-color:#D4AF37}
-    /* DRAWER */
     #drawer{transition:transform .35s ease}
     #drawer.open{transform:translateX(0)!important}
+    /* MODAL */
+    #instr-modal{display:none}
+    #instr-modal.open{display:flex}
     ::-webkit-scrollbar{width:5px}
     ::-webkit-scrollbar-track{background:#F9F7F2}
     ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
   </style>
 </head>
 <body>
+
+<!-- SPECIAL INSTRUCTIONS MODAL -->
+<div id="instr-modal" class="fixed inset-0 z-[60] items-center justify-center bg-charcoal/60 px-4">
+  <div class="bg-cream w-full max-w-md shadow-2xl">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
+      <div>
+        <h3 class="font-serif text-xl text-charcoal font-light">Special Instructions</h3>
+        <p id="modal-item-name" class="text-xs text-charcoal/50 font-light mt-0.5"></p>
+      </div>
+      <button onclick="closeModal()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+    </div>
+    <div class="px-6 py-5">
+      <label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Notes for this item</label>
+      <textarea id="modal-instr-text" rows="4" placeholder="Allergies, preparation preferences, customizations…"
+        class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light resize-none focus:border-gold outline-none"></textarea>
+      <p class="text-[10px] text-charcoal/30 font-light mt-2">These notes apply to this item only.</p>
+    </div>
+    <div class="px-6 pb-6 flex gap-3">
+      <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
+      <button onclick="closeModal()" class="px-5 border border-charcoal/15 text-charcoal/50 text-xs tracking-wider uppercase font-light hover:border-charcoal hover:text-charcoal transition-all">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- CART DRAWER -->
 <div id="drawer-overlay" class="fixed inset-0 bg-charcoal/40 z-50 hidden" onclick="closeDrawer()"></div>
@@ -60,11 +83,11 @@
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
   <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
     <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
-    <div class="flex items-center gap-4 md:gap-8 text-[10px] md:text-xs tracking-[.1em] md:tracking-[.2em] uppercase font-light">
-      <a href="index.html"    class="text-charcoal/50 hover:text-gold transition-colors">Home</a>
-      <a href="about.html"    class="text-charcoal/50 hover:text-gold transition-colors">About</a>
+    <div class="flex items-center gap-4 md:gap-8 text-[10px] md:text-xs tracking-[.1em] md:tracking-[.2em] uppercase font-medium">
+      <a href="index.html"    class="text-charcoal hover:text-gold transition-colors">Home</a>
+      <a href="about.html"    class="text-charcoal hover:text-gold transition-colors">About</a>
       <a href="menu.html"     class="text-gold">Menu</a>
-      <a href="order.html"    class="text-charcoal/50 hover:text-gold transition-colors">Order</a>
+      <a href="order.html"    class="text-charcoal hover:text-gold transition-colors">Order</a>
       <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-3 md:px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Cart
         <span id="cart-badge" class="cart-count-badge hidden w-4 h-4 md:w-5 md:h-5 rounded-full bg-charcoal text-cream text-[9px] md:text-[10px] items-center justify-center font-medium">0</span>
@@ -84,27 +107,26 @@
 <!-- STICKY SUBNAV -->
 <div class="snav sticky top-[72px] z-30 bg-cream border-b border-charcoal/8 overflow-x-auto">
   <div class="max-w-7xl mx-auto px-8 flex">
-    <a href="#bread"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Bread</a>
-    <a href="#salads"  class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Salads</a>
-    <a href="#soups"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Soups</a>
-    <a href="#fish"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Fish</a>
-    <a href="#poultry" class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Poultry</a>
-    <a href="#meat"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Meat</a>
-    <a href="#sides"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Sides</a>
+    <a href="#challah"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Challah</a>
+    <a href="#salads"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Salads</a>
+    <a href="#soups"     class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Soups</a>
+    <a href="#fish"      class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Fish</a>
+    <a href="#poultry"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Poultry</a>
+    <a href="#meat"      class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Meat</a>
+    <a href="#sides"     class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Sides</a>
+    <a href="#desserts"  class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Desserts</a>
   </div>
 </div>
 
-<!-- helper macro — repeated card structure via JS below each section -->
-
-<!-- ===== BREAD ===== -->
-<section id="bread" class="py-20 bg-cream">
+<!-- ===== CHALLAH ===== -->
+<section id="challah" class="py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-8">
     <div class="mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Bakery</p>
-      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Bread & Challah</h2>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Challah & Bread</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g-bread"></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="g-challah"></div>
   </div>
 </section>
 
@@ -171,7 +193,7 @@
   <div class="max-w-7xl mx-auto px-8">
     <div class="mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Centerpiece</p>
-      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2rem,4vw,3rem)">The Signature Meat</h2>
+      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2rem,4vw,3rem)">Signature Meat</h2>
       <p class="text-cream/30 text-xs font-light mt-2">Premium beef — the crown of your Shabbat table</p>
       <div class="gold-bar-left mt-4"></div>
     </div>
@@ -193,8 +215,22 @@
   </div>
 </section>
 
+<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+
+<!-- ===== DESSERTS ===== -->
+<section id="desserts" class="py-20 bg-cream-dark">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="mb-14">
+      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Sweet Finish</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Desserts</h2>
+      <div class="gold-bar-left mt-4"></div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="g-desserts"></div>
+  </div>
+</section>
+
 <!-- ORDER CTA -->
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
+<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
 <section class="py-20 bg-charcoal text-center">
   <h2 class="font-serif text-cream font-light mb-3" style="font-size:clamp(1.8rem,4vw,3rem)">Orders close Wednesday at 4:00 PM</h2>
   <p class="text-cream/30 text-xs font-light tracking-wider mb-10">No cancellations after deadline · Limited weekly production</p>
@@ -216,71 +252,104 @@
 
 <script src="cart.js"></script>
 <script>
-// ── MENU DATA ──
+// ── MENU DATA (from chefaleh.com) ──
 const IMGS = {
   food1:'images/food1.jpg', food2:'images/food2.png', food3:'images/food3.png',
   food4:'images/food4.png', food5:'images/food5.png', food6:'images/food6.png',
 };
-const GRAD = {
-  bread1:'linear-gradient(135deg,#EFE6D0,#DDD0B0)',
-  bread2:'linear-gradient(135deg,#E8D8B0,#D4C090)',
-  bread3:'linear-gradient(135deg,#F0E8D0,#E0D4B0)',
-  soup1:'linear-gradient(135deg,#E8D090,#C8A850)',
-  soup2:'linear-gradient(135deg,#E88860,#C86040)',
-  fish1:'linear-gradient(135deg,#90B8C8,#6090A8)',
-  fish2:'linear-gradient(135deg,#A8C8D8,#78A0B8)',
-  poultry1:'linear-gradient(135deg,#D8A850,#B88030)',
-  poultry2:'linear-gradient(135deg,#C89848,#A87828)',
-  meat1:'linear-gradient(135deg,#3A1510,#180A08)',
-  meat2:'linear-gradient(135deg,#2A1008,#100500)',
-  meat3:'linear-gradient(135deg,#4A2018,#2A1008)',
-  side1:'linear-gradient(135deg,#DED0A8,#C0B080)',
-  side2:'linear-gradient(135deg,#B8D0A0,#90B070)',
-  side3:'linear-gradient(135deg,#D8C890,#B8A870)',
-  side4:'linear-gradient(135deg,#F0C890,#D0A060)',
-};
 
 const menu = {
-  bread:[
-    {name:'Classic Challah',       price:18, badge:'Whole Loaf',     desc:'Hand-braided with organic flour, honey-glazed to a golden finish', img:IMGS.food1, tag:''},
-    {name:'Everything Challah',    price:20, badge:'Whole Loaf',     desc:'Seeded crust — sesame, poppy, onion & garlic, soft pillowy interior', img:IMGS.food2, tag:''},
-    {name:'Mini Challah Rolls',    price:24, badge:'12-Pack',        desc:'Individual braided rolls, ideal for larger Shabbat gatherings', img:IMGS.food3, tag:'Bestseller'},
+  challah:[
+    {name:'Classic Challah',         price:18,  badge:'Whole Loaf',      desc:'Hand-braided with organic flour, honey-glazed to a golden finish', img:IMGS.food1, tag:''},
+    {name:'Everything Challah',      price:20,  badge:'Whole Loaf',      desc:'Seeded crust — sesame, poppy, onion & garlic, soft pillowy interior', img:IMGS.food2, tag:''},
+    {name:'Chocolate Babka',         price:22,  badge:'Whole Loaf',      desc:'Rich dark chocolate swirl, buttery brioche dough, baked to perfection', img:IMGS.food3, tag:'Bestseller'},
+    {name:'Challah Rolls',           price:24,  badge:'12-Pack',         desc:'Individual braided rolls, ideal for larger Shabbat gatherings', img:IMGS.food4, tag:''},
+    {name:'Gluten-Free Challah',     price:26,  badge:'Whole Loaf',      desc:'GF flour blend, honey-glazed — same Shabbat spirit, no gluten', img:IMGS.food5, tag:'GF'},
   ],
   salads:[
-    {name:'Roasted Beet & Orange', price:32, badge:'9×13 Tray',     desc:'Slow-roasted beets, blood orange, pistachio & fresh herbs', img:IMGS.food4, tag:''},
-    {name:'Israeli Chopped Salad', price:28, badge:'9×13 Tray',     desc:'Finely diced cucumber, tomato, herbs — dressed with lemon & EVOO', img:IMGS.food5, tag:''},
-    {name:'Signature Hummus',      price:22, badge:'32oz Container', desc:'Stone-ground chickpeas, slow-cooked 12 hours, tahini reserve', img:IMGS.food6, tag:''},
-    {name:'Moroccan Carrots',      price:18, badge:'16oz Container', desc:'Harissa-spiced, slow-roasted with cumin, lemon & cilantro', img:IMGS.food1, tag:''},
-    {name:'Matbucha',              price:16, badge:'16oz Container', desc:'Slow-cooked tomato & roasted pepper spread, Moroccan style', img:IMGS.food2, tag:''},
-    {name:'Eggplant Salad',        price:16, badge:'16oz Container', desc:'Fire-roasted eggplant, charred garlic, lemon & EVOO — silky smooth', img:IMGS.food3, tag:''},
+    {name:'Signature Hummus',        price:22,  badge:'32oz Container',  desc:'Stone-ground chickpeas, slow-cooked 12 hours, tahini reserve, EVOO drizzle', img:IMGS.food6, tag:''},
+    {name:'Roasted Beet Salad',      price:32,  badge:'9×13 Tray',       desc:'Slow-roasted beets, blood orange, pistachio & fresh herbs', img:IMGS.food1, tag:''},
+    {name:'Israeli Chopped Salad',   price:28,  badge:'9×13 Tray',       desc:'Finely diced cucumber, tomato, herbs — dressed with lemon & EVOO', img:IMGS.food2, tag:''},
+    {name:'Moroccan Carrots',        price:18,  badge:'16oz Container',  desc:'Harissa-spiced, slow-roasted with cumin, lemon & cilantro', img:IMGS.food3, tag:''},
+    {name:'Matbucha',                price:16,  badge:'16oz Container',  desc:'Slow-cooked tomato & roasted pepper spread, Moroccan style', img:IMGS.food4, tag:''},
+    {name:'Eggplant Salad',          price:16,  badge:'16oz Container',  desc:'Fire-roasted eggplant, charred garlic, lemon & EVOO — silky smooth', img:IMGS.food5, tag:''},
+    {name:'Tabbouleh',               price:18,  badge:'16oz Container',  desc:'Fresh parsley, tomato, bulgur wheat, lemon dressing', img:IMGS.food6, tag:''},
+    {name:'Roasted Red Pepper Dip',  price:16,  badge:'16oz Container',  desc:'Charred peppers, roasted garlic, smoked paprika & EVOO', img:IMGS.food1, tag:''},
   ],
   soups:[
-    {name:'Chicken Soup',           price:38, badge:'64oz Container', desc:'Slow-simmered 6 hours with garden vegetables, celery & fresh dill', img:IMGS.food4, tag:'Classic'},
-    {name:'Roasted Butternut Bisque',price:34, badge:'64oz Container', desc:'Caramelized squash, warming spice blend, finished with avocado oil', img:IMGS.food5, tag:''},
+    {name:'Chicken Soup',            price:38,  badge:'64oz Container',  desc:'Slow-simmered 6 hours with garden vegetables, celery & fresh dill', img:IMGS.food2, tag:'Classic'},
+    {name:'Matzo Ball Soup',         price:44,  badge:'64oz Container + 6 Matzo Balls', desc:'Rich golden broth with fluffy, light-as-air matzo balls', img:IMGS.food3, tag:'Bestseller'},
+    {name:'Roasted Butternut Bisque',price:34,  badge:'64oz Container',  desc:'Caramelized squash, warming spice blend, finished with avocado oil', img:IMGS.food4, tag:''},
+    {name:'Lentil Soup',             price:32,  badge:'64oz Container',  desc:'Red lentils, cumin, turmeric, lemon — hearty and deeply flavored', img:IMGS.food5, tag:'Vegan'},
   ],
   fish:[
-    {name:'Herb-Crusted Salmon',    price:65, badge:'9×13 Tray',     desc:'Wild-caught Atlantic, Dijon herb crust, roasted lemon & capers', img:IMGS.food6, tag:''},
-    {name:'Mediterranean Sea Bass', price:72, badge:'9×13 Tray',     desc:'Whole-roasted, preserved lemon, capers, olive & tomato confit', img:IMGS.food1, tag:''},
+    {name:'Herb-Crusted Salmon',     price:65,  badge:'9×13 Tray',       desc:'Wild-caught Atlantic, Dijon herb crust, roasted lemon & capers', img:IMGS.food6, tag:''},
+    {name:'Mediterranean Sea Bass',  price:72,  badge:'9×13 Tray',       desc:'Whole-roasted, preserved lemon, capers, olive & tomato confit', img:IMGS.food1, tag:''},
+    {name:'Lemon-Dill Salmon',       price:62,  badge:'9×13 Tray',       desc:'Poached in court-bouillon, finished with fresh dill & lemon butter', img:IMGS.food2, tag:''},
+    {name:'Gefilte Fish',            price:48,  badge:'9×13 Tray',       desc:'Traditional recipe, hand-shaped, poached in savory broth with carrots', img:IMGS.food3, tag:'Traditional'},
   ],
   poultry:[
-    {name:'Braised Chicken Thighs', price:58, badge:'9×13 Tray',     desc:'Bone-in, slow-braised with caramelized onion, garlic & rich au jus', img:IMGS.food2, tag:'Bestseller'},
-    {name:'Herb-Roasted Whole Chicken',price:62,badge:'Whole Bird',   desc:'Spatchcocked, marinated 24 hours, high-heat roasted to crispy perfection', img:IMGS.food3, tag:''},
+    {name:'Braised Chicken Thighs',  price:58,  badge:'9×13 Tray',       desc:'Bone-in, slow-braised with caramelized onion, garlic & rich au jus', img:IMGS.food4, tag:'Bestseller'},
+    {name:'Herb-Roasted Whole Chicken',price:62,badge:'Whole Bird',       desc:'Spatchcocked, marinated 24 hours, high-heat roasted to crispy perfection', img:IMGS.food5, tag:''},
+    {name:'Moroccan Chicken',        price:60,  badge:'9×13 Tray',       desc:'Slow-braised with preserved lemon, green olives & ras el hanout spice blend', img:IMGS.food6, tag:''},
+    {name:'Chicken Marbella',        price:62,  badge:'9×13 Tray',       desc:'Capers, prunes, white wine & fresh herbs — a timeless classic', img:IMGS.food1, tag:''},
   ],
   meat:[
-    {name:'12-Hour Short Rib',      price:145,badge:'9×13 Tray · Serves 6–8',  desc:'Braised in red wine reduction, bone-in, fork-tender', img:IMGS.food4, tag:'Signature', dark:true},
-    {name:'Prime Brisket',          price:165,badge:'9×13 Tray · Serves 8–10', desc:'First-cut, low & slow 14 hours with natural jus', img:IMGS.food5, tag:'', dark:true},
-    {name:'Flanken Ribs',           price:98, badge:'9×13 Tray · Serves 4–6',  desc:'Cross-cut, spice-rubbed, finished with pomegranate glaze', img:IMGS.food6, tag:'', dark:true},
+    {name:'12-Hour Short Rib',       price:145, badge:'9×13 Tray · Serves 6–8',   desc:'Braised in red wine reduction, bone-in, fork-tender', img:IMGS.food2, tag:'Signature', dark:true},
+    {name:'Prime Brisket',           price:165, badge:'9×13 Tray · Serves 8–10',  desc:'First-cut, low & slow 14 hours with natural jus', img:IMGS.food3, tag:'', dark:true},
+    {name:'Flanken Ribs',            price:98,  badge:'9×13 Tray · Serves 4–6',   desc:'Cross-cut, spice-rubbed, finished with pomegranate glaze', img:IMGS.food4, tag:'', dark:true},
+    {name:'Lamb Chops',              price:120, badge:'9×13 Tray · Serves 4–6',   desc:'French-trimmed, herb & garlic marinated, seared to medium-rare perfection', img:IMGS.food5, tag:'', dark:true},
   ],
   sides:[
-    {name:'Roasted Fingerlings',    price:28, badge:'9×13 Tray', desc:'Herbs, garlic, crispy skin', img:IMGS.food1, tag:'', small:true},
-    {name:'Haricots Verts',         price:26, badge:'9×13 Tray', desc:'French green beans, toasted almond', img:IMGS.food2, tag:'', small:true},
-    {name:'Saffron Rice Pilaf',     price:24, badge:'9×13 Tray', desc:'Saffron-touched, caramelized onion', img:IMGS.food3, tag:'', small:true},
-    {name:'Glazed Rainbow Carrots', price:26, badge:'9×13 Tray', desc:'Honey-harissa glaze, fresh thyme', img:IMGS.food4, tag:'', small:true},
+    {name:'Roasted Fingerling Potatoes',price:28,badge:'9×13 Tray',     desc:'Herbs, garlic, crispy skin', img:IMGS.food6, tag:'', small:true},
+    {name:'Haricots Verts',          price:26,  badge:'9×13 Tray',       desc:'French green beans, toasted almond', img:IMGS.food1, tag:'', small:true},
+    {name:'Saffron Rice Pilaf',      price:24,  badge:'9×13 Tray',       desc:'Saffron-touched, caramelized onion', img:IMGS.food2, tag:'', small:true},
+    {name:'Glazed Rainbow Carrots',  price:26,  badge:'9×13 Tray',       desc:'Honey-harissa glaze, fresh thyme', img:IMGS.food3, tag:'', small:true},
+    {name:'Roasted Cauliflower',     price:24,  badge:'9×13 Tray',       desc:'Golden, spiced with turmeric & cumin, finished with tahini', img:IMGS.food4, tag:'', small:true},
+    {name:'Quinoa Salad',            price:28,  badge:'9×13 Tray',       desc:'Tri-color quinoa, roasted vegetables, lemon-herb vinaigrette', img:IMGS.food5, tag:'Vegan', small:true},
+    {name:'Couscous Royale',         price:26,  badge:'9×13 Tray',       desc:'Pearl couscous, roasted vegetables, harissa-spiced broth', img:IMGS.food6, tag:'', small:true},
+    {name:'Tzimmes',                 price:24,  badge:'9×13 Tray',       desc:'Sweet carrots, prunes & honey — a Shabbat classic', img:IMGS.food1, tag:'Traditional', small:true},
+  ],
+  desserts:[
+    {name:'Flourless Chocolate Cake',price:36,  badge:'Whole Cake',      desc:'Rich, fudgy, gluten-free — dusted with cocoa & powdered sugar', img:IMGS.food2, tag:'GF', small:true},
+    {name:'Rugelach Assortment',     price:28,  badge:'24-Piece Box',    desc:'Apricot jam, chocolate, cinnamon-walnut — flaky buttery pastry', img:IMGS.food3, tag:'Bestseller', small:true},
+    {name:'Honey Cake',              price:32,  badge:'Whole Cake',      desc:'Moist, spiced with cinnamon, ginger & cloves, drizzled with raw honey', img:IMGS.food4, tag:'', small:true},
+    {name:'Mandelbrot',              price:22,  badge:'24-Piece Box',    desc:'Twice-baked almond biscotti, chocolate chip & almond varieties', img:IMGS.food5, tag:'', small:true},
   ],
 };
 
+// ── MODAL STATE ──
+let modalItem = null;
+
+function openModal(item) {
+  modalItem = item;
+  document.getElementById('modal-item-name').textContent = item.name;
+  const existing = getItemInstructions(item.name);
+  document.getElementById('modal-instr-text').value = existing || '';
+  document.getElementById('instr-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('instr-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  modalItem = null;
+}
+
+function saveModal() {
+  if (!modalItem) return;
+  const text = document.getElementById('modal-instr-text').value.trim();
+  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text);
+  closeModal();
+}
+
+function getItemInstructions(name) {
+  const found = getCart().find(i => i.name === name);
+  return found ? found.instructions || '' : '';
+}
+
 // ── CARD RENDERER ──
-function makeCard(item, bg) {
+function makeCard(item) {
   const dark = item.dark;
   const imgH = item.small ? 'height:180px' : 'height:230px';
   const imgEl = item.img
@@ -299,10 +368,16 @@ function makeCard(item, bg) {
     : 'border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal';
   const cardBg     = dark ? 'background:#1F1F1F' : 'background:white';
   const qty = getItemQty(item.name);
+  const instructions = getItemInstructions(item.name);
+  const instrHint = instructions
+    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-1 truncate" title="${instructions.replace(/"/g,'&quot;')}">Note: ${instructions}</p>`
+    : '';
+
+  const itemJson = JSON.stringify(item).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
 
   return `
   <div class="mcard overflow-hidden" style="${cardBg}">
-    <div class="overflow-hidden relative" style="${imgH};${item.grad?'background:'+item.grad:''}">
+    <div class="overflow-hidden relative" style="${imgH}">
       ${imgEl}${tagEl}
     </div>
     <div class="${item.small?'p-5':'p-6'}">
@@ -311,15 +386,17 @@ function makeCard(item, bg) {
         <span class="text-[10px] ${badgeColor} px-2 py-1 tracking-wider shrink-0">${item.badge}</span>
       </div>
       <p class="${descColor} text-xs font-light mb-4 leading-relaxed">${item.desc}</p>
+      ${instrHint}
       <div class="flex items-center justify-between pt-4 border-t ${borderColor}">
         <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
         <div class="cta-row flex items-center gap-2">
           ${qty > 0 ? `
           <button onclick="deck('${item.name}',-1,${item.price},'${item.badge}')" class="w-8 h-8 border ${btnBase} transition-all text-sm leading-none">−</button>
           <span class="qty-display text-sm font-light w-5 text-center ${dark?'text-cream':'text-charcoal'}">${qty}</span>
+          <button onclick="openModal(${itemJson})" class="w-8 h-8 border ${btnBase} transition-all text-sm leading-none" title="Special instructions">✎</button>
           <button onclick="deck('${item.name}',1,${item.price},'${item.badge}')"  class="w-8 h-8 border ${btnBase} transition-all text-sm leading-none">+</button>
           ` : `
-          <button onclick="deck('${item.name}',1,${item.price},'${item.badge}')" class="px-4 py-2 text-[10px] tracking-wider uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
+          <button onclick="openModal(${itemJson})" class="px-4 py-2 text-[10px] tracking-wider uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
           `}
         </div>
       </div>
@@ -332,13 +409,19 @@ function getItemQty(name) {
   return found ? found.qty : 0;
 }
 
-function deck(name, delta, price, badge) {
+function deck(name, delta, price, badge, instructions) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   const newQty = found ? found.qty + delta : delta;
-  if (newQty <= 0) setQty(name, 0);
-  else if (found) setQty(name, newQty);
-  else addItem(name, price, badge);
+  if (newQty <= 0) {
+    setQty(name, 0);
+  } else if (found) {
+    found.qty = newQty;
+    if (instructions !== undefined) found.instructions = instructions;
+    saveCart(cart);
+  } else {
+    addItem(name, price, badge, instructions || '');
+  }
   renderAll();
 }
 
@@ -376,6 +459,7 @@ function renderDrawer() {
         <div class="flex-1 min-w-0">
           <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
           <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
+          ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <button onclick="deck('${i.name}',-1,${i.price},'${i.badge}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
@@ -389,14 +473,13 @@ function renderDrawer() {
   d('d-sub', '$'+sub.toFixed(2));
   d('d-tax', '$'+tax.toFixed(2));
   d('d-tot', '$'+tot.toFixed(2));
-  // badge
   const b = document.getElementById('cart-badge');
   if(b){ const c=getCount(); b.textContent=c; b.style.display=c>0?'flex':'none'; }
 }
 
 // ── SUBNAV ACTIVE ──
 function updateSubnav() {
-  const secs = ['bread','salads','soups','fish','poultry','meat','sides'];
+  const secs = ['challah','salads','soups','fish','poultry','meat','sides','desserts'];
   const links = document.querySelectorAll('.snav a');
   let cur = '';
   secs.forEach(id => {

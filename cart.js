@@ -10,11 +10,11 @@ function saveCart(cart) {
   refreshCartUI();
 }
 
-function addItem(name, price, badge) {
+function addItem(name, price, badge, instructions) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
-  if (found) { found.qty++; }
-  else { cart.push({ name, price: parseFloat(price), badge, qty: 1 }); }
+  if (found) { found.qty++; if (instructions !== undefined) found.instructions = instructions; }
+  else { cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '' }); }
   saveCart(cart);
 }
 

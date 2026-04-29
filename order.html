@@ -37,10 +37,10 @@
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
   <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
     <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
-    <div class="flex items-center gap-4 md:gap-8 text-[10px] md:text-xs tracking-[.1em] md:tracking-[.2em] uppercase font-light">
-      <a href="index.html" class="text-charcoal/50 hover:text-gold transition-colors">Home</a>
-      <a href="about.html" class="text-charcoal/50 hover:text-gold transition-colors">About</a>
-      <a href="menu.html"  class="text-charcoal/50 hover:text-gold transition-colors">Menu</a>
+    <div class="flex items-center gap-4 md:gap-8 text-[10px] md:text-xs tracking-[.1em] md:tracking-[.2em] uppercase font-medium">
+      <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
+      <a href="about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
+      <a href="menu.html"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
       <a href="order.html" class="text-gold">Order</a>
     </div>
   </div>
@@ -144,17 +144,35 @@
 
         <div class="gold-bar"></div>
 
-        <!-- Tip -->
+        <!-- Driver Tip -->
         <div>
-          <h2 class="font-serif text-2xl text-charcoal font-light mb-2">Add a Tip</h2>
-          <p class="text-charcoal/40 text-xs font-light mb-6">Show appreciation for your driver & chef team</p>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-1">Driver Tip</h2>
+          <p class="text-charcoal/40 text-xs font-light mb-5">Tip your delivery driver (fixed amount)</p>
           <div class="flex gap-3 flex-wrap">
-            <button class="tip-btn px-6 py-2.5 text-sm font-light tracking-wider" data-pct="0"  onclick="selectTip(this,0)">No Tip</button>
-            <button class="tip-btn px-6 py-2.5 text-sm font-light tracking-wider" data-pct="10" onclick="selectTip(this,10)">10%</button>
-            <button class="tip-btn sel px-6 py-2.5 text-sm font-light tracking-wider" data-pct="15" onclick="selectTip(this,15)">15%</button>
-            <button class="tip-btn px-6 py-2.5 text-sm font-light tracking-wider" data-pct="20" onclick="selectTip(this,20)">20%</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-driver="0"  onclick="selectDriverTip(this,0)">No Tip</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-driver="3"  onclick="selectDriverTip(this,3)">$3</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-driver="5"  onclick="selectDriverTip(this,5)">$5</button>
+            <button class="tip-btn sel px-5 py-2.5 text-sm font-light tracking-wider" data-driver="10" onclick="selectDriverTip(this,10)">$10</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-driver="15" onclick="selectDriverTip(this,15)">$15</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-driver="20" onclick="selectDriverTip(this,20)">$20</button>
           </div>
-          <p class="text-charcoal/30 text-xs font-light mt-3">Tip amount: <span id="tip-display">—</span></p>
+          <p class="text-charcoal/30 text-xs font-light mt-3">Driver tip: <span id="driver-tip-display">$10.00</span></p>
+        </div>
+
+        <div class="gold-bar"></div>
+
+        <!-- Chef Tip -->
+        <div>
+          <h2 class="font-serif text-2xl text-charcoal font-light mb-1">Chef Tip</h2>
+          <p class="text-charcoal/40 text-xs font-light mb-5">Show appreciation for the chef team (% of order)</p>
+          <div class="flex gap-3 flex-wrap">
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-pct="0"  onclick="selectChefTip(this,0)">No Tip</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-pct="10" onclick="selectChefTip(this,10)">10%</button>
+            <button class="tip-btn sel px-5 py-2.5 text-sm font-light tracking-wider" data-pct="15" onclick="selectChefTip(this,15)">15%</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-pct="20" onclick="selectChefTip(this,20)">20%</button>
+            <button class="tip-btn px-5 py-2.5 text-sm font-light tracking-wider" data-pct="25" onclick="selectChefTip(this,25)">25%</button>
+          </div>
+          <p class="text-charcoal/30 text-xs font-light mt-3">Chef tip: <span id="chef-tip-display">—</span></p>
         </div>
 
         <div class="gold-bar"></div>
@@ -210,7 +228,8 @@
               <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="s-sub">$0.00</span></div>
               <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="s-tax">$0.00</span></div>
               <div class="flex justify-between text-xs text-charcoal/50 font-light"><span id="s-zone-label">Delivery</span><span id="s-delivery">—</span></div>
-              <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tip</span><span id="s-tip">—</span></div>
+              <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Driver Tip</span><span id="s-driver-tip">—</span></div>
+              <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Chef Tip</span><span id="s-chef-tip">—</span></div>
               <div class="flex justify-between text-base text-charcoal font-medium pt-3 border-t border-charcoal/10">
                 <span class="font-serif">Total</span>
                 <span class="font-serif" id="s-total">$0.00</span>
@@ -289,7 +308,8 @@
 const TAX_RATE = 0.07;
 let deliveryFee = null;
 let deliveryLabel = '';
-let tipPct = 15; // default 15%
+let chefTipPct = 15;   // default 15% chef tip
+let driverTipAmt = 10; // default $10 driver tip
 
 // ── ZONE SELECTION ──
 function selectZone(el, fee, label) {
@@ -305,10 +325,17 @@ function selectZone(el, fee, label) {
 }
 
 // ── TIP SELECTION ──
-function selectTip(el, pct) {
-  document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('sel'));
+function selectDriverTip(el, amt) {
+  document.querySelectorAll('[data-driver]').forEach(b => b.classList.remove('sel'));
   el.classList.add('sel');
-  tipPct = pct;
+  driverTipAmt = amt;
+  renderOrderSummary();
+}
+
+function selectChefTip(el, pct) {
+  document.querySelectorAll('[data-pct]').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  chefTipPct = pct;
   renderOrderSummary();
 }
 
@@ -317,13 +344,15 @@ function renderOrderSummary() {
   const cart = getCart();
   const sub = getSubtotal();
   const tax = sub * TAX_RATE;
-  const tip = sub * (tipPct / 100);
+  const chefTip = sub * (chefTipPct / 100);
   const delivery = deliveryFee !== null ? deliveryFee : 0;
-  const total = sub + tax + tip + delivery;
+  const total = sub + tax + chefTip + driverTipAmt + delivery;
 
-  // Tip display
-  const td = document.getElementById('tip-display');
-  if (td) td.textContent = tipPct > 0 ? `$${tip.toFixed(2)} (${tipPct}%)` : 'No tip';
+  // Tip displays
+  const dtd = document.getElementById('driver-tip-display');
+  if (dtd) dtd.textContent = driverTipAmt > 0 ? `$${driverTipAmt.toFixed(2)}` : 'No tip';
+  const ctd = document.getElementById('chef-tip-display');
+  if (ctd) ctd.textContent = chefTipPct > 0 ? `$${chefTip.toFixed(2)} (${chefTipPct}%)` : 'No tip';
 
   // Items
   const si = document.getElementById('summary-items');
@@ -335,7 +364,7 @@ function renderOrderSummary() {
         <div class="flex justify-between items-start gap-2">
           <div class="flex-1 min-w-0">
             <p class="text-xs text-charcoal font-light leading-snug">${i.name}</p>
-            <p class="text-[10px] text-charcoal/30">× ${i.qty}</p>
+            <p class="text-[10px] text-charcoal/30">× ${i.qty}${i.instructions ? ' · ' + i.instructions : ''}</p>
           </div>
           <span class="text-xs font-light text-charcoal shrink-0">$${(i.price*i.qty).toFixed(2)}</span>
         </div>`).join('');
@@ -347,7 +376,8 @@ function renderOrderSummary() {
   set('s-tax', '$'+tax.toFixed(2));
   set('s-delivery', deliveryFee !== null ? '$'+delivery.toFixed(2) : '—');
   set('s-zone-label', deliveryLabel ? deliveryLabel : 'Delivery');
-  set('s-tip', tipPct > 0 ? '$'+tip.toFixed(2) : '$0.00');
+  set('s-driver-tip', driverTipAmt > 0 ? '$'+driverTipAmt.toFixed(2) : '$0.00');
+  set('s-chef-tip', chefTipPct > 0 ? '$'+chefTip.toFixed(2) : '$0.00');
   set('s-total', '$'+total.toFixed(2));
 }
 
@@ -379,21 +409,22 @@ function buildPendingSummary() {
   const cart = getCart();
   const sub = getSubtotal();
   const tax = sub * TAX_RATE;
-  const tip = sub * (tipPct / 100);
+  const chefTip = sub * (chefTipPct / 100);
   const delivery = deliveryFee || 0;
-  const total = sub + tax + tip + delivery;
+  const total = sub + tax + chefTip + driverTipAmt + delivery;
   const fn = document.getElementById('fn').value;
   const ln = document.getElementById('ln').value;
   const el = document.getElementById('pending-summary');
   if (!el) return;
   el.innerHTML = `
     <p class="text-[10px] tracking-widest text-charcoal/40 uppercase mb-4">Order Summary</p>
-    ${cart.map(i=>`<div class="flex justify-between mb-2"><span class="text-charcoal/60 font-light text-sm">${i.name} × ${i.qty}</span><span class="text-sm text-charcoal">$${(i.price*i.qty).toFixed(2)}</span></div>`).join('')}
+    ${cart.map(i=>`<div class="flex justify-between mb-2"><span class="text-charcoal/60 font-light text-sm">${i.name} × ${i.qty}${i.instructions?'<br/><span class="text-[10px] text-gold/60 italic">'+i.instructions+'</span>':''}</span><span class="text-sm text-charcoal">$${(i.price*i.qty).toFixed(2)}</span></div>`).join('')}
     <div class="border-t border-gold/20 mt-3 pt-3 space-y-1 text-xs text-charcoal/50 font-light">
       <div class="flex justify-between"><span>Subtotal</span><span>$${sub.toFixed(2)}</span></div>
       <div class="flex justify-between"><span>Tax (7%)</span><span>$${tax.toFixed(2)}</span></div>
       <div class="flex justify-between"><span>${deliveryLabel}</span><span>$${delivery.toFixed(2)}</span></div>
-      <div class="flex justify-between"><span>Tip (${tipPct}%)</span><span>$${tip.toFixed(2)}</span></div>
+      <div class="flex justify-between"><span>Driver Tip</span><span>$${driverTipAmt.toFixed(2)}</span></div>
+      <div class="flex justify-between"><span>Chef Tip (${chefTipPct}%)</span><span>$${chefTip.toFixed(2)}</span></div>
     </div>
     <div class="flex justify-between pt-3 border-t border-gold/20 mt-3">
       <span class="font-serif text-charcoal text-base">Total Due</span>
@@ -405,9 +436,6 @@ function buildPendingSummary() {
 
 document.addEventListener('DOMContentLoaded', () => {
   renderOrderSummary();
-  // Pre-select 15% tip button
-  const tip15 = document.querySelector('[data-pct="15"]');
-  if (tip15) tip15.classList.add('sel');
 });
 </script>
 </body>
