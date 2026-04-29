@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>סיכום הזמנה ותשלום — Chefaleh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6' },
+        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+      }}
+    }
+  </script>
+</head>
+<body class="bg-cream text-charcoal font-sans">
+
+<nav class="bg-cream border-b border-charcoal/10 py-4">
+  <div class="max-w-4xl mx-auto px-5 text-center">
+    <a href="index.html" class="font-serif text-xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+  </div>
+</nav>
+
+<main class="max-w-4xl mx-auto px-5 py-12">
+  <h1 class="font-serif text-4xl mb-8 text-center">סיכום הזמנה ותשלום</h1>
+  
+  <div class="bg-white p-8 shadow-sm border border-charcoal/5 mb-8">
+    <h2 class="text-xl font-bold mb-4">סיכום ההזמנה</h2>
+    <div id="checkout-items" class="space-y-4 mb-6 text-sm">
+      <!-- Items -->
+    </div>
+    <div class="border-t border-charcoal/10 pt-4 space-y-2 text-sm">
+      <div class="flex justify-between"><span>דמי משלוח</span><span>$0.00</span></div>
+      <div class="flex justify-between"><span>Tax (7%)</span><span>$0.00</span></div>
+      <div class="flex justify-between">
+        <label>טיפ לשף:</label>
+        <select class="border p-1">
+          <option>0%</option><option>5%</option><option>10%</option><option>15%</option><option>20%</option>
+        </select>
+      </div>
+      <div class="flex justify-between">
+        <label>טיפ לנהג ($):</label>
+        <input type="number" class="border p-1 w-20" placeholder="0">
+      </div>
+      <div class="flex justify-between text-2xl font-bold pt-4 text-gold border-t border-charcoal/10">
+        <span>סה״כ לתשלום</span>
+        <span>$0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white p-8 shadow-sm border border-charcoal/5 mb-8">
+    <h2 class="text-xl font-bold mb-4">פרטי הלקוח</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input type="text" placeholder="שם מלא" class="border p-3 w-full">
+      <input type="tel" placeholder="טלפון" class="border p-3 w-full">
+      <input type="email" placeholder="אימייל" class="border p-3 w-full">
+      <input type="text" placeholder="כתובת למשלוח" class="border p-3 w-full">
+      <textarea placeholder="הערות (אופציונלי)" class="border p-3 w-full md:col-span-2"></textarea>
+    </div>
+  </div>
+
+  <div class="bg-amber-50 p-6 border border-amber-200 mb-8">
+    <h3 class="font-bold mb-2">הודעה חשובה</h3>
+    <p class="text-sm">⚠️ ההזמנה תאושר רק לאחר קבלת התשלום. יש להשלים תשלום מיד לאחר שליחת ההזמנה.</p>
+  </div>
+
+  <button class="w-full bg-charcoal text-cream py-4 uppercase tracking-widest font-medium hover:bg-gold transition-colors">
+    שלח הזמנה
+  </button>
+</main>
+
+</body>
+</html>

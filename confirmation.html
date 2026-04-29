@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Confirmation — Chefaleh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6' },
+        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+      }}
+    }
+  </script>
+</head>
+<body class="bg-cream text-charcoal font-sans py-12">
+
+<main class="max-w-2xl mx-auto px-5">
+  <div class="bg-white p-10 shadow-sm border border-charcoal/5 text-center">
+    <h1 class="font-serif text-4xl mb-6">ההזמנה התקבלה</h1>
+    <p class="text-charcoal/60 mb-8">ממתינה לתשלום</p>
+
+    <div class="bg-cream-dark p-6 mb-8 text-left">
+      <div class="flex justify-between mb-2"><span>מספר הזמנה:</span><span class="font-bold">#12345</span></div>
+      <div class="flex justify-between text-2xl font-bold text-gold"><span>סה״כ לתשלום:</span><span id="final-total">$0.00</span></div>
+    </div>
+
+    <div class="text-left space-y-6">
+      <div>
+        <h3 class="font-bold mb-2">איך משלמים?</h3>
+        <p class="text-sm"><strong>Venmo:</strong> <a href="https://venmo.com/u/Avicam" class="text-gold underline">https://venmo.com/u/Avicam</a></p>
+        <p class="text-sm"><strong>Zelle:</strong> Avicam@gmail.com</p>
+      </div>
+      
+      <div class="border-t border-charcoal/10 pt-4">
+        <h3 class="font-bold mb-2">הנחיות:</h3>
+        <ul class="text-sm list-disc pl-5 space-y-1">
+          <li>יש לציין את שם המזמין בעת התשלום</li>
+          <li>ההזמנה תאושר רק לאחר קבלת התשלום בלבד</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
