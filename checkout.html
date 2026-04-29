@@ -6,279 +6,445 @@
   <title>Checkout — Chefaleh</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: { extend: {
-        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6' },
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'gold-dark':'#B8941F', 'cream-dark':'#EFEDE6', 'cream-darker':'#E5E2D8' },
         fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
       }}
     }
   </script>
   <style>
-    .card { background:#fff; border:1px solid rgba(26,26,26,.07); box-shadow:0 2px 20px rgba(26,26,26,.04); border-radius:2px; }
-    .zone-btn, .tip-btn {
-      border: 1.5px solid rgba(26,26,26,.15);
-      border-radius: 2px;
-      cursor: pointer;
-      transition: all .2s;
-      background: #fff;
-      text-align: center;
-      user-select: none;
+    * { -webkit-font-smoothing: antialiased; }
+    body { background: #F9F7F2; }
+
+    /* Decorative gold accent line */
+    .gold-line { display: inline-block; width: 60px; height: 1px; background: #D4AF37; vertical-align: middle; }
+
+    /* Cards */
+    .panel {
+      background: #FFFFFF;
+      border: 1px solid rgba(26,26,26,.06);
+      box-shadow: 0 1px 2px rgba(26,26,26,.02), 0 8px 32px rgba(26,26,26,.04);
     }
-    .zone-btn:hover, .tip-btn:hover { border-color: #D4AF37; }
-    .zone-btn.active, .tip-btn.active {
-      border-color: #D4AF37;
-      background: #D4AF37;
+
+    /* Section header */
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.625rem;
+      font-weight: 300;
+      letter-spacing: .02em;
       color: #1A1A1A;
     }
-    input, textarea {
+    .section-eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-size: .65rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: #D4AF37;
+      font-weight: 500;
+      margin-bottom: .5rem;
+    }
+
+    /* Selection buttons (Zone & Tip) */
+    .pick {
+      position: relative;
+      cursor: pointer;
+      background: #FFFFFF;
+      border: 1px solid rgba(26,26,26,.12);
+      transition: all .25s cubic-bezier(.4,0,.2,1);
+      user-select: none;
+      overflow: hidden;
+    }
+    .pick::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+      opacity: 0;
+      transition: opacity .25s;
+      z-index: 0;
+    }
+    .pick > * { position: relative; z-index: 1; }
+    .pick:hover { border-color: #D4AF37; transform: translateY(-1px); }
+    .pick.active { border-color: #D4AF37; color: #1A1A1A; }
+    .pick.active::before { opacity: 1; }
+    .pick.active .pick-label,
+    .pick.active .pick-price,
+    .pick.active .pick-sub { color: #1A1A1A; }
+
+    .pick-label { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; line-height: 1; }
+    .pick-price { font-size: .8rem; font-weight: 400; color: rgba(26,26,26,.55); margin-top: .35rem; letter-spacing: .05em; }
+    .pick-sub   { font-size: .65rem; color: rgba(26,26,26,.4); margin-top: .25rem; letter-spacing: .15em; text-transform: uppercase; }
+
+    .pick-mini { padding: 1rem .5rem; }
+    .pick-mini .pick-num { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; line-height: 1; }
+    .pick-mini .pick-suf { font-size: .55rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(26,26,26,.45); margin-top: .15rem; display: block; }
+    .pick.active .pick-suf { color: rgba(26,26,26,.65); }
+
+    /* Inputs */
+    .field {
+      width: 100%;
       background: #F9F7F2;
-      border: 1.5px solid rgba(26,26,26,.12);
-      border-radius: 2px;
+      border: 1px solid rgba(26,26,26,.1);
+      padding: .9rem 1rem;
       font-family: 'Jost', sans-serif;
       font-size: .875rem;
       font-weight: 300;
-      transition: border-color .2s;
+      color: #1A1A1A;
+      letter-spacing: .02em;
+      transition: all .2s;
       outline: none;
-      width: 100%;
-      padding: .75rem 1rem;
     }
-    input:focus, textarea:focus { border-color: #D4AF37; background: #fff; }
-    input::placeholder, textarea::placeholder { color: rgba(26,26,26,.35); }
-    .section-label {
+    .field:focus { border-color: #D4AF37; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(212,175,55,.08); }
+    .field::placeholder { color: rgba(26,26,26,.35); font-weight: 300; }
+
+    /* Item list */
+    .item-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(26,26,26,.06);
+    }
+    .item-row:last-child { border-bottom: none; }
+    .item-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: #1A1A1A; line-height: 1.3; }
+    .item-badge { font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: rgba(26,26,26,.4); margin-top: .35rem; }
+    .item-instr { font-size: .75rem; color: #B8941F; font-style: italic; margin-top: .35rem; font-weight: 300; }
+    .item-qty { font-size: .75rem; color: rgba(26,26,26,.45); letter-spacing: .1em; }
+    .item-price { font-family: 'Jost', sans-serif; font-size: .95rem; font-weight: 400; color: #1A1A1A; margin-left: 1.25rem; }
+
+    /* Summary rows */
+    .sum-row { display: flex; justify-content: space-between; align-items: baseline; padding: .65rem 0; }
+    .sum-label { font-size: .8rem; font-weight: 300; color: rgba(26,26,26,.6); letter-spacing: .03em; }
+    .sum-val { font-family: 'Jost', sans-serif; font-size: .9rem; font-weight: 400; color: #1A1A1A; }
+    .sum-divider { height: 1px; background: linear-gradient(to right, transparent, rgba(26,26,26,.15), transparent); margin: .75rem 0; }
+    .sum-total-label { font-family: 'Cormorant Garamond', serif; font-size: 1.75rem; font-weight: 300; color: #1A1A1A; }
+    .sum-total-val { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 500; color: #D4AF37; letter-spacing: -.01em; }
+
+    /* CTA */
+    .cta {
+      width: 100%;
+      background: #1A1A1A;
+      color: #F9F7F2;
+      padding: 1.15rem;
       font-family: 'Jost', sans-serif;
-      font-size: .65rem;
-      letter-spacing: .18em;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .3em;
       text-transform: uppercase;
-      color: rgba(26,26,26,.4);
-      margin-bottom: .75rem;
+      cursor: pointer;
+      transition: all .3s;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta:hover { background: #D4AF37; color: #1A1A1A; }
+    .cta:disabled { opacity: .6; cursor: wait; }
+
+    /* Notice */
+    .notice {
+      background: #FAF7EC;
+      border-left: 2px solid #D4AF37;
+      padding: 1rem 1.25rem;
+      font-size: .75rem;
+      color: rgba(26,26,26,.65);
+      font-weight: 300;
+      line-height: 1.55;
+    }
+
+    /* Sticky summary on desktop */
+    @media (min-width: 1024px) {
+      .summary-sticky { position: sticky; top: 100px; }
+    }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 3rem 1rem; }
+    .empty p { color: rgba(26,26,26,.4); font-weight: 300; }
+    .empty a { display: inline-block; margin-top: 1rem; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: #D4AF37; border-bottom: 1px solid #D4AF37; padding-bottom: 2px; }
+
+    /* Page header */
+    .hero {
+      text-align: center;
+      padding: 3rem 0 4rem;
+    }
+    .hero-eyebrow {
+      font-size: .7rem;
+      letter-spacing: .4em;
+      text-transform: uppercase;
+      color: #D4AF37;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+      font-weight: 300;
+      color: #1A1A1A;
+      letter-spacing: .01em;
+      line-height: 1.1;
+    }
+    .hero-sub {
+      font-size: .85rem;
+      color: rgba(26,26,26,.5);
+      font-weight: 300;
+      letter-spacing: .05em;
+      margin-top: 1rem;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Nav */
+    .nav-bar {
+      background: rgba(249,247,242,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(26,26,26,.06);
+    }
+    .nav-link {
+      font-family: 'Jost', sans-serif;
+      font-size: .7rem;
+      font-weight: 400;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: rgba(26,26,26,.55);
+      transition: color .2s;
+    }
+    .nav-link:hover { color: #1A1A1A; }
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      letter-spacing: .35em;
+      font-weight: 300;
+      color: #1A1A1A;
     }
   </style>
 </head>
-<body class="bg-cream text-charcoal font-sans min-h-screen">
+<body class="text-charcoal font-sans">
 
 <!-- NAV -->
-<nav class="bg-cream border-b border-charcoal/10 py-5 sticky top-0 z-10">
-  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-    <a href="menu.html" class="text-xs tracking-widest text-charcoal/40 hover:text-charcoal transition-colors uppercase font-light">← Menu</a>
-    <a href="index.html" class="font-serif text-2xl tracking-[.25em] text-charcoal font-light">CHEFALEH</a>
-    <span class="text-xs tracking-widest text-charcoal/40 uppercase font-light">Checkout</span>
+<nav class="nav-bar sticky top-0 z-30 py-5">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-3 items-center">
+    <a href="menu.html" class="nav-link justify-self-start">← Back to Menu</a>
+    <a href="index.html" class="brand justify-self-center">CHEFALEH</a>
+    <span class="nav-link justify-self-end opacity-60">Checkout</span>
   </div>
 </nav>
 
-<main class="max-w-7xl mx-auto px-6 py-12">
+<!-- HERO -->
+<section class="hero max-w-7xl mx-auto px-6">
+  <p class="hero-eyebrow"><span class="gold-line"></span> &nbsp; Final Step &nbsp; <span class="gold-line"></span></p>
+  <h1 class="hero-title">Complete Your Order</h1>
+  <p class="hero-sub">Review your selection, choose your delivery zone, and add a personal note for the chef.</p>
+</section>
 
-  <h1 class="font-serif text-5xl font-light text-center mb-2">Complete Your Order</h1>
-  <p class="text-center text-charcoal/40 text-sm font-light tracking-wider mb-12">Review your items and enter delivery details</p>
+<main class="max-w-7xl mx-auto px-6 pb-24">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-  <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-
-    <!-- LEFT: Order Details -->
-    <div class="lg:col-span-3 space-y-6">
+    <!-- LEFT: 7 cols -->
+    <div class="lg:col-span-7 space-y-6">
 
       <!-- Order Items -->
-      <div class="card p-8">
-        <p class="section-label">Your Order</p>
-        <div id="checkout-items" class="divide-y divide-charcoal/8"></div>
-        <div id="empty-cart" class="hidden py-10 text-center">
-          <p class="text-charcoal/30 font-light text-sm">Your cart is empty.</p>
-          <a href="menu.html" class="inline-block mt-4 text-xs tracking-widest uppercase text-gold hover:underline">Browse Menu</a>
+      <div class="panel p-8 md:p-10">
+        <p class="section-eyebrow">01 · Your Selection</p>
+        <h2 class="section-title mb-6">Items in Your Cart</h2>
+        <div id="checkout-items"></div>
+        <div id="empty-cart" class="empty hidden">
+          <p>Your cart is empty.</p>
+          <a href="menu.html">Browse Menu</a>
         </div>
       </div>
 
       <!-- Delivery Zone -->
-      <div class="card p-8">
-        <p class="section-label">Delivery Zone</p>
-        <div class="grid grid-cols-3 gap-3">
-          <button class="zone-btn py-5 px-3" data-zone="15" onclick="selectZone(this)">
-            <div class="font-serif text-2xl font-light mb-1">Zone 1</div>
-            <div class="text-xs text-charcoal/50 font-light tracking-wide">$15</div>
-            <div class="text-[10px] text-charcoal/35 font-light mt-1 tracking-wide">Nearby</div>
-          </button>
-          <button class="zone-btn active py-5 px-3" data-zone="30" onclick="selectZone(this)">
-            <div class="font-serif text-2xl font-light mb-1">Zone 2</div>
-            <div class="text-xs font-light tracking-wide">$30</div>
-            <div class="text-[10px] font-light mt-1 tracking-wide opacity-70">Mid-range</div>
-          </button>
-          <button class="zone-btn py-5 px-3" data-zone="60" onclick="selectZone(this)">
-            <div class="font-serif text-2xl font-light mb-1">Zone 3</div>
-            <div class="text-xs text-charcoal/50 font-light tracking-wide">$60</div>
-            <div class="text-[10px] text-charcoal/35 font-light mt-1 tracking-wide">Extended</div>
-          </button>
+      <div class="panel p-8 md:p-10">
+        <p class="section-eyebrow">02 · Delivery</p>
+        <h2 class="section-title mb-6">Choose Your Zone</h2>
+        <div class="grid grid-cols-3 gap-3 md:gap-4">
+          <div class="pick py-7 px-3 text-center" data-zone="15" onclick="selectZone(this)">
+            <div class="pick-label">Zone 1</div>
+            <div class="pick-price">$15</div>
+            <div class="pick-sub">Nearby</div>
+          </div>
+          <div class="pick active py-7 px-3 text-center" data-zone="30" onclick="selectZone(this)">
+            <div class="pick-label">Zone 2</div>
+            <div class="pick-price">$30</div>
+            <div class="pick-sub">Mid-range</div>
+          </div>
+          <div class="pick py-7 px-3 text-center" data-zone="60" onclick="selectZone(this)">
+            <div class="pick-label">Zone 3</div>
+            <div class="pick-price">$60</div>
+            <div class="pick-sub">Extended</div>
+          </div>
         </div>
       </div>
 
       <!-- Tips -->
-      <div class="card p-8">
-        <p class="section-label">Tip for the Chef</p>
-        <div class="grid grid-cols-5 gap-2 mb-6">
-          <button class="tip-btn tip-chef-btn py-4" data-val="0" onclick="selectTip('chef',this)">
-            <div class="text-sm font-light">0%</div>
-          </button>
-          <button class="tip-btn tip-chef-btn py-4" data-val="5" onclick="selectTip('chef',this)">
-            <div class="text-sm font-light">5%</div>
-          </button>
-          <button class="tip-btn tip-chef-btn py-4" data-val="10" onclick="selectTip('chef',this)">
-            <div class="text-sm font-light">10%</div>
-          </button>
-          <button class="tip-btn tip-chef-btn active py-4" data-val="15" onclick="selectTip('chef',this)">
-            <div class="text-sm font-light">15%</div>
-          </button>
-          <button class="tip-btn tip-chef-btn py-4" data-val="20" onclick="selectTip('chef',this)">
-            <div class="text-sm font-light">20%</div>
-          </button>
+      <div class="panel p-8 md:p-10">
+        <p class="section-eyebrow">03 · Gratuity</p>
+        <h2 class="section-title mb-2">Show Your Appreciation</h2>
+        <p class="text-sm text-charcoal/45 font-light mb-6">Optional — supports our chef and driver directly.</p>
+
+        <div class="mb-7">
+          <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Chef</p>
+          <div class="grid grid-cols-5 gap-2 md:gap-3">
+            <div class="pick pick-mini text-center tip-chef" data-val="0" onclick="selectTip('chef',this)"><div class="pick-num">0<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="5" onclick="selectTip('chef',this)"><div class="pick-num">5<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="10" onclick="selectTip('chef',this)"><div class="pick-num">10<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef active" data-val="15" onclick="selectTip('chef',this)"><div class="pick-num">15<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="20" onclick="selectTip('chef',this)"><div class="pick-num">20<span class="text-base">%</span></div></div>
+          </div>
         </div>
 
-        <p class="section-label">Tip for the Driver</p>
-        <div class="grid grid-cols-5 gap-2">
-          <button class="tip-btn tip-driver-btn py-4" data-val="0" onclick="selectTip('driver',this)">
-            <div class="text-sm font-light">$0</div>
-          </button>
-          <button class="tip-btn tip-driver-btn py-4" data-val="3" onclick="selectTip('driver',this)">
-            <div class="text-sm font-light">$3</div>
-          </button>
-          <button class="tip-btn tip-driver-btn active py-4" data-val="5" onclick="selectTip('driver',this)">
-            <div class="text-sm font-light">$5</div>
-          </button>
-          <button class="tip-btn tip-driver-btn py-4" data-val="8" onclick="selectTip('driver',this)">
-            <div class="text-sm font-light">$8</div>
-          </button>
-          <button class="tip-btn tip-driver-btn py-4" data-val="10" onclick="selectTip('driver',this)">
-            <div class="text-sm font-light">$10</div>
-          </button>
+        <div>
+          <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
+          <div class="grid grid-cols-5 gap-2 md:gap-3">
+            <div class="pick pick-mini text-center tip-driver" data-val="0" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>0</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="3" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>3</div></div>
+            <div class="pick pick-mini text-center tip-driver active" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>5</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>8</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="10" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>10</div></div>
+          </div>
         </div>
       </div>
 
+      <!-- Customer Details -->
+      <div class="panel p-8 md:p-10">
+        <p class="section-eyebrow">04 · Your Details</p>
+        <h2 class="section-title mb-6">Delivery Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="text" id="co-name" class="field" placeholder="Full Name *"/>
+          <input type="tel" id="co-phone" class="field" placeholder="Phone Number *"/>
+          <input type="email" id="co-email" class="field md:col-span-2" placeholder="Email Address *"/>
+          <input type="text" id="co-address" class="field md:col-span-2" placeholder="Delivery Address *"/>
+          <textarea id="co-notes" class="field md:col-span-2" rows="3" placeholder="Special instructions (optional)" style="resize:none"></textarea>
+        </div>
+      </div>
     </div>
 
-    <!-- RIGHT: Summary + Details -->
-    <div class="lg:col-span-2 space-y-6">
+    <!-- RIGHT: 5 cols — Sticky summary -->
+    <div class="lg:col-span-5">
+      <div class="summary-sticky">
+        <div class="panel p-8 md:p-10">
+          <p class="section-eyebrow">Order Summary</p>
+          <h2 class="section-title mb-6">Total</h2>
 
-      <!-- Price Summary -->
-      <div class="card p-8 sticky top-24">
-        <p class="section-label">Order Summary</p>
-        <div class="space-y-3 text-sm font-light">
-          <div class="flex justify-between text-charcoal/60">
-            <span>Subtotal</span><span id="co-sub">$0.00</span>
+          <div>
+            <div class="sum-row"><span class="sum-label">Subtotal</span><span class="sum-val" id="co-sub">$0.00</span></div>
+            <div class="sum-row"><span class="sum-label">Tax (7%)</span><span class="sum-val" id="co-tax">$0.00</span></div>
+            <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">Zone 2</span></span><span class="sum-val" id="co-delivery">$30.00</span></div>
+            <div class="sum-row"><span class="sum-label">Chef Tip <span id="co-chef-label" class="text-charcoal/35 ml-1">15%</span></span><span class="sum-val" id="co-chef-tip">$0.00</span></div>
+            <div class="sum-row"><span class="sum-label">Driver Tip</span><span class="sum-val" id="co-driver-tip">$5.00</span></div>
           </div>
-          <div class="flex justify-between text-charcoal/60">
-            <span>Tax (7%)</span><span id="co-tax">$0.00</span>
-          </div>
-          <div class="flex justify-between text-charcoal/60">
-            <span>Delivery</span><span id="co-delivery">$30.00</span>
-          </div>
-          <div class="flex justify-between text-charcoal/60">
-            <span>Chef Tip</span><span id="co-chef-tip">$0.00</span>
-          </div>
-          <div class="flex justify-between text-charcoal/60">
-            <span>Driver Tip</span><span id="co-driver-tip">$5.00</span>
-          </div>
-          <div class="flex justify-between text-lg font-medium border-t border-charcoal/10 pt-4 mt-2">
-            <span class="font-serif text-2xl font-light">Total</span>
-            <span class="font-serif text-2xl text-gold" id="co-tot">$0.00</span>
-          </div>
-        </div>
 
-        <!-- Customer Details -->
-        <div class="mt-8 space-y-3">
-          <p class="section-label">Your Details</p>
-          <input type="text" id="co-name" placeholder="Full Name" required/>
-          <input type="tel" id="co-phone" placeholder="Phone Number" required/>
-          <input type="email" id="co-email" placeholder="Email Address" required/>
-          <input type="text" id="co-address" placeholder="Delivery Address" required/>
-          <textarea id="co-notes" placeholder="Special instructions (optional)" rows="3" style="resize:none"></textarea>
-        </div>
+          <div class="sum-divider"></div>
 
-        <!-- Notice -->
-        <div class="mt-6 bg-cream-dark border border-charcoal/8 p-4 rounded-sm">
-          <p class="text-xs text-charcoal/50 font-light leading-relaxed">
-            ⚠️ Orders are confirmed only upon payment receipt. You will receive a confirmation email with payment instructions.
+          <div class="flex justify-between items-baseline pt-2 pb-6">
+            <span class="sum-total-label">Total</span>
+            <span class="sum-total-val" id="co-tot">$0.00</span>
+          </div>
+
+          <div class="notice mb-6">
+            Orders are confirmed only upon payment receipt. You will receive a confirmation email shortly with payment instructions.
+          </div>
+
+          <button id="submit-btn" class="cta" onclick="submitOrder()">Place Order</button>
+
+          <p class="text-center text-[.65rem] tracking-[.2em] uppercase text-charcoal/35 mt-4 font-light">
+            Secure · No payment taken now
           </p>
         </div>
-
-        <button id="submit-btn" onclick="submitOrder()" class="w-full mt-6 bg-charcoal text-cream py-4 uppercase tracking-[.2em] text-xs font-medium hover:bg-gold hover:text-charcoal transition-all duration-300">
-          Place Order
-        </button>
       </div>
-
     </div>
+
   </div>
 </main>
 
-<script src="cart.js"></script>
 <script>
   const CART_KEY = 'chefaleh_cart';
   let deliveryZone = 30;
   let chefTipPct = 15;
   let driverTipAmt = 5;
 
-  function getCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; }
+  function readCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+    catch { return []; }
   }
 
-  function selectZone(btn) {
-    document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    deliveryZone = parseInt(btn.dataset.zone);
+  function selectZone(el) {
+    document.querySelectorAll('.pick[data-zone]').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    deliveryZone = parseInt(el.dataset.zone, 10);
+    const zoneLabels = { 15: 'Zone 1', 30: 'Zone 2', 60: 'Zone 3' };
+    const zEl = document.getElementById('co-zone-label');
+    if (zEl) zEl.textContent = zoneLabels[deliveryZone] || '';
     updateTotals();
   }
 
-  function selectTip(type, btn) {
+  function selectTip(type, el) {
+    const cls = type === 'chef' ? 'tip-chef' : 'tip-driver';
+    document.querySelectorAll('.' + cls).forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    const val = parseInt(el.dataset.val, 10);
     if (type === 'chef') {
-      document.querySelectorAll('.tip-chef-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      chefTipPct = parseInt(btn.dataset.val);
+      chefTipPct = val;
+      const lbl = document.getElementById('co-chef-label');
+      if (lbl) lbl.textContent = val + '%';
     } else {
-      document.querySelectorAll('.tip-driver-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      driverTipAmt = parseInt(btn.dataset.val);
+      driverTipAmt = val;
     }
     updateTotals();
   }
 
   function updateTotals() {
-    const cart = getCart();
-    const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const cart = readCart();
+    const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const tax = sub * 0.07;
     const chefTip = sub * chefTipPct / 100;
     const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
 
-    const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = '$' + val.toFixed(2); };
-    set('co-sub', sub);
-    set('co-tax', tax);
-    set('co-delivery', deliveryZone);
-    set('co-chef-tip', chefTip);
-    set('co-driver-tip', driverTipAmt);
-    set('co-tot', total);
+    const fmt = n => '$' + n.toFixed(2);
+    const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
+    set('co-sub', fmt(sub));
+    set('co-tax', fmt(tax));
+    set('co-delivery', fmt(deliveryZone));
+    set('co-chef-tip', fmt(chefTip));
+    set('co-driver-tip', fmt(driverTipAmt));
+    set('co-tot', fmt(total));
   }
 
   function renderItems() {
-    const cart = getCart();
+    const cart = readCart();
     const container = document.getElementById('checkout-items');
     const empty = document.getElementById('empty-cart');
     if (!cart.length) {
       container.classList.add('hidden');
       empty.classList.remove('hidden');
+      updateTotals();
       return;
     }
     container.classList.remove('hidden');
     empty.classList.add('hidden');
     container.innerHTML = cart.map(i => `
-      <div class="flex items-center justify-between py-4">
+      <div class="item-row">
         <div class="flex-1 min-w-0 pr-4">
-          <p class="text-sm font-light text-charcoal">${i.name}</p>
-          ${i.badge ? `<p class="text-xs text-charcoal/35 font-light mt-0.5">${i.badge}</p>` : ''}
-          ${i.instructions ? `<p class="text-xs text-gold/60 font-light italic mt-0.5">${i.instructions}</p>` : ''}
+          <div class="item-name">${escapeHtml(i.name)}</div>
+          ${i.badge ? `<div class="item-badge">${escapeHtml(i.badge)}</div>` : ''}
+          ${i.instructions ? `<div class="item-instr">"${escapeHtml(i.instructions)}"</div>` : ''}
         </div>
-        <div class="flex items-center gap-4 shrink-0">
-          <span class="text-xs text-charcoal/40 font-light">×${i.qty}</span>
-          <span class="text-sm font-light w-16 text-right">$${(i.price * i.qty).toFixed(2)}</span>
+        <div class="text-right shrink-0">
+          <div class="item-price">$${(i.price * i.qty).toFixed(2)}</div>
+          <div class="item-qty mt-1">Qty ${i.qty}</div>
         </div>
       </div>
     `).join('');
     updateTotals();
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
   function submitOrder() {
@@ -286,14 +452,16 @@
     const phone = document.getElementById('co-phone').value.trim();
     const email = document.getElementById('co-email').value.trim();
     const address = document.getElementById('co-address').value.trim();
+    const notes = document.getElementById('co-notes').value.trim();
+
     if (!name || !phone || !email || !address) {
       alert('Please fill in all required fields.');
       return;
     }
-    const cart = getCart();
+    const cart = readCart();
     if (!cart.length) { alert('Your cart is empty.'); return; }
 
-    const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const tax = sub * 0.07;
     const chefTip = sub * chefTipPct / 100;
     const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
@@ -302,12 +470,14 @@
     btn.textContent = 'Placing Order...';
     btn.disabled = true;
 
+    const zoneNum = deliveryZone === 15 ? 1 : deliveryZone === 30 ? 2 : 3;
+
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name, phone, email, address,
-        zone: `Zone (${deliveryZone === 15 ? 1 : deliveryZone === 30 ? 2 : 3}) — $${deliveryZone}`,
+        zone: `Zone ${zoneNum} ($${deliveryZone})`,
         cart,
         subtotal: sub.toFixed(2),
         tax: tax.toFixed(2),
@@ -315,10 +485,9 @@
         driverTip: driverTipAmt.toFixed(2),
         chefTip: chefTip.toFixed(2),
         total: total.toFixed(2),
-        notes: document.getElementById('co-notes').value.trim()
+        notes
       })
     })
-    .then(r => r.json())
     .then(() => {
       localStorage.removeItem(CART_KEY);
       window.location.href = '/confirmation.html';
