@@ -399,10 +399,57 @@ function submitOrder() {
   if (deliveryFee === null) { alert('Please select a delivery zone.'); return; }
   if (getCart().length === 0) { alert('Your cart is empty. Please add items from the menu.'); return; }
 
-  buildPendingSummary();
-  document.getElementById('order-screen').style.display = 'none';
-  document.getElementById('pending').style.display = 'block';
-  window.scrollTo({top:0,behavior:'smooth'});
+  const btn = document.querySelector('[onclick="submitOrder()"]');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const cart = getCart();
+  const sub = getSubtotal();
+  const tax = sub * TAX_RATE;
+  const chefTip = sub * (chefTipPct / 100);
+  const delivery = deliveryFee || 0;
+  const total = sub + tax + chefTip + driverTipAmt + delivery;
+
+  const body = {
+    name: document.getElementById('fn').value + ' ' + document.getElementById('ln').value,
+    email: document.getElementById('em').value,
+    phone: document.getElementById('ph').value,
+    address: [
+      document.getElementById('addr').value,
+      document.getElementById('apt').value,
+      document.getElementById('city').value,
+      document.getElementById('state').value,
+      document.getElementById('zip').value
+    ].filter(Boolean).join(', '),
+    zone: deliveryLabel,
+    cart,
+    subtotal: sub.toFixed(2),
+    tax: tax.toFixed(2),
+    delivery: delivery.toFixed(2),
+    driverTip: driverTipAmt.toFixed(2),
+    chefTip: chefTip.toFixed(2),
+    total: total.toFixed(2),
+    notes: document.getElementById('notes').value
+  };
+
+  fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) throw new Error(data.error);
+      buildPendingSummary();
+      document.getElementById('order-screen').style.display = 'none';
+      document.getElementById('pending').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    })
+    .catch(err => {
+      alert('Failed to send order: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Submit Order';
+    });
 }
 
 function buildPendingSummary() {
