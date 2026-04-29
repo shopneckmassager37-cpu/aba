@@ -39,12 +39,18 @@
       <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
       <a href="about.html" class="text-gold">About</a>
       <a href="menu.html"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
-      <a href="order.html" class="flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">Order</a>
+      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
+        Cart
+        <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
+      </button>
     </div>
 
     <!-- Mobile -->
     <div class="flex md:hidden items-center gap-2">
-      <a href="order.html" class="bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Order</a>
+      <button onclick="openDrawer()" class="relative flex items-center bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
+        Cart
+        <span class="cart-count-badge hidden ml-1.5 w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
+      </button>
       <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
         <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
@@ -58,9 +64,30 @@
     <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
     <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">About</a>
     <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Menu</a>
-    <a href="order.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors">Order</a>
+    <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors">Cart</button>
   </div>
 </nav>
+
+<!-- CART DRAWER -->
+<div id="drawer-overlay" class="fixed inset-0 bg-charcoal/40 z-50 hidden" onclick="closeDrawer()"></div>
+<div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl transition-transform duration-350 ease-in-out translate-x-full" style="transform:translateX(100%)">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
+    <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
+    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+  </div>
+  <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
+  <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
+    <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
+    <button onclick="alert('Checkout form coming soon!')" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</button>
+  </div>
+</div>
+
+<style>
+  #drawer.open { transform: translateX(0) !important; }
+</style>
+
 
 <!-- HEADER -->
 <section class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
@@ -182,7 +209,7 @@
           <a href="index.html" class="hover:text-gold transition-colors">Home</a>
           <a href="about.html" class="hover:text-gold transition-colors">About</a>
           <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
-          <a href="order.html" class="hover:text-gold transition-colors">Order</a>
+          <button onclick="openDrawer()" class="text-left hover:text-gold transition-colors">Cart</button>
         </div>
       </div>
       <div>
@@ -224,5 +251,6 @@ function toggleMenu() {
   }
 }
 </script>
+<script src="cart.js"></script>
 </body>
 </html>

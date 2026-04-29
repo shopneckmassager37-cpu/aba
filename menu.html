@@ -94,7 +94,7 @@
       <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
       <a href="about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
       <a href="menu.html"  class="text-gold">Menu</a>
-      <a href="order.html" class="text-charcoal hover:text-gold transition-colors">Order</a>
+
       <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Cart
         <span id="cart-badge" class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
@@ -120,9 +120,30 @@
     <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
     <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">About</a>
     <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">Menu</a>
-    <a href="order.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors">Order</a>
+
   </div>
 </nav>
+
+<!-- CART DRAWER -->
+<div id="drawer-overlay" class="fixed inset-0 bg-charcoal/40 z-50 hidden" onclick="closeDrawer()"></div>
+<div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl transition-transform duration-350 ease-in-out translate-x-full" style="transform:translateX(100%)">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
+    <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
+    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+  </div>
+  <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
+  <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
+    <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
+    <button onclick="alert('Checkout form coming soon!')" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</button>
+  </div>
+</div>
+
+<style>
+  #drawer.open { transform: translateX(0) !important; }
+</style>
+
 
 <!-- MENU HEADER -->
 <div class="pt-24 pb-12 bg-charcoal text-center">
@@ -462,50 +483,7 @@ function renderAll() {
   refreshCartUI();
 }
 
-// ── DRAWER ──
-function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.remove('hidden');
-}
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.add('hidden');
-}
 
-function renderDrawer() {
-  const cart = getCart();
-  const sub = getSubtotal();
-  const tax = sub * 0.07;
-  const tot = sub + tax;
-  const el = document.getElementById('drawer-items');
-  if (!el) return;
-  if (cart.length === 0) {
-    el.innerHTML = '<p class="text-charcoal/40 text-sm font-light text-center py-8">Your cart is empty.</p>';
-  } else {
-    el.innerHTML = cart.map(i => `
-      <div class="flex items-start gap-3 py-3 border-b border-charcoal/8">
-        <div class="flex-1 min-w-0">
-          <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
-          <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
-          ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <button onclick="deck('${i.name}',-1,${i.price},'${i.badge}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
-          <span class="text-xs font-light w-4 text-center">${i.qty}</span>
-          <button onclick="deck('${i.name}',1,${i.price},'${i.badge}')"  class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal transition-all text-xs leading-none">+</button>
-        </div>
-        <span class="text-sm font-light text-charcoal w-14 text-right shrink-0">$${(i.price*i.qty).toFixed(2)}</span>
-      </div>`).join('');
-  }
-  const d = (id,v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
-  d('d-sub', '$'+sub.toFixed(2));
-  d('d-tax', '$'+tax.toFixed(2));
-  d('d-tot', '$'+tot.toFixed(2));
-  ['cart-badge','cart-badge-m'].forEach(id => {
-    const b = document.getElementById(id);
-    if(b){ const c=getCount(); b.textContent=c; b.style.display=c>0?'flex':'none'; }
-  });
-}
 
 // ── SUBNAV ACTIVE ──
 function updateSubnav() {
@@ -525,22 +503,7 @@ window.addEventListener('scroll', updateSubnav);
 
 document.addEventListener('DOMContentLoaded', () => { renderAll(); renderDrawer(); });
 
-function toggleMenu() {
-  const menu = document.getElementById('mobile-menu');
-  const h1 = document.getElementById('ham1');
-  const h2 = document.getElementById('ham2');
-  const h3 = document.getElementById('ham3');
-  const open = menu.classList.toggle('open');
-  if (open) {
-    h1.style.transform = 'translateY(6.5px) rotate(45deg)';
-    h2.style.opacity = '0';
-    h3.style.transform = 'translateY(-6.5px) rotate(-45deg)';
-  } else {
-    h1.style.transform = '';
-    h2.style.opacity = '';
-    h3.style.transform = '';
-  }
-}
+
 </script>
 </body>
 </html>
