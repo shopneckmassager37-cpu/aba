@@ -10,7 +10,7 @@
     tailwind.config = {
       theme: { extend: {
         colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
-        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+        fontFamily: { serif:[`"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
       }}
     }
   </script>
@@ -45,7 +45,7 @@
 <!-- HEADER -->
 <section class="pt-40 pb-20 bg-charcoal text-center relative overflow-hidden">
   <div class="absolute inset-0 opacity-20">
-    <img src="images/food1.jpg" alt="" class="w-full h-full object-cover"/>
+    <img src="images/food3.png" alt="" class="w-full h-full object-cover"/>
   </div>
   <div class="relative z-10">
     <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Our Story</p>
@@ -101,7 +101,7 @@
 <section id="about" class="py-24 bg-cream-dark">
   <div class="max-w-7xl mx-auto px-8">
     <div class="overflow-hidden mb-16" style="height:420px">
-      <img src="images/food2.png" alt="Chefaleh cuisine" class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"/>
+      <img src="images/food4.png" alt="Chefaleh cuisine" class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"/>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
       <div>
@@ -128,19 +128,61 @@
   </div>
 </section>
 
+<!-- MEET THE TEAM -->
+<section class="py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="overflow-hidden" style="height:420px">
+        <img src="images/chef.png" alt="Our Chef" class="w-full h-full object-cover object-center"/>
+      </div>
+      <div>
+        <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Behind the Counter</p>
+        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(2rem,4vw,3.2rem)">Crafted by<br/><em>Our Team</em></h2>
+        <div class="gold-bar-left mb-8"></div>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">Every dish is prepared by our team of experienced chefs who understand that Shabbat is more than just a meal — it's a moment to gather, celebrate, and connect without the stress of cooking.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">We bring restaurant-quality technique and farm-to-table principles to your home, ensuring that every element — from the proteins to the sides to the desserts — reflects our commitment to excellence.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Our kitchen operates with precision and passion, turning fresh ingredients into memorable meals that your family will talk about long after Shabbat ends.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="bg-charcoal border-t border-cream/5 py-16">
-  <div class="max-w-7xl mx-auto px-8 text-center">
-    <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
-    <p class="text-cream/30 text-xs font-light mb-8 max-w-xs mx-auto">Private chef–driven Shabbat & event catering. South Florida's finest kosher culinary experience.</p>
-    <div class="flex justify-center gap-8 text-xs tracking-[.2em] uppercase font-light text-cream/40 mb-12">
-      <a href="index.html" class="hover:text-gold transition-colors">Home</a>
-      <a href="about.html" class="text-gold">About</a>
-      <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
-      <a href="order.html" class="hover:text-gold transition-colors">Order</a>
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div class="md:col-span-2">
+        <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
+        <p class="text-cream/30 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat & event catering. South Florida's finest kosher culinary experience.</p>
+        <p class="text-cream/20 text-xs mt-4 font-light">(305) 985-0770</p>
+      </div>
+      <div>
+        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-5 font-light">Navigate</p>
+        <div class="flex flex-col gap-3 text-sm font-light text-cream/30">
+          <a href="index.html" class="hover:text-gold transition-colors">Home</a>
+          <a href="about.html" class="hover:text-gold transition-colors">About</a>
+          <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="order.html" class="hover:text-gold transition-colors">Order</a>
+        </div>
+      </div>
+      <div>
+        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-5 font-light">Order Info</p>
+        <div class="text-xs font-light text-cream/30 space-y-2">
+          <p>Deadline: <span class="text-gold">Wednesday 4:00 PM</span></p>
+          <p>Delivery: <span class="text-cream/50">Friday 3–5 PM</span></p>
+          <p class="mt-3 text-cream/20">1622 NE 205th Terrace<br/>Miami, FL 33179</p>
+        </div>
+      </div>
     </div>
     <div class="gold-bar mb-8"></div>
-    <p class="text-cream/20 text-[10px] uppercase tracking-widest">© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/20">
+      <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
+      <div class="flex gap-6">
+        <a href="#" class="hover:text-gold transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="#" class="hover:text-gold transition-colors">Cookie Policy</a>
+      </div>
+    </div>
   </div>
 </footer>
 
