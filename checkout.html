@@ -31,24 +31,32 @@
       <!-- Items -->
     </div>
     <div class="border-t border-charcoal/10 pt-4 space-y-2 text-sm">
-      <div class="flex justify-between"><span>Shipping</span><span>$0.00</span></div>
-      <div class="flex justify-between"><span>Tax (7%)</span><span>$0.00</span></div>
+      <div class="flex justify-between">
+        <label>Delivery Zone:</label>
+        <select id="delivery-zone" onchange="updateTotals()" class="border p-1 w-40">
+          <option value="15">Zone 1 ($15)</option>
+          <option value="30">Zone 2 ($30)</option>
+          <option value="60">Zone 3 ($60)</option>
+        </select>
+      </div>
+      <div class="flex justify-between"><span>Subtotal</span><span id="co-sub">$0.00</span></div>
+      <div class="flex justify-between"><span>Tax (7%)</span><span id="co-tax">$0.00</span></div>
       <div class="flex justify-between">
         <label>Chef Tip:</label>
-        <select class="border p-1">
-          <option>0%</option><option>5%</option><option>10%</option><option>15%</option><option>20%</option>
+        <select id="tip-chef" onchange="updateTotals()" class="border p-1">
+          <option value="0">0%</option><option value="5">5%</option><option value="10">10%</option>
+          <option value="15" selected>15%</option><option value="20">20%</option>
         </select>
       </div>
       <div class="flex justify-between">
         <label>Driver Tip ($):</label>
-        <input type="number" class="border p-1 w-20" placeholder="0">
+        <input type="number" id="tip-driver" value="5" onchange="updateTotals()" class="border p-1 w-20">
       </div>
       <div class="flex justify-between text-2xl font-bold pt-4 text-gold border-t border-charcoal/10">
         <span>Total</span>
-        <span>$0.00</span>
+        <span id="co-tot">$0.00</span>
       </div>
-    </div>
-  </div>
+    </div>  </div>
 
   <div class="bg-white p-8 shadow-sm border border-charcoal/5 mb-8">
     <h2 class="text-xl font-bold mb-4">Customer Details</h2>
