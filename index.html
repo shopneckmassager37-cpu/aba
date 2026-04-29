@@ -29,7 +29,7 @@
     @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
     .fade-up{animation:fadeUp .8s ease forwards}
     .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
-    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,26,26,.6) 0%,rgba(26,26,26,.25) 45%,rgba(26,26,26,.8) 100%)}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,26,26,.45) 0%,rgba(26,26,26,.3) 40%,rgba(26,26,26,.65) 100%)}
   </style>
 </head>
 <body>
@@ -61,20 +61,18 @@
   <img src="images/hero.jpg" alt="Shabbat Table" class="hero-img"
        onerror="this.style.display='none';this.parentElement.style.background='#1A1A1A'"/>
   <div class="hero-overlay"></div>
-  <div class="relative z-10 w-full max-w-7xl mx-auto px-8 pb-28 pt-40">
+  <div class="relative z-10 w-full max-w-7xl mx-auto px-8 pb-28 pt-40 flex flex-col items-center text-center">
     <div class="max-w-2xl fade-up">
-      <p class="text-gold text-xs tracking-[.4em] uppercase mb-6 font-light">Private Chef · Shabbat Delivery · South Florida</p>
-      <h1 class="font-serif text-cream font-light leading-[1.08] mb-6" style="font-size:clamp(2.8rem,7vw,6rem)">
-        A Better<br/>Shabbat Table<br/><em class="text-gold">Without the Work</em>
+      <p class="text-gold text-xs tracking-[.4em] uppercase mb-6 font-light" style="text-shadow:0 1px 4px rgba(0,0,0,.5)">Private Chef Experience</p>
+      <h1 class="font-serif text-cream font-semibold leading-[1.08] mb-6" style="font-size:clamp(2.8rem,7vw,5.5rem);text-shadow:0 2px 12px rgba(0,0,0,.5)">
+        Elevated Traditions,<br/><em class="font-light">Curated for Your Table</em>
       </h1>
-      <div class="gold-bar-left mb-8"></div>
-      <p class="text-cream/70 font-light text-lg leading-relaxed mb-3 max-w-xl">
-        A weekly, curated menu prepared by a private chef team and delivered fresh every Friday.
+      <p class="text-cream/90 font-light text-base leading-relaxed mb-10 max-w-lg mx-auto" style="text-shadow:0 1px 6px rgba(0,0,0,.6)">
+        Bespoke Shabbat cuisine crafted with hand-selected ingredients and small-batch precision.
       </p>
-      <p class="text-cream/40 text-sm font-light tracking-wide mb-12">Real ingredients. No shortcuts. Designed for how Shabbat should feel.</p>
-      <div class="flex flex-wrap gap-4">
-        <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">View This Week's Menu</a>
-        <a href="#how-it-works" class="border border-cream/40 text-cream px-10 py-4 text-xs tracking-[.25em] uppercase font-light hover:border-gold hover:text-gold transition-all duration-300">How It Works</a>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">View Menu →</a>
+        <a href="#how-it-works" class="text-cream text-xs tracking-[.25em] uppercase font-light py-4 hover:text-gold transition-colors duration-300" style="text-shadow:0 1px 4px rgba(0,0,0,.5)">Our Story</a>
       </div>
     </div>
   </div>
@@ -177,8 +175,8 @@
           </div>
           <div class="bg-cream-dark p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
             <p class="text-gold text-lg mb-3">✦</p>
-            <h4 class="font-serif text-charcoal text-lg font-light mb-1">ORB Certified</h4>
-            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Kosher certified. No compromises.</p>
+            <h4 class="font-serif text-charcoal text-lg font-light mb-1">Small Batch Only</h4>
+            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Limited weekly production. Every dish made to order.</p>
           </div>
         </div>
         <div class="overflow-hidden" style="height:160px">
@@ -215,7 +213,9 @@
   <div class="max-w-7xl mx-auto px-8">
     <div class="text-center mb-16">
       <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">This Week's Highlights</p>
-      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3.2rem)">Featured<br/><em>Dishes</em></h2>
+      <a href="menu.html" class="hover:opacity-70 transition-opacity">
+        <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3.2rem)">Featured<br/><em>Dishes</em></h2>
+      </a>
       <div class="gold-bar max-w-xs mx-auto my-6"></div>
       <p class="text-charcoal/50 font-light text-sm max-w-md mx-auto">Each week, our chefs curate a selection of signature dishes crafted from the finest seasonal ingredients.</p>
     </div>
