@@ -35,6 +35,54 @@
 </head>
 <body>
 
+<!-- Coming Soon Overlay -->
+<div id="coming-soon-banner" style="
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:#0A0805;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  pointer-events:all;
+  user-select:none;
+">
+  <style>
+    @keyframes cs-fade-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes cs-glow{0%,100%{text-shadow:0 0 30px rgba(212,175,55,.35)}50%{text-shadow:0 0 60px rgba(212,175,55,.7),0 0 100px rgba(212,175,55,.3)}}
+    @keyframes cs-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    @keyframes cs-steam{0%{opacity:0;transform:translateY(0) scaleX(1)}40%{opacity:.7}100%{opacity:0;transform:translateY(-30px) scaleX(1.4)}}
+    #cs-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2.2rem,7vw,5rem);font-weight:300;letter-spacing:.18em;color:#F9F7F2;animation:cs-fade-in .9s ease both,cs-glow 3.5s ease-in-out 1s infinite;text-transform:uppercase}
+    #cs-sub{font-family:'Jost',sans-serif;font-size:clamp(.75rem,2vw,1rem);letter-spacing:.35em;color:#D4AF37;text-transform:uppercase;animation:cs-fade-in .9s ease .3s both}
+    .cs-line{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);animation:cs-fade-in .9s ease .15s both}
+    .cs-pot{font-size:clamp(2.5rem,6vw,4rem);animation:cs-fade-in .9s ease .05s both}
+    .cs-steam-wrap{position:relative;height:24px;width:80px;margin:0 auto -8px}
+    .cs-steam-wrap span{position:absolute;bottom:0;width:4px;height:14px;border-radius:2px;background:#D4AF37;opacity:0}
+    .cs-steam-wrap span:nth-child(1){left:20%;animation:cs-steam 1.8s ease-in-out .2s infinite}
+    .cs-steam-wrap span:nth-child(2){left:47%;animation:cs-steam 1.8s ease-in-out .8s infinite}
+    .cs-steam-wrap span:nth-child(3){left:74%;animation:cs-steam 1.8s ease-in-out 1.4s infinite}
+  </style>
+
+  <div style="text-align:center;padding:2rem;max-width:640px;width:100%">
+    <div class="cs-steam-wrap">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="cs-pot">🍲</div>
+
+    <div style="margin:2.2rem 0 1rem">
+      <div class="cs-line" style="margin-bottom:2rem"></div>
+      <p id="cs-sub" style="margin-bottom:1.4rem">Chefaleh</p>
+      <h1 id="cs-title">We're cooking up<br>something new</h1>
+      <div class="cs-line" style="margin-top:2rem"></div>
+    </div>
+
+    <p style="font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:.2em;color:rgba(249,247,242,.35);text-transform:uppercase;animation:cs-fade-in .9s ease .6s both">
+      Stay tuned
+    </p>
+  </div>
+</div>
+
 <!-- COOKIE BANNER -->
 <div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
   <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="cookie-policy.html" class="underline hover:text-gold transition-colors">Learn more</a></p>
