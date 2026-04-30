@@ -504,17 +504,23 @@
 
   function detectZone(address) {
     const lower = address.toLowerCase();
+    console.log("Detecting zone for:", lower);
     
-    // 1. Check Zone 1 first (most specific/local)
-    // We use a manual check for "miami beach" before "miami" to avoid wrong matches
+    // Check Zone 1 first (most local)
     for (const zone of ZONE_RULES) {
       for (const k of zone.keywords) {
-        // Match as a whole phrase or word to avoid partial matches
+        // Regex for whole phrase/word match
         const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(`\\b${escaped}\\b`, 'i');
-        if (regex.test(lower)) return zone;
+        if (regex.test(lower)) {
+          console.log("Matched:", k, "->", zone.label);
+          return zone;
+        }
       }
     }
+    
+    // Fallback if no specific match found
+    console.log("No match found, defaulting to Zone 2");
     return { fee: 30, num: 2, label: 'Zone 2' };
   }
 
@@ -662,8 +668,10 @@
       resultsDiv.innerHTML = data.map(item => {
         const main = item.display_name.split(',')[0];
         const sub = item.display_name.split(',').slice(1).join(',').trim();
+        const addr = item.address || {};
+        const area = addr.city || addr.town || addr.suburb || addr.neighborhood || addr.village || '';
         return `
-          <div class="address-item" onclick="selectAddress('${item.display_name.replace(/'/g, "\\'")}', '${item.address.city || item.address.town || item.address.suburb || ''}')">
+          <div class="address-item" onclick="selectAddress('${item.display_name.replace(/'/g, "\\'")}', '${area.replace(/'/g, "\\'")}')">
             <strong>${main}</strong>
             <span>${sub}</span>
           </div>
@@ -678,7 +686,8 @@
   window.selectAddress = function(full, area) {
     addressInput.value = full;
     resultsDiv.style.display = 'none';
-    onAddressInput(full + ' ' + area);
+    // Use the specific area (city/suburb) for better detection, but fall back to full string
+    onAddressInput(area + ' | ' + full);
   };
 
   function escapeHtml(s) {
