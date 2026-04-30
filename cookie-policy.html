@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cookie Policy — Chefaleh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
+        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+      }}
+    }
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
+    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
+    #mobile-menu{display:none}
+    #mobile-menu.open{display:flex}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:#F9F7F2}
+    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+    <a href="index.html" class="font-serif text-xl md:text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-medium">
+      <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
+      <a href="about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
+      <a href="menu.html"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
+    </div>
+    <div class="flex md:hidden">
+      <button onclick="toggleMenu()" class="flex flex-col gap-[5px] p-2">
+        <span id="ham1" class="block w-5 h-px bg-charcoal transition-all duration-300"></span>
+        <span id="ham2" class="block w-5 h-px bg-charcoal transition-all duration-300"></span>
+        <span id="ham3" class="block w-5 h-px bg-charcoal transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-menu" class="flex-col bg-cream border-t border-charcoal/10 px-5 pb-5 pt-3 text-xs tracking-[.2em] uppercase font-medium gap-4">
+    <a href="index.html" class="text-charcoal hover:text-gold transition-colors py-2 block">Home</a>
+    <a href="about.html" class="text-charcoal hover:text-gold transition-colors py-2 block">About</a>
+    <a href="menu.html"  class="text-charcoal hover:text-gold transition-colors py-2 block">Menu</a>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<main class="pt-28 pb-24 max-w-3xl mx-auto px-6 md:px-8">
+  <p class="text-xs tracking-[.25em] uppercase text-gold font-light mb-4">Legal</p>
+  <h1 class="font-serif font-light text-charcoal mb-3" style="font-size:clamp(2rem,5vw,3.5rem)">Cookie Policy</h1>
+  <p class="text-xs font-light text-charcoal/40 tracking-wider mb-10">Last updated: April 2026</p>
+  <div class="gold-bar mb-12"></div>
+
+  <div class="space-y-10 text-sm font-light text-charcoal/70 leading-relaxed">
+
+    <section>
+      <h2 class="font-serif text-charcoal font-light text-2xl mb-3">What Are Cookies?</h2>
+      <p>Cookies are small text files placed on your device when you visit a website. They allow the site to remember your actions and preferences over a period of time, so you don't have to re-enter them whenever you come back or browse different pages.</p>
+    </section>
+
+    <section>
+      <h2 class="font-serif text-charcoal font-light text-2xl mb-3">How We Use Cookies</h2>
+      <p class="mb-4">Chefaleh uses cookies for the following purposes:</p>
+
+      <div class="space-y-6">
+        <div class="border-l-2 border-gold pl-5">
+          <p class="text-charcoal font-medium text-xs tracking-[.15em] uppercase mb-1">Essential Cookies</p>
+          <p>These cookies are necessary for the website to function and cannot be switched off. They are used to remember your cart contents and session state as you navigate the site.</p>
+        </div>
+        <div class="border-l-2 border-charcoal/20 pl-5">
+          <p class="text-charcoal font-medium text-xs tracking-[.15em] uppercase mb-1">Functional Cookies</p>
+          <p>These cookies allow the site to remember choices you make (such as your selected delivery zone) and provide enhanced, personalized features.</p>
+        </div>
+        <div class="border-l-2 border-charcoal/20 pl-5">
+          <p class="text-charcoal font-medium text-xs tracking-[.15em] uppercase mb-1">Analytics Cookies</p>
+          <p>We may use analytics cookies to understand how visitors interact with our website — which pages are visited most, how long visitors stay, and where they came from. This data is aggregated and anonymous.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="font-serif text-charcoal font-light text-2xl mb-3">Managing Cookies</h2>
+      <p class="mb-3">You can control and manage cookies through your browser settings. Most browsers allow you to:</p>
+      <ul class="list-none space-y-2 pl-4">
+        <li class="flex gap-2"><span class="text-gold mt-1">—</span> View what cookies are stored and delete them individually</li>
+        <li class="flex gap-2"><span class="text-gold mt-1">—</span> Block third-party cookies</li>
+        <li class="flex gap-2"><span class="text-gold mt-1">—</span> Block all cookies from specific sites</li>
+        <li class="flex gap-2"><span class="text-gold mt-1">—</span> Block all cookies from being set</li>
+      </ul>
+      <p class="mt-4">Please note that disabling essential cookies will affect the functionality of the Chefaleh website, including your ability to add items to your cart and complete an order.</p>
+    </section>
+
+    <section>
+      <h2 class="font-serif text-charcoal font-light text-2xl mb-3">Third-Party Cookies</h2>
+      <p>We may use third-party services (such as payment processors and analytics providers) that set their own cookies. These parties have their own privacy and cookie policies, and we encourage you to review them. We do not control these third-party cookies.</p>
+    </section>
+
+    <section>
+      <h2 class="font-serif text-charcoal font-light text-2xl mb-3">Changes to This Policy</h2>
+      <p>We may update this Cookie Policy from time to time. Any changes will be posted on this page with a revised date. Continued use of the site after such changes constitutes your acceptance of the updated policy.</p>
+    </section>
+
+    <section>
+      <h2 class="font-serif text-charcoal font-light text-2xl mb-3">Contact</h2>
+      <p>If you have any questions about our use of cookies, please contact us at <a href="mailto:chefaleh@gmail.com" class="text-gold hover:underline transition-colors">chefaleh@gmail.com</a>.</p>
+    </section>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-charcoal border-t border-cream/5 py-12">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="gold-bar mb-6"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/20">
+      <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
+      <div class="flex gap-4 md:gap-6">
+        <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy Policy</a>
+        <a href="terms-of-use.html" class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="cookie-policy.html" class="text-gold transition-colors">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const h1 = document.getElementById('ham1');
+  const h2 = document.getElementById('ham2');
+  const h3 = document.getElementById('ham3');
+  const open = menu.classList.toggle('open');
+  if (open) {
+    h1.style.transform = 'translateY(6.5px) rotate(45deg)';
+    h2.style.opacity = '0';
+    h3.style.transform = 'translateY(-6.5px) rotate(-45deg)';
+  } else {
+    h1.style.transform = '';
+    h2.style.opacity = '';
+    h3.style.transform = '';
+  }
+}
+</script>
+</body>
+</html>
