@@ -488,15 +488,32 @@
 
   // Zone detection: keyword → fee
   const ZONE_RULES = [
-    { fee: 15, num: 1, label: 'Zone 1', keywords: ['miami beach', 'bal harbour', 'surfside', 'aventura', 'hallandale', 'hollywood'] },
-    { fee: 30, num: 2, label: 'Zone 2', keywords: ['miami', 'coral gables', 'coconut grove', 'brickell', 'downtown', 'wynwood', 'doral', 'hialeah', 'pembroke pines', 'miramar'] },
-    { fee: 60, num: 3, label: 'Zone 3', keywords: ['fort lauderdale', 'boca raton', 'delray', 'pompano', 'weston', 'plantation', 'davie', 'sunrise', 'tamarac'] },
+    { 
+      fee: 15, num: 1, label: 'Zone 1', 
+      keywords: ['miami beach', 'bal harbour', 'surfside', 'aventura', 'hallandale', 'hollywood', 'sunny isles', 'bay harbor', 'north bay village', 'golden beach'] 
+    },
+    { 
+      fee: 30, num: 2, label: 'Zone 2', 
+      keywords: ['miami', 'coral gables', 'coconut grove', 'brickell', 'downtown', 'wynwood', 'doral', 'hialeah', 'pembroke pines', 'miramar', 'north miami', 'miami springs', 'edgewater', 'midtown'] 
+    },
+    { 
+      fee: 60, num: 3, label: 'Zone 3', 
+      keywords: ['fort lauderdale', 'boca raton', 'delray', 'pompano', 'weston', 'plantation', 'davie', 'sunrise', 'tamarac', 'coral springs', 'deerfield beach'] 
+    },
   ];
 
   function detectZone(address) {
     const lower = address.toLowerCase();
+    
+    // 1. Check Zone 1 first (most specific/local)
+    // We use a manual check for "miami beach" before "miami" to avoid wrong matches
     for (const zone of ZONE_RULES) {
-      if (zone.keywords.some(k => lower.includes(k))) return zone;
+      for (const k of zone.keywords) {
+        // Match as a whole phrase or word to avoid partial matches
+        const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+        if (regex.test(lower)) return zone;
+      }
     }
     return { fee: 30, num: 2, label: 'Zone 2' };
   }
