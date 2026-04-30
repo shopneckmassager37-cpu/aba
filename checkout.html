@@ -273,7 +273,7 @@
   <div class="bg-cream max-w-md w-full p-10 text-center">
     <p class="text-gold text-xs tracking-[.3em] uppercase mb-4 font-light">Orders Closed</p>
     <h2 class="font-serif text-charcoal text-3xl font-light mb-4">The kitchen is resting</h2>
-    <p class="text-charcoal/50 text-sm font-light leading-relaxed mb-6">Order window closes <strong class="text-charcoal">Wednesday at 3:00 PM Miami time</strong>.<br>Come back next week to place your order.</p>
+    <p class="text-charcoal/50 text-sm font-light leading-relaxed mb-6">Order window closes <strong class="text-charcoal">Wednesday at 5:00 PM Miami time</strong>.<br>Come back next week to place your order.</p>
     <a href="menu.html" class="inline-block bg-charcoal text-cream px-8 py-3 text-xs tracking-widest uppercase font-medium hover:bg-gold hover:text-charcoal transition-all">Back to Menu</a>
   </div>
 </div>
@@ -412,27 +412,24 @@
   let driverTipPct = 8;       // percentage-based driver tip
   let driverTipFixed = null;  // dollar amount when driver Custom is used
 
-  // ── DEADLINE: Wednesday 3:00 PM America/New_York (Miami) ──
+  // ── DEADLINE: Wednesday 5:00 PM America/New_York (Miami) ──
   function getDeadlineInfo() {
     const now = new Date();
-    // Get current Miami time
     const miamiStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
     const miami = new Date(miamiStr);
     const day = miami.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
     const hour = miami.getHours();
     const min = miami.getMinutes();
 
-    // Orders open: Wednesday after 3PM → next Wednesday 3PM
-    // Closed if: Wed >= 3PM, or Thu, Fri, Sat, Sun (before Sat midnight), Mon (too late)
-    // Open window: Wed 00:00 – Wed 14:59 (before 3PM), or Mon/Tue any time
-    const pastDeadline = (day === 3 && (hour > 15 || (hour === 15 && min >= 0))) ||
+    // Closed: Wed >= 5PM, Thu, Fri, Sat, Sun
+    const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) ||
                          day === 4 || day === 5 || day === 6;
 
-    // Find next Wednesday 3PM
+    // Find next Wednesday 5PM
     const daysUntilWed = (3 - day + 7) % 7 || 7;
     const nextWed = new Date(miami);
     nextWed.setDate(miami.getDate() + (pastDeadline && day === 3 ? 7 : daysUntilWed));
-    nextWed.setHours(15, 0, 0, 0);
+    nextWed.setHours(17, 0, 0, 0);
 
     const diff = nextWed - miami;
     const daysLeft = Math.floor(diff / 86400000);
@@ -455,7 +452,7 @@
       const parts = [];
       if (info.daysLeft > 0) parts.push(info.daysLeft + 'd');
       parts.push(info.hoursLeft + 'h ' + info.minsLeft + 'm');
-      banner.textContent = '⏰ Order window closes Wednesday 3:00 PM Miami time — ' + parts.join(' ') + ' remaining';
+      banner.textContent = '⏰ Order window closes Wednesday 5:00 PM Miami time — ' + parts.join(' ') + ' remaining';
     }
   }
 
