@@ -276,12 +276,34 @@
       border-top: 1px solid rgba(26,26,26,.05);
       cursor: pointer;
     }
-    .pac-item:hover { background-color: #EFEDE6; }
-    .pac-item-query { font-size: 14px; color: #1A1A1A; }
     .pac-matched { color: #D4AF37; }
-    .pac-container { z-index: 9999 !important; }
+    /* Nominatim Autocomplete dropdown styling */
+    .address-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid rgba(26,26,26,.12);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      z-index: 1000;
+      margin-top: 4px;
+      max-height: 240px;
+      overflow-y: auto;
+      display: none;
+    }
+    .address-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(26,26,26,0.04);
+      transition: background 0.2s;
+    }
+    .address-item:last-child { border-bottom: none; }
+    .address-item:hover { background: #F9F7F2; }
+    .address-item strong { color: #D4AF37; display: block; font-weight: 500; }
+    .address-item span { color: rgba(26,26,26,0.5); font-size: 0.75rem; }
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt6A1soXtJ4ZdqRGYCP0o80wmDSvGKYJE&libraries=places&callback=initAutocomplete" async defer></script>
 </head>
 <body class="text-charcoal font-sans">
 
@@ -369,8 +391,9 @@
           <input type="tel" id="co-phone" class="field" placeholder="Phone Number *"/>
           <input type="email" id="co-email" class="field md:col-span-2" placeholder="Email Address *"/>
           <div class="md:col-span-2 relative">
-            <input type="text" id="co-address" class="field" placeholder="Delivery Address *" style="padding-right:160px"/>
+            <input type="text" id="co-address" class="field" placeholder="Delivery Address *" style="padding-right:160px" autocomplete="off"/>
             <span id="zone-badge" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#888;pointer-events:none">Detecting zone…</span>
+            <div id="address-results" class="address-results"></div>
           </div>
           <textarea id="co-notes" class="field md:col-span-2" rows="3" placeholder="Special instructions (optional)" style="resize:none"></textarea>
         </div>
@@ -585,50 +608,61 @@
     updateTotals();
   }
 
-  function onAddressInput(val) {
-    const badge = document.getElementById('zone-badge');
-    if (!val || !val.trim()) {
-      if (badge) badge.textContent = 'Detecting zone…';
+  // ── NOMINATIM (OSM) AUTOCOMPLETE ──
+  let searchTimeout;
+  const addressInput = document.getElementById('co-address');
+  const resultsDiv = document.getElementById('address-results');
+
+  addressInput.addEventListener('input', (e) => {
+    const val = e.target.value;
+    clearTimeout(searchTimeout);
+    if (val.length < 3) {
+      resultsDiv.style.display = 'none';
       return;
     }
-    const zone = detectZone(val);
-    deliveryZone = zone.fee;
-    deliveryZoneNum = zone.num;
-    if (badge) badge.textContent = zone.label + ' · $' + zone.fee;
-    updateTotals();
-  }
+    searchTimeout = setTimeout(() => fetchAddresses(val), 400);
+  });
 
-  function initAutocomplete() {
-    const input = document.getElementById('co-address');
-    if (!input) {
-      // If the DOM isn't ready, try again in a moment
-      setTimeout(initAutocomplete, 100);
-      return;
+  // Close results on click outside
+  document.addEventListener('click', (e) => {
+    if (!addressInput.contains(e.target) && !resultsDiv.contains(e.target)) {
+      resultsDiv.style.display = 'none';
     }
-    
-    const autocomplete = new google.maps.places.Autocomplete(input, {
-      componentRestrictions: { country: 'us' },
-      fields: ['address_components', 'formatted_address', 'geometry'],
-      types: ['address']
-    });
+  });
 
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (!place.formatted_address) return;
+  async function fetchAddresses(query) {
+    try {
+      // Focused on South Florida/Miami for better results
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&viewbox=-80.60,26.40,-80.00,25.60&bounded=1&addressdetails=1&limit=5`;
+      const res = await fetch(url, { headers: { 'Accept-Language': 'en-US' } });
+      const data = await res.json();
       
-      // Extract city/neighborhood for zone detection
-      let searchStr = place.formatted_address;
-      if (place.address_components) {
-        place.address_components.forEach(comp => {
-          if (comp.types.includes('locality') || comp.types.includes('neighborhood') || comp.types.includes('sublocality')) {
-            searchStr += ' ' + comp.long_name;
-          }
-        });
+      if (!data.length) {
+        resultsDiv.style.display = 'none';
+        return;
       }
-      
-      onAddressInput(searchStr);
-    });
+
+      resultsDiv.innerHTML = data.map(item => {
+        const main = item.display_name.split(',')[0];
+        const sub = item.display_name.split(',').slice(1).join(',').trim();
+        return `
+          <div class="address-item" onclick="selectAddress('${item.display_name.replace(/'/g, "\\'")}', '${item.address.city || item.address.town || item.address.suburb || ''}')">
+            <strong>${main}</strong>
+            <span>${sub}</span>
+          </div>
+        `;
+      }).join('');
+      resultsDiv.style.display = 'block';
+    } catch (err) {
+      console.error("Search error:", err);
+    }
   }
+
+  window.selectAddress = function(full, area) {
+    addressInput.value = full;
+    resultsDiv.style.display = 'none';
+    onAddressInput(full + ' ' + area);
+  };
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
