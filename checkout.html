@@ -165,6 +165,46 @@
     .empty p { color: rgba(26,26,26,.4); font-weight: 300; }
     .empty a { display: inline-block; margin-top: 1rem; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: #D4AF37; border-bottom: 1px solid #D4AF37; padding-bottom: 2px; }
 
+    /* Deadline banner */
+    .deadline-banner {
+      background: #1A1A1A;
+      color: #D4AF37;
+      text-align: center;
+      padding: .6rem 1rem;
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .deadline-banner.closed { background: #7f1d1d; color: #fca5a5; }
+
+    /* Inline custom tip */
+    .custom-tip-row { display:none; align-items:center; gap:8px; margin-top:10px; }
+    .custom-tip-row.show { display:flex; }
+    .custom-tip-input {
+      width: 100px;
+      border: 1px solid rgba(26,26,26,.15);
+      padding: .45rem .7rem;
+      font-family: 'Jost', sans-serif;
+      font-size: .85rem;
+      outline: none;
+      background: #F9F7F2;
+    }
+    .custom-tip-input:focus { border-color: #D4AF37; }
+
+    /* Mobile improvements */
+    @media (max-width: 640px) {
+      .panel { padding: 1.5rem !important; }
+      .hero { padding: 1.5rem 0 2rem; }
+      .hero-title { font-size: 2rem; }
+      main { padding-left: 1rem; padding-right: 1rem; }
+      .pick-mini { padding: .75rem .35rem; }
+      .pick-mini .pick-num { font-size: 1.1rem; }
+      .sum-total-label { font-size: 1.3rem; }
+      .sum-total-val { font-size: 1.5rem; }
+      .item-name { font-size: 1rem; }
+    }
+
     /* Page header */
     .hero {
       text-align: center;
@@ -225,6 +265,19 @@
 </head>
 <body class="text-charcoal font-sans">
 
+<!-- DEADLINE BANNER -->
+<div id="deadline-banner" class="deadline-banner"></div>
+
+<!-- CLOSED OVERLAY -->
+<div id="closed-overlay" class="hidden fixed inset-0 z-[200] bg-charcoal/90 flex items-center justify-center px-4">
+  <div class="bg-cream max-w-md w-full p-10 text-center">
+    <p class="text-gold text-xs tracking-[.3em] uppercase mb-4 font-light">Orders Closed</p>
+    <h2 class="font-serif text-charcoal text-3xl font-light mb-4">The kitchen is resting</h2>
+    <p class="text-charcoal/50 text-sm font-light leading-relaxed mb-6">Order window closes <strong class="text-charcoal">Wednesday at 3:00 PM Miami time</strong>.<br>Come back next week to place your order.</p>
+    <a href="menu.html" class="inline-block bg-charcoal text-cream px-8 py-3 text-xs tracking-widest uppercase font-medium hover:bg-gold hover:text-charcoal transition-all">Back to Menu</a>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav class="nav-bar sticky top-0 z-30 py-5">
   <div class="max-w-7xl mx-auto px-6 grid grid-cols-3 items-center">
@@ -266,23 +319,31 @@
 
         <div class="mb-7">
           <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Chef</p>
-          <div id="chef-tip-grid" class="grid grid-cols-5 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-chef" data-val="custom" onclick="selectTip('chef',this)"><div class="pick-num" style="font-size:.9rem">Custom</div></div>
-            <div class="pick pick-mini text-center tip-chef" data-val="5" onclick="selectTip('chef',this)"><div class="pick-num">5<span class="text-base">%</span></div></div>
+          <div id="chef-tip-grid" class="grid grid-cols-4 gap-2 md:gap-3">
             <div class="pick pick-mini text-center tip-chef" data-val="10" onclick="selectTip('chef',this)"><div class="pick-num">10<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef active" data-val="15" onclick="selectTip('chef',this)"><div class="pick-num">15<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef" data-val="20" onclick="selectTip('chef',this)"><div class="pick-num">20<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="custom" onclick="selectTip('chef',this)"><div class="pick-num" style="font-size:.85rem">Custom</div></div>
+          </div>
+          <div id="chef-custom-row" class="custom-tip-row">
+            <span class="text-sm text-charcoal/50">$</span>
+            <input id="chef-custom-input" type="number" min="0" step="1" placeholder="0" class="custom-tip-input" oninput="onChefCustomInput(this.value)"/>
+            <span class="text-xs text-charcoal/40 font-light">dollar amount</span>
           </div>
         </div>
 
         <div>
           <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
-          <div id="driver-tip-grid" class="grid grid-cols-5 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-driver" data-val="custom" onclick="selectTip('driver',this)"><div class="pick-num" style="font-size:.9rem">Custom</div></div>
+          <div id="driver-tip-grid" class="grid grid-cols-4 gap-2 md:gap-3">
             <div class="pick pick-mini text-center tip-driver" data-val="3" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>3</div></div>
             <div class="pick pick-mini text-center tip-driver active" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>5</div></div>
-            <div class="pick pick-mini text-center tip-driver" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>8</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="10" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>10</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="custom" onclick="selectTip('driver',this)"><div class="pick-num" style="font-size:.85rem">Custom</div></div>
+          </div>
+          <div id="driver-custom-row" class="custom-tip-row">
+            <span class="text-sm text-charcoal/50">$</span>
+            <input id="driver-custom-input" type="number" min="0" step="1" placeholder="0" class="custom-tip-input" oninput="onDriverCustomInput(this.value)"/>
+            <span class="text-xs text-charcoal/40 font-light">dollar amount</span>
           </div>
         </div>
       </div>
@@ -347,9 +408,55 @@
   let deliveryZone = 30;
   let deliveryZoneNum = 2;
   let chefTipPct = 15;
-  let chefTipCustom = false;
+  let chefTipFixed = null;   // dollar amount when Custom is used
   let driverTipAmt = 5;
-  let driverTipCustom = false;
+
+  // ── DEADLINE: Wednesday 3:00 PM America/New_York (Miami) ──
+  function getDeadlineInfo() {
+    const now = new Date();
+    // Get current Miami time
+    const miamiStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
+    const miami = new Date(miamiStr);
+    const day = miami.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+    const hour = miami.getHours();
+    const min = miami.getMinutes();
+
+    // Orders open: Wednesday after 3PM → next Wednesday 3PM
+    // Closed if: Wed >= 3PM, or Thu, Fri, Sat, Sun (before Sat midnight), Mon (too late)
+    // Open window: Wed 00:00 – Wed 14:59 (before 3PM), or Mon/Tue any time
+    const pastDeadline = (day === 3 && (hour > 15 || (hour === 15 && min >= 0))) ||
+                         day === 4 || day === 5 || day === 6;
+
+    // Find next Wednesday 3PM
+    const daysUntilWed = (3 - day + 7) % 7 || 7;
+    const nextWed = new Date(miami);
+    nextWed.setDate(miami.getDate() + (pastDeadline && day === 3 ? 7 : daysUntilWed));
+    nextWed.setHours(15, 0, 0, 0);
+
+    const diff = nextWed - miami;
+    const daysLeft = Math.floor(diff / 86400000);
+    const hoursLeft = Math.floor((diff % 86400000) / 3600000);
+    const minsLeft = Math.floor((diff % 3600000) / 60000);
+
+    return { pastDeadline, daysLeft, hoursLeft, minsLeft };
+  }
+
+  function checkDeadline() {
+    const info = getDeadlineInfo();
+    const banner = document.getElementById('deadline-banner');
+    if (info.pastDeadline) {
+      banner.textContent = '⛔ Orders are currently closed — next window opens Monday';
+      banner.classList.add('closed');
+      document.getElementById('closed-overlay').classList.remove('hidden');
+      const btn = document.getElementById('submit-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Orders Closed'; btn.style.opacity = '.5'; btn.style.cursor = 'not-allowed'; }
+    } else {
+      const parts = [];
+      if (info.daysLeft > 0) parts.push(info.daysLeft + 'd');
+      parts.push(info.hoursLeft + 'h ' + info.minsLeft + 'm');
+      banner.textContent = '⏰ Order window closes Wednesday 3:00 PM Miami time — ' + parts.join(' ') + ' remaining';
+    }
+  }
 
   // Zone detection: keyword → fee
   const ZONE_RULES = [
@@ -363,7 +470,7 @@
     for (const zone of ZONE_RULES) {
       if (zone.keywords.some(k => lower.includes(k))) return zone;
     }
-    return { fee: 30, num: 2, label: 'Zone 2' }; // default
+    return { fee: 30, num: 2, label: 'Zone 2' };
   }
 
   function readCart() {
@@ -378,34 +485,40 @@
     const raw = el.dataset.val;
 
     if (type === 'chef') {
+      const customRow = document.getElementById('chef-custom-row');
       if (raw === 'custom') {
-        chefTipCustom = true;
-        const input = prompt('Enter custom chef tip percentage (e.g. 12):');
-        const parsed = parseFloat(input);
-        chefTipPct = (!input || isNaN(parsed) || parsed < 0) ? 0 : parsed;
-        el.querySelector('.pick-num').textContent = chefTipPct + '%';
-        const lbl = document.getElementById('co-chef-label');
-        if (lbl) lbl.textContent = chefTipPct + '%';
+        customRow.classList.add('show');
+        chefTipFixed = parseFloat(document.getElementById('chef-custom-input').value) || 0;
+        chefTipPct = 0;
       } else {
-        chefTipCustom = false;
+        customRow.classList.remove('show');
+        chefTipFixed = null;
         chefTipPct = parseInt(raw, 10);
-        el.querySelector('.pick-num').innerHTML = raw + '<span class="text-base">%</span>';
         const lbl = document.getElementById('co-chef-label');
         if (lbl) lbl.textContent = raw + '%';
       }
     } else {
+      const customRow = document.getElementById('driver-custom-row');
       if (raw === 'custom') {
-        driverTipCustom = true;
-        const input = prompt('Enter custom driver tip amount in $ (e.g. 7):');
-        const parsed = parseFloat(input);
-        driverTipAmt = (!input || isNaN(parsed) || parsed < 0) ? 0 : parsed;
-        el.querySelector('.pick-num').textContent = '$' + driverTipAmt;
+        customRow.classList.add('show');
+        driverTipAmt = parseFloat(document.getElementById('driver-custom-input').value) || 0;
       } else {
-        driverTipCustom = false;
+        customRow.classList.remove('show');
         driverTipAmt = parseInt(raw, 10);
-        el.querySelector('.pick-num').innerHTML = '<span class="text-base">$</span>' + raw;
       }
     }
+    updateTotals();
+  }
+
+  function onChefCustomInput(val) {
+    chefTipFixed = parseFloat(val) || 0;
+    const lbl = document.getElementById('co-chef-label');
+    if (lbl) lbl.textContent = '$' + chefTipFixed.toFixed(2);
+    updateTotals();
+  }
+
+  function onDriverCustomInput(val) {
+    driverTipAmt = parseFloat(val) || 0;
     updateTotals();
   }
 
@@ -413,7 +526,7 @@
     const cart = readCart();
     const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const tax = sub * 0.07;
-    const chefTip = sub * chefTipPct / 100;
+    const chefTip = chefTipFixed !== null ? chefTipFixed : sub * chefTipPct / 100;
     const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
 
     const fmt = n => '$' + n.toFixed(2);
@@ -426,6 +539,9 @@
     set('co-tot', fmt(total));
     const zEl = document.getElementById('co-zone-label');
     if (zEl) zEl.textContent = `Zone ${deliveryZoneNum}`;
+    const chefLbl = document.getElementById('co-chef-label');
+    if (chefLbl && chefTipFixed === null) chefLbl.textContent = chefTipPct + '%';
+    if (chefLbl && chefTipFixed !== null) chefLbl.textContent = '$' + chefTip.toFixed(2);
   }
 
   function renderItems() {
@@ -474,6 +590,7 @@
   }
 
   function submitOrder() {
+    if (getDeadlineInfo().pastDeadline) { alert('Sorry, the order window is closed.'); return; }
     const name = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
     const email = document.getElementById('co-email').value.trim();
@@ -489,7 +606,7 @@
 
     const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const tax = sub * 0.07;
-    const chefTip = sub * chefTipPct / 100;
+    const chefTip = chefTipFixed !== null ? chefTipFixed : sub * chefTipPct / 100;
     const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
 
     const btn = document.getElementById('submit-btn');
@@ -523,9 +640,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    checkDeadline();
+    setInterval(checkDeadline, 60000); // update every minute
     renderItems();
     updateTotals();
-    // If address already filled (e.g. browser autofill), detect zone
     const addr = document.getElementById('co-address');
     if (addr && addr.value) onAddressInput(addr.value);
   });
