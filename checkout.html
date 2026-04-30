@@ -238,7 +238,7 @@
 <section class="hero max-w-7xl mx-auto px-6">
   <p class="hero-eyebrow"><span class="gold-line"></span> &nbsp; Final Step &nbsp; <span class="gold-line"></span></p>
   <h1 class="hero-title">Complete Your Order</h1>
-  <p class="hero-sub">Review your selection, choose your delivery zone, and add a personal note for the chef.</p>
+  <p class="hero-sub">Review your selection and enter your delivery details below.</p>
 </section>
 
 <main class="max-w-7xl mx-auto px-6 pb-24">
@@ -258,39 +258,16 @@
         </div>
       </div>
 
-      <!-- Delivery Zone -->
-      <div class="panel p-8 md:p-10">
-        <p class="section-eyebrow">02 · Delivery</p>
-        <h2 class="section-title mb-6">Choose Your Zone</h2>
-        <div id="zone-grid" class="grid grid-cols-3 gap-3 md:gap-4">
-          <div class="pick py-7 px-3 text-center" data-zone="15" onclick="selectZone(this)">
-            <div class="pick-label">Zone 1</div>
-            <div class="pick-price">$15</div>
-            <div class="pick-sub">Nearby</div>
-          </div>
-          <div class="pick active py-7 px-3 text-center" data-zone="30" onclick="selectZone(this)">
-            <div class="pick-label">Zone 2</div>
-            <div class="pick-price">$30</div>
-            <div class="pick-sub">Mid-range</div>
-          </div>
-          <div class="pick py-7 px-3 text-center" data-zone="60" onclick="selectZone(this)">
-            <div class="pick-label">Zone 3</div>
-            <div class="pick-price">$60</div>
-            <div class="pick-sub">Extended</div>
-          </div>
-        </div>
-      </div>
-
       <!-- Tips -->
       <div class="panel p-8 md:p-10">
-        <p class="section-eyebrow">03 · Gratuity</p>
+        <p class="section-eyebrow">02 · Gratuity</p>
         <h2 class="section-title mb-2">Show Your Appreciation</h2>
         <p class="text-sm text-charcoal/45 font-light mb-6">Optional — supports our chef and driver directly.</p>
 
         <div class="mb-7">
           <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Chef</p>
           <div id="chef-tip-grid" class="grid grid-cols-5 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-chef" data-val="0" onclick="selectTip('chef',this)"><div class="pick-num">0<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="custom" onclick="selectTip('chef',this)"><div class="pick-num" style="font-size:.9rem">Custom</div></div>
             <div class="pick pick-mini text-center tip-chef" data-val="5" onclick="selectTip('chef',this)"><div class="pick-num">5<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef" data-val="10" onclick="selectTip('chef',this)"><div class="pick-num">10<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef active" data-val="15" onclick="selectTip('chef',this)"><div class="pick-num">15<span class="text-base">%</span></div></div>
@@ -301,7 +278,7 @@
         <div>
           <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
           <div id="driver-tip-grid" class="grid grid-cols-5 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-driver" data-val="0" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>0</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="custom" onclick="selectTip('driver',this)"><div class="pick-num" style="font-size:.9rem">Custom</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="3" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>3</div></div>
             <div class="pick pick-mini text-center tip-driver active" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>5</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>8</div></div>
@@ -312,13 +289,16 @@
 
       <!-- Customer Details -->
       <div class="panel p-8 md:p-10">
-        <p class="section-eyebrow">04 · Your Details</p>
+        <p class="section-eyebrow">03 · Your Details</p>
         <h2 class="section-title mb-6">Delivery Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input type="text" id="co-name" class="field" placeholder="Full Name *"/>
           <input type="tel" id="co-phone" class="field" placeholder="Phone Number *"/>
           <input type="email" id="co-email" class="field md:col-span-2" placeholder="Email Address *"/>
-          <input type="text" id="co-address" class="field md:col-span-2" placeholder="Delivery Address *"/>
+          <div class="md:col-span-2 relative">
+            <input type="text" id="co-address" class="field" placeholder="Delivery Address *" oninput="onAddressInput(this.value)" style="padding-right:160px"/>
+            <span id="zone-badge" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#888;pointer-events:none">Detecting zone…</span>
+          </div>
           <textarea id="co-notes" class="field md:col-span-2" rows="3" placeholder="Special instructions (optional)" style="resize:none"></textarea>
         </div>
       </div>
@@ -365,35 +345,66 @@
 <script>
   const CART_KEY = 'chefaleh_cart';
   let deliveryZone = 30;
+  let deliveryZoneNum = 2;
   let chefTipPct = 15;
+  let chefTipCustom = false;
   let driverTipAmt = 5;
+  let driverTipCustom = false;
+
+  // Zone detection: keyword → fee
+  const ZONE_RULES = [
+    { fee: 15, num: 1, label: 'Zone 1', keywords: ['miami beach', 'bal harbour', 'surfside', 'aventura', 'hallandale', 'hollywood'] },
+    { fee: 30, num: 2, label: 'Zone 2', keywords: ['miami', 'coral gables', 'coconut grove', 'brickell', 'downtown', 'wynwood', 'doral', 'hialeah', 'pembroke pines', 'miramar'] },
+    { fee: 60, num: 3, label: 'Zone 3', keywords: ['fort lauderdale', 'boca raton', 'delray', 'pompano', 'weston', 'plantation', 'davie', 'sunrise', 'tamarac'] },
+  ];
+
+  function detectZone(address) {
+    const lower = address.toLowerCase();
+    for (const zone of ZONE_RULES) {
+      if (zone.keywords.some(k => lower.includes(k))) return zone;
+    }
+    return { fee: 30, num: 2, label: 'Zone 2' }; // default
+  }
 
   function readCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
     catch { return []; }
   }
 
-  function selectZone(el) {
-    document.querySelectorAll('#zone-grid .pick').forEach(b => b.classList.remove('active'));
-    el.classList.add('active');
-    deliveryZone = parseInt(el.dataset.zone, 10);
-    const zoneLabels = { 15: 'Zone 1', 30: 'Zone 2', 60: 'Zone 3' };
-    const zEl = document.getElementById('co-zone-label');
-    if (zEl) zEl.textContent = zoneLabels[deliveryZone] || '';
-    updateTotals();
-  }
-
   function selectTip(type, el) {
     const gridId = type === 'chef' ? 'chef-tip-grid' : 'driver-tip-grid';
     document.querySelectorAll('#' + gridId + ' .pick').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
-    const val = parseInt(el.dataset.val, 10);
+    const raw = el.dataset.val;
+
     if (type === 'chef') {
-      chefTipPct = val;
-      const lbl = document.getElementById('co-chef-label');
-      if (lbl) lbl.textContent = val + '%';
+      if (raw === 'custom') {
+        chefTipCustom = true;
+        const input = prompt('Enter custom chef tip percentage (e.g. 12):');
+        const parsed = parseFloat(input);
+        chefTipPct = (!input || isNaN(parsed) || parsed < 0) ? 0 : parsed;
+        el.querySelector('.pick-num').textContent = chefTipPct + '%';
+        const lbl = document.getElementById('co-chef-label');
+        if (lbl) lbl.textContent = chefTipPct + '%';
+      } else {
+        chefTipCustom = false;
+        chefTipPct = parseInt(raw, 10);
+        el.querySelector('.pick-num').innerHTML = raw + '<span class="text-base">%</span>';
+        const lbl = document.getElementById('co-chef-label');
+        if (lbl) lbl.textContent = raw + '%';
+      }
     } else {
-      driverTipAmt = val;
+      if (raw === 'custom') {
+        driverTipCustom = true;
+        const input = prompt('Enter custom driver tip amount in $ (e.g. 7):');
+        const parsed = parseFloat(input);
+        driverTipAmt = (!input || isNaN(parsed) || parsed < 0) ? 0 : parsed;
+        el.querySelector('.pick-num').textContent = '$' + driverTipAmt;
+      } else {
+        driverTipCustom = false;
+        driverTipAmt = parseInt(raw, 10);
+        el.querySelector('.pick-num').innerHTML = '<span class="text-base">$</span>' + raw;
+      }
     }
     updateTotals();
   }
@@ -413,6 +424,8 @@
     set('co-chef-tip', fmt(chefTip));
     set('co-driver-tip', fmt(driverTipAmt));
     set('co-tot', fmt(total));
+    const zEl = document.getElementById('co-zone-label');
+    if (zEl) zEl.textContent = `Zone ${deliveryZoneNum}`;
   }
 
   function renderItems() {
@@ -443,6 +456,19 @@
     updateTotals();
   }
 
+  function onAddressInput(val) {
+    const badge = document.getElementById('zone-badge');
+    if (!val.trim()) {
+      if (badge) badge.textContent = 'Detecting zone…';
+      return;
+    }
+    const zone = detectZone(val);
+    deliveryZone = zone.fee;
+    deliveryZoneNum = zone.num;
+    if (badge) badge.textContent = zone.label + ' · $' + zone.fee;
+    updateTotals();
+  }
+
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
@@ -470,14 +496,12 @@
     btn.textContent = 'Placing Order...';
     btn.disabled = true;
 
-    const zoneNum = deliveryZone === 15 ? 1 : deliveryZone === 30 ? 2 : 3;
-
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name, phone, email, address,
-        zone: `Zone ${zoneNum} ($${deliveryZone})`,
+        zone: `Zone ${deliveryZoneNum} ($${deliveryZone})`,
         cart,
         subtotal: sub.toFixed(2),
         tax: tax.toFixed(2),
@@ -501,6 +525,9 @@
   document.addEventListener('DOMContentLoaded', () => {
     renderItems();
     updateTotals();
+    // If address already filled (e.g. browser autofill), detect zone
+    const addr = document.getElementById('co-address');
+    if (addr && addr.value) onAddressInput(addr.value);
   });
 </script>
 </body>
