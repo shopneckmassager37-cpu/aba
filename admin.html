@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chefaleh Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; }
+    .drag-over { outline: 2px dashed #3b82f6; background: #eff6ff; }
+    .handle { cursor: grab; user-select: none; }
+    .handle:active { cursor: grabbing; }
+    [draggable] { transition: opacity 0.15s; }
+    [draggable].dragging { opacity: 0.4; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
+    <h1 class="text-2xl font-bold text-gray-800 mb-1">Chefaleh Admin</h1>
+    <p class="text-gray-400 text-sm mb-6">Enter password to continue</p>
+    <input id="pw-input" type="password" placeholder="Password"
+      class="w-full border border-gray-200 rounded px-4 py-3 text-sm mb-3 focus:outline-none focus:border-blue-400"
+      onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button onclick="doLogin()" class="w-full bg-gray-900 text-white rounded py-3 text-sm font-medium hover:bg-gray-700 transition">Login</button>
+    <p id="login-err" class="text-red-500 text-xs mt-2 hidden">Incorrect password</p>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app" class="hidden min-h-screen">
+
+  <!-- Top bar -->
+  <div class="bg-gray-900 text-white px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-4">
+      <span class="font-bold tracking-wide">CHEFALEH ADMIN</span>
+      <span id="save-status" class="text-xs text-green-400 hidden">✓ Saved</span>
+      <span id="save-error" class="text-xs text-red-400 hidden">✗ Error saving</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="showTab('products')" id="tab-products" class="tab-btn px-4 py-1.5 rounded text-sm bg-white text-gray-900 font-medium">Products</button>
+      <button onclick="showTab('categories')" id="tab-categories" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Categories</button>
+      <a href="menu.html" target="_blank" class="text-xs text-gray-400 hover:text-white ml-2">↗ View Menu</a>
+      <button onclick="doLogout()" class="text-xs text-gray-500 hover:text-white ml-2">Logout</button>
+    </div>
+  </div>
+
+  <!-- PRODUCTS TAB -->
+  <div id="tab-products-panel" class="p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-800">Products</h2>
+      <button onclick="openProductModal(null)" class="bg-gray-900 text-white px-4 py-2 rounded text-sm hover:bg-gray-700">+ Add Product</button>
+    </div>
+
+    <!-- Filter by category -->
+    <div class="flex gap-2 mb-4 flex-wrap" id="cat-filter-btns"></div>
+
+    <div id="products-list" class="space-y-2"></div>
+  </div>
+
+  <!-- CATEGORIES TAB -->
+  <div id="tab-categories-panel" class="p-6 hidden">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-800">Categories</h2>
+      <button onclick="openCategoryModal(null)" class="bg-gray-900 text-white px-4 py-2 rounded text-sm hover:bg-gray-700">+ Add Category</button>
+    </div>
+    <p class="text-xs text-gray-400 mb-3">Drag rows to reorder. Changes save immediately.</p>
+    <div id="categories-list" class="space-y-2"></div>
+  </div>
+
+</div>
+
+<!-- PRODUCT MODAL -->
+<div id="product-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 px-4 overflow-y-auto">
+  <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg my-8">
+    <div class="flex items-center justify-between px-6 py-4 border-b">
+      <h3 id="product-modal-title" class="font-semibold text-gray-800">Add Product</h3>
+      <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-700 text-xl">✕</button>
+    </div>
+    <div class="px-6 py-5 space-y-4">
+      <input type="hidden" id="pm-id"/>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2">
+          <label class="label">Name *</label>
+          <input id="pm-name" type="text" class="input" placeholder="Product name"/>
+        </div>
+        <div>
+          <label class="label">Price *</label>
+          <input id="pm-price" type="number" step="0.01" class="input" placeholder="0.00"/>
+        </div>
+        <div>
+          <label class="label">Badge</label>
+          <input id="pm-badge" type="text" class="input" placeholder="9×13 Tray"/>
+        </div>
+        <div>
+          <label class="label">Tag</label>
+          <input id="pm-tag" type="text" class="input" placeholder="Bestseller / GF / Vegan…"/>
+        </div>
+        <div>
+          <label class="label">Category *</label>
+          <select id="pm-category" class="input"></select>
+        </div>
+        <div class="col-span-2">
+          <label class="label">Description</label>
+          <textarea id="pm-desc" rows="3" class="input resize-none" placeholder="Short description…"></textarea>
+        </div>
+        <div class="col-span-2">
+          <label class="label">Image</label>
+          <div class="flex gap-3 items-start">
+            <div class="flex-1">
+              <input id="pm-img" type="text" class="input mb-2" placeholder="images/food1.jpg or full URL"/>
+              <label class="cursor-pointer inline-block border border-dashed border-gray-300 rounded px-3 py-2 text-xs text-gray-500 hover:border-blue-400 hover:text-blue-500">
+                Upload image
+                <input type="file" id="pm-img-file" accept="image/*" class="hidden" onchange="handleImageUpload(this)"/>
+              </label>
+              <span id="pm-upload-status" class="text-xs text-gray-400 ml-2"></span>
+            </div>
+            <img id="pm-img-preview" src="" alt="" class="w-20 h-20 object-cover rounded border border-gray-200 hidden"/>
+          </div>
+        </div>
+        <div class="col-span-2 flex gap-6">
+          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input type="checkbox" id="pm-dark" class="w-4 h-4"/> Dark card (meat section style)
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input type="checkbox" id="pm-small" class="w-4 h-4"/> Small card (sides/desserts)
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input type="checkbox" id="pm-visible" class="w-4 h-4" checked/> Visible
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="px-6 pb-5 flex gap-3 justify-end">
+      <button onclick="closeProductModal()" class="px-4 py-2 text-sm border border-gray-200 rounded text-gray-500 hover:border-gray-400">Cancel</button>
+      <button onclick="saveProduct()" class="px-6 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY MODAL -->
+<div id="category-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 px-4">
+  <div class="bg-white rounded-lg shadow-2xl w-full max-w-md">
+    <div class="flex items-center justify-between px-6 py-4 border-b">
+      <h3 id="category-modal-title" class="font-semibold text-gray-800">Add Category</h3>
+      <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-gray-700 text-xl">✕</button>
+    </div>
+    <div class="px-6 py-5 space-y-4">
+      <input type="hidden" id="cm-id"/>
+      <div>
+        <label class="label">Name (English) *</label>
+        <input id="cm-name" type="text" class="input" placeholder="Challah"/>
+      </div>
+      <div>
+        <label class="label">Label (Hebrew)</label>
+        <input id="cm-label-he" type="text" class="input" placeholder="חלות" dir="rtl"/>
+      </div>
+      <div>
+        <label class="label">Slug * (URL-safe, no spaces)</label>
+        <input id="cm-slug" type="text" class="input" placeholder="challah"/>
+      </div>
+      <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+        <input type="checkbox" id="cm-visible" class="w-4 h-4" checked/> Visible
+      </label>
+    </div>
+    <div class="px-6 pb-5 flex gap-3 justify-end">
+      <button onclick="closeCategoryModal()" class="px-4 py-2 text-sm border border-gray-200 rounded text-gray-500 hover:border-gray-400">Cancel</button>
+      <button onclick="saveCategory()" class="px-6 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700">Save</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.label { display:block; font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; font-weight:500; }
+.input { width:100%; border:1px solid #e5e7eb; border-radius:6px; padding:8px 12px; font-size:13px; outline:none; }
+.input:focus { border-color:#6366f1; }
+select.input { background:white; }
+</style>
+
+<script src="supabase.js"></script>
+<script>
+const ADMIN_PASSWORD = 'Dandush770@';
+let categories = [];
+let products = [];
+let activeCatFilter = 'all';
+let dragSrcEl = null;
+
+// ── AUTH ──
+function doLogin() {
+  const val = document.getElementById('pw-input').value;
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem('admin_auth', '1');
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-app').classList.remove('hidden');
+    loadAll();
+  } else {
+    document.getElementById('login-err').classList.remove('hidden');
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('admin_auth');
+  location.reload();
+}
+
+if (sessionStorage.getItem('admin_auth') === '1') {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('admin-app').classList.remove('hidden');
+}
+
+// ── TABS ──
+function showTab(name) {
+  ['products','categories'].forEach(t => {
+    document.getElementById(`tab-${t}-panel`).classList.toggle('hidden', t !== name);
+    const btn = document.getElementById(`tab-${t}`);
+    if (t === name) { btn.classList.add('bg-white','text-gray-900','font-medium'); btn.classList.remove('text-gray-400'); }
+    else            { btn.classList.remove('bg-white','text-gray-900','font-medium'); btn.classList.add('text-gray-400'); }
+  });
+}
+
+// ── LOAD DATA ──
+async function loadAll() {
+  [categories, products] = await Promise.all([getCategories(), getProducts()]);
+  renderCategoryFilter();
+  renderProductsList();
+  renderCategoriesList();
+}
+
+// ── SAVE STATUS ──
+function flashSaved() {
+  const el = document.getElementById('save-status');
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 2000);
+}
+function flashError() {
+  const el = document.getElementById('save-error');
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+// ── CATEGORY FILTER ──
+function renderCategoryFilter() {
+  const el = document.getElementById('cat-filter-btns');
+  const all = [{ id: 'all', name: 'All' }, ...categories];
+  el.innerHTML = all.map(c => `
+    <button onclick="setCatFilter('${c.id}')" id="cf-${c.id}"
+      class="px-3 py-1.5 rounded-full text-xs border ${activeCatFilter === c.id ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-600 hover:border-gray-400'}">
+      ${c.name}
+    </button>`).join('');
+}
+
+function setCatFilter(id) {
+  activeCatFilter = id;
+  renderCategoryFilter();
+  renderProductsList();
+}
+
+// ── PRODUCTS LIST ──
+function renderProductsList() {
+  const el = document.getElementById('products-list');
+  let list = activeCatFilter === 'all' ? products : products.filter(p => p.category_id === activeCatFilter);
+  // group by category when showing all
+  if (activeCatFilter === 'all') {
+    let html = '';
+    categories.forEach(cat => {
+      const catProds = list.filter(p => p.category_id === cat.id);
+      if (!catProds.length) return;
+      html += `<div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-4 mb-1 px-1">${cat.name}</div>`;
+      html += catProds.map(p => productRow(p, cat)).join('');
+    });
+    el.innerHTML = html;
+  } else {
+    const cat = categories.find(c => c.id === activeCatFilter);
+    el.innerHTML = list.map(p => productRow(p, cat)).join('');
+  }
+  attachProductDrag();
+}
+
+function productRow(p, cat) {
+  const catName = cat ? cat.name : '—';
+  return `
+  <div class="bg-white rounded-lg border border-gray-100 px-4 py-3 flex items-center gap-3 group"
+       draggable="true" data-id="${p.id}" data-cat="${p.category_id}">
+    <span class="handle text-gray-300 text-lg">⠿</span>
+    <img src="${p.img||''}" onerror="this.src=''" alt="" class="w-10 h-10 object-cover rounded border border-gray-100 shrink-0 bg-gray-50"/>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-sm text-gray-800 truncate">${p.name}</span>
+        ${p.tag ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${p.tag}</span>` : ''}
+        ${!p.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Hidden</span>` : ''}
+      </div>
+      <div class="text-xs text-gray-400 mt-0.5">$${p.price} · ${p.badge||''} · ${catName}</div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <button onclick="toggleProductVisible('${p.id}',${p.visible})"
+        class="text-xs px-3 py-1.5 rounded border ${p.visible ? 'border-green-200 text-green-600 hover:bg-green-50' : 'border-gray-200 text-gray-400 hover:bg-gray-50'}">
+        ${p.visible ? 'Visible' : 'Hidden'}
+      </button>
+      <button onclick="openProductModal('${p.id}')" class="text-xs px-3 py-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50">Edit</button>
+      <button onclick="deleteProductConfirm('${p.id}','${p.name.replace(/'/g,"\\'")}','${p.category_id}')"
+        class="text-xs px-3 py-1.5 rounded border border-red-100 text-red-400 hover:bg-red-50">Delete</button>
+    </div>
+  </div>`;
+}
+
+// ── PRODUCT DRAG-TO-REORDER ──
+function attachProductDrag() {
+  document.querySelectorAll('#products-list [draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragSrcEl = row;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => row.classList.remove('dragging'));
+    row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('drag-over'); });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (!dragSrcEl || dragSrcEl === row) return;
+      const srcId = dragSrcEl.dataset.id;
+      const dstId = row.dataset.id;
+      const srcProd = products.find(p => p.id === srcId);
+      const dstProd = products.find(p => p.id === dstId);
+      if (!srcProd || !dstProd || srcProd.category_id !== dstProd.category_id) return;
+      // swap orders
+      const srcOrder = srcProd.order, dstOrder = dstProd.order;
+      await Promise.all([
+        updateProduct(srcId, { order: dstOrder }),
+        updateProduct(dstId, { order: srcOrder })
+      ]);
+      srcProd.order = dstOrder; dstProd.order = srcOrder;
+      products.sort((a,b) => a.order - b.order);
+      renderProductsList();
+      flashSaved();
+    });
+  });
+}
+
+// ── TOGGLE VISIBLE ──
+async function toggleProductVisible(id, current) {
+  try {
+    await updateProduct(id, { visible: !current });
+    const p = products.find(p => p.id === id);
+    if (p) p.visible = !current;
+    renderProductsList();
+    flashSaved();
+  } catch { flashError(); }
+}
+
+async function toggleCategoryVisible(id, current) {
+  try {
+    await updateCategory(id, { visible: !current });
+    const c = categories.find(c => c.id === id);
+    if (c) c.visible = !current;
+    renderCategoriesList();
+    flashSaved();
+  } catch { flashError(); }
+}
+
+// ── DELETE PRODUCT ──
+async function deleteProductConfirm(id, name, catId) {
+  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+  try {
+    await deleteProduct(id);
+    products = products.filter(p => p.id !== id);
+    renderProductsList();
+    renderCategoryFilter();
+    flashSaved();
+  } catch { flashError(); }
+}
+
+// ── PRODUCT MODAL ──
+function openProductModal(id) {
+  const modal = document.getElementById('product-modal');
+  const catSel = document.getElementById('pm-category');
+  catSel.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+  if (id) {
+    const p = products.find(p => p.id === id);
+    document.getElementById('product-modal-title').textContent = 'Edit Product';
+    document.getElementById('pm-id').value = p.id;
+    document.getElementById('pm-name').value = p.name;
+    document.getElementById('pm-price').value = p.price;
+    document.getElementById('pm-badge').value = p.badge || '';
+    document.getElementById('pm-tag').value = p.tag || '';
+    document.getElementById('pm-category').value = p.category_id;
+    document.getElementById('pm-desc').value = p.description || '';
+    document.getElementById('pm-img').value = p.img || '';
+    document.getElementById('pm-dark').checked = !!p.dark;
+    document.getElementById('pm-small').checked = !!p.small;
+    document.getElementById('pm-visible').checked = p.visible !== false;
+    updateImgPreview(p.img);
+  } else {
+    document.getElementById('product-modal-title').textContent = 'Add Product';
+    document.getElementById('pm-id').value = '';
+    document.getElementById('pm-name').value = '';
+    document.getElementById('pm-price').value = '';
+    document.getElementById('pm-badge').value = '';
+    document.getElementById('pm-tag').value = '';
+    document.getElementById('pm-desc').value = '';
+    document.getElementById('pm-img').value = '';
+    document.getElementById('pm-dark').checked = false;
+    document.getElementById('pm-small').checked = false;
+    document.getElementById('pm-visible').checked = true;
+    updateImgPreview('');
+  }
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeProductModal() {
+  document.getElementById('product-modal').classList.add('hidden');
+  document.getElementById('product-modal').classList.remove('flex');
+  document.getElementById('pm-upload-status').textContent = '';
+}
+
+function updateImgPreview(src) {
+  const prev = document.getElementById('pm-img-preview');
+  if (src) { prev.src = src; prev.classList.remove('hidden'); }
+  else { prev.src = ''; prev.classList.add('hidden'); }
+}
+
+document.getElementById('pm-img').addEventListener('input', e => updateImgPreview(e.target.value));
+
+async function handleImageUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('pm-upload-status');
+  status.textContent = 'Uploading…';
+  try {
+    const url = await uploadImage(file);
+    document.getElementById('pm-img').value = url;
+    updateImgPreview(url);
+    status.textContent = '✓ Uploaded';
+  } catch (e) {
+    status.textContent = '✗ Upload failed — check Supabase storage bucket "menu-images"';
+    console.error(e);
+  }
+}
+
+async function saveProduct() {
+  const id = document.getElementById('pm-id').value;
+  const name = document.getElementById('pm-name').value.trim();
+  const price = parseFloat(document.getElementById('pm-price').value);
+  const category_id = document.getElementById('pm-category').value;
+  if (!name || isNaN(price) || !category_id) {
+    alert('Name, price, and category are required.');
+    return;
+  }
+  const data = {
+    name, price,
+    badge: document.getElementById('pm-badge').value.trim() || null,
+    tag: document.getElementById('pm-tag').value.trim() || null,
+    category_id,
+    description: document.getElementById('pm-desc').value.trim() || null,
+    img: document.getElementById('pm-img').value.trim() || null,
+    dark: document.getElementById('pm-dark').checked,
+    small: document.getElementById('pm-small').checked,
+    visible: document.getElementById('pm-visible').checked,
+  };
+  try {
+    if (id) {
+      await updateProduct(id, data);
+      const idx = products.findIndex(p => p.id === id);
+      if (idx >= 0) products[idx] = { ...products[idx], ...data };
+    } else {
+      const maxOrder = Math.max(0, ...products.filter(p => p.category_id === category_id).map(p => p.order));
+      data.order = maxOrder + 1;
+      const [created] = await createProduct(data);
+      products.push(created);
+    }
+    renderProductsList();
+    renderCategoryFilter();
+    closeProductModal();
+    flashSaved();
+  } catch (e) { console.error(e); flashError(); }
+}
+
+// ── CATEGORIES LIST ──
+function renderCategoriesList() {
+  const el = document.getElementById('categories-list');
+  el.innerHTML = categories.map(c => `
+    <div class="bg-white rounded-lg border border-gray-100 px-4 py-3 flex items-center gap-3"
+         draggable="true" data-id="${c.id}">
+      <span class="handle text-gray-300 text-lg">⠿</span>
+      <div class="flex-1">
+        <span class="font-medium text-sm text-gray-800">${c.name}</span>
+        <span class="text-xs text-gray-400 ml-2">${c.label_he||''}</span>
+        <span class="text-xs text-gray-300 ml-2">/${c.slug}</span>
+        ${!c.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full ml-2">Hidden</span>` : ''}
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="toggleCategoryVisible('${c.id}',${c.visible})"
+          class="text-xs px-3 py-1.5 rounded border ${c.visible ? 'border-green-200 text-green-600 hover:bg-green-50' : 'border-gray-200 text-gray-400 hover:bg-gray-50'}">
+          ${c.visible ? 'Visible' : 'Hidden'}
+        </button>
+        <button onclick="openCategoryModal('${c.id}')" class="text-xs px-3 py-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50">Edit</button>
+      </div>
+    </div>`).join('');
+  attachCategoryDrag();
+}
+
+// ── CATEGORY DRAG-TO-REORDER ──
+function attachCategoryDrag() {
+  document.querySelectorAll('#categories-list [draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragSrcEl = row;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => row.classList.remove('dragging'));
+    row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('drag-over'); });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (!dragSrcEl || dragSrcEl === row) return;
+      const srcId = dragSrcEl.dataset.id;
+      const dstId = row.dataset.id;
+      const srcCat = categories.find(c => c.id === srcId);
+      const dstCat = categories.find(c => c.id === dstId);
+      if (!srcCat || !dstCat) return;
+      const srcOrder = srcCat.order, dstOrder = dstCat.order;
+      await Promise.all([
+        updateCategory(srcId, { order: dstOrder }),
+        updateCategory(dstId, { order: srcOrder })
+      ]);
+      srcCat.order = dstOrder; dstCat.order = srcOrder;
+      categories.sort((a,b) => a.order - b.order);
+      renderCategoriesList();
+      flashSaved();
+    });
+  });
+}
+
+// ── CATEGORY MODAL ──
+function openCategoryModal(id) {
+  const modal = document.getElementById('category-modal');
+  if (id) {
+    const c = categories.find(c => c.id === id);
+    document.getElementById('category-modal-title').textContent = 'Edit Category';
+    document.getElementById('cm-id').value = c.id;
+    document.getElementById('cm-name').value = c.name;
+    document.getElementById('cm-label-he').value = c.label_he || '';
+    document.getElementById('cm-slug').value = c.slug;
+    document.getElementById('cm-visible').checked = c.visible !== false;
+  } else {
+    document.getElementById('category-modal-title').textContent = 'Add Category';
+    document.getElementById('cm-id').value = '';
+    document.getElementById('cm-name').value = '';
+    document.getElementById('cm-label-he').value = '';
+    document.getElementById('cm-slug').value = '';
+    document.getElementById('cm-visible').checked = true;
+  }
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeCategoryModal() {
+  document.getElementById('category-modal').classList.add('hidden');
+  document.getElementById('category-modal').classList.remove('flex');
+}
+
+// auto-slug from name
+document.getElementById('cm-name').addEventListener('input', function() {
+  const slugEl = document.getElementById('cm-slug');
+  if (!document.getElementById('cm-id').value) {
+    slugEl.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g,'');
+  }
+});
+
+async function saveCategory() {
+  const id = document.getElementById('cm-id').value;
+  const name = document.getElementById('cm-name').value.trim();
+  const slug = document.getElementById('cm-slug').value.trim();
+  if (!name || !slug) { alert('Name and slug are required.'); return; }
+  const data = {
+    name,
+    label_he: document.getElementById('cm-label-he').value.trim() || null,
+    slug,
+    visible: document.getElementById('cm-visible').checked,
+  };
+  try {
+    if (id) {
+      await updateCategory(id, data);
+      const idx = categories.findIndex(c => c.id === id);
+      if (idx >= 0) categories[idx] = { ...categories[idx], ...data };
+    } else {
+      const maxOrder = Math.max(0, ...categories.map(c => c.order));
+      data.order = maxOrder + 1;
+      const [created] = await createCategory(data);
+      categories.push(created);
+    }
+    renderCategoriesList();
+    renderCategoryFilter();
+    closeCategoryModal();
+    flashSaved();
+  } catch (e) { console.error(e); flashError(); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('admin_auth') === '1') loadAll();
+});
+</script>
+</body>
+</html>
