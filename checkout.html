@@ -261,22 +261,33 @@
       font-weight: 300;
       color: #1A1A1A;
     }
+    
+    /* Google Places Autocomplete dropdown styling */
+    .pac-container {
+      background-color: #F9F7F2;
+      border: 1px solid rgba(26,26,26,.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-family: 'Jost', sans-serif;
+      margin-top: 4px;
+      border-radius: 4px;
+    }
+    .pac-item {
+      padding: 8px 12px;
+      border-top: 1px solid rgba(26,26,26,.05);
+      cursor: pointer;
+    }
+    .pac-item:hover { background-color: #EFEDE6; }
+    .pac-item-query { font-size: 14px; color: #1A1A1A; }
+    .pac-matched { color: #D4AF37; }
   </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt6A1soXtJ4ZdqRGYCP0o80wmDSvGKYJE&libraries=places"></script>
 </head>
 <body class="text-charcoal font-sans">
 
 <!-- DEADLINE BANNER -->
 <div id="deadline-banner" class="deadline-banner"></div>
 
-<!-- CLOSED OVERLAY -->
-<div id="closed-overlay" class="hidden fixed inset-0 z-[200] bg-charcoal/90 flex items-center justify-center px-4">
-  <div class="bg-cream max-w-md w-full p-10 text-center">
-    <p class="text-gold text-xs tracking-[.3em] uppercase mb-4 font-light">Orders Closed</p>
-    <h2 class="font-serif text-charcoal text-3xl font-light mb-4">The kitchen is resting</h2>
-    <p class="text-charcoal/50 text-sm font-light leading-relaxed mb-6">Order window closes <strong class="text-charcoal">Wednesday at 5:00 PM Miami time</strong>.<br>Come back next week to place your order.</p>
-    <a href="menu.html" class="inline-block bg-charcoal text-cream px-8 py-3 text-xs tracking-widest uppercase font-medium hover:bg-gold hover:text-charcoal transition-all">Back to Menu</a>
-  </div>
-</div>
+<!-- REMOVED CLOSED OVERLAY -->
 
 <!-- NAV -->
 <nav class="nav-bar sticky top-0 z-30 py-5">
@@ -357,7 +368,7 @@
           <input type="tel" id="co-phone" class="field" placeholder="Phone Number *"/>
           <input type="email" id="co-email" class="field md:col-span-2" placeholder="Email Address *"/>
           <div class="md:col-span-2 relative">
-            <input type="text" id="co-address" class="field" placeholder="Delivery Address *" oninput="onAddressInput(this.value)" style="padding-right:160px"/>
+            <input type="text" id="co-address" class="field" placeholder="Delivery Address *" style="padding-right:160px"/>
             <span id="zone-badge" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#888;pointer-events:none">Detecting zone…</span>
           </div>
           <textarea id="co-notes" class="field md:col-span-2" rows="3" placeholder="Special instructions (optional)" style="resize:none"></textarea>
@@ -412,8 +423,8 @@
   let driverTipPct = 8;       // percentage-based driver tip
   let driverTipFixed = null;  // dollar amount when driver Custom is used
 
-  // ── DEADLINE: Wednesday 5:00 PM America/New_York (Miami) ──
-  function getDeadlineInfo() {
+  // ── DELIVERY DATE LOGIC ──
+  function getDeliveryInfo() {
     const now = new Date();
     const miamiStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
     const miami = new Date(miamiStr);
@@ -421,38 +432,33 @@
     const hour = miami.getHours();
     const min = miami.getMinutes();
 
-    // Closed: Wed >= 5PM, Thu, Fri, Sat, Sun
-    const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) ||
-                         day === 4 || day === 5 || day === 6;
+    // Past deadline for THIS Friday? (Wed >= 5PM)
+    const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) || day > 3 || day === 0;
 
-    // Find next Wednesday 5PM
-    const daysUntilWed = (3 - day + 7) % 7 || 7;
-    const nextWed = new Date(miami);
-    nextWed.setDate(miami.getDate() + (pastDeadline && day === 3 ? 7 : daysUntilWed));
-    nextWed.setHours(17, 0, 0, 0);
-
-    const diff = nextWed - miami;
-    const daysLeft = Math.floor(diff / 86400000);
-    const hoursLeft = Math.floor((diff % 86400000) / 3600000);
-    const minsLeft = Math.floor((diff % 3600000) / 60000);
-
-    return { pastDeadline, daysLeft, hoursLeft, minsLeft };
+    let deliveryDate = new Date(miami);
+    if (pastDeadline) {
+      // Order is for NEXT Friday
+      const daysToNextFriday = (5 - day + 7) % 7 + (day >= 3 ? 7 : 0);
+      deliveryDate.setDate(miami.getDate() + daysToNextFriday);
+    } else {
+      // Order is for THIS Friday
+      const daysToFriday = (5 - day + 7) % 7;
+      deliveryDate.setDate(miami.getDate() + daysToFriday);
+    }
+    
+    const dateStr = deliveryDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    return { pastDeadline, deliveryDate: dateStr };
   }
 
-  function checkDeadline() {
-    const info = getDeadlineInfo();
+  function updateDeadlineBanner() {
+    const info = getDeliveryInfo();
     const banner = document.getElementById('deadline-banner');
     if (info.pastDeadline) {
-      banner.textContent = '⛔ Orders are currently closed — next window opens Monday';
-      banner.classList.add('closed');
-      document.getElementById('closed-overlay').classList.remove('hidden');
-      const btn = document.getElementById('submit-btn');
-      if (btn) { btn.disabled = true; btn.textContent = 'Orders Closed'; btn.style.opacity = '.5'; btn.style.cursor = 'not-allowed'; }
+      banner.innerHTML = `✨ Now taking orders for <strong class="text-white">Friday, ${info.deliveryDate}</strong> (Deadline for this week has passed)`;
+      banner.style.background = '#B8941F';
+      banner.style.color = '#1A1A1A';
     } else {
-      const parts = [];
-      if (info.daysLeft > 0) parts.push(info.daysLeft + 'd');
-      parts.push(info.hoursLeft + 'h ' + info.minsLeft + 'm');
-      banner.textContent = '⏰ Order window closes Wednesday 5:00 PM Miami time — ' + parts.join(' ') + ' remaining';
+      banner.innerHTML = `⏰ Order now for <strong class="text-gold">Friday, ${info.deliveryDate}</strong> — Order by Wednesday 5:00 PM`;
     }
   }
 
@@ -580,7 +586,7 @@
 
   function onAddressInput(val) {
     const badge = document.getElementById('zone-badge');
-    if (!val.trim()) {
+    if (!val || !val.trim()) {
       if (badge) badge.textContent = 'Detecting zone…';
       return;
     }
@@ -591,12 +597,38 @@
     updateTotals();
   }
 
+  function initAutocomplete() {
+    const input = document.getElementById('co-address');
+    if (!input) return;
+    
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: 'us' },
+      fields: ['address_components', 'formatted_address', 'geometry'],
+      types: ['address']
+    });
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (!place.formatted_address) return;
+      
+      // Extract city/neighborhood for zone detection
+      let searchStr = place.formatted_address;
+      place.address_components.forEach(comp => {
+        if (comp.types.includes('locality') || comp.types.includes('neighborhood') || comp.types.includes('sublocality')) {
+          searchStr += ' ' + comp.long_name;
+        }
+      });
+      
+      onAddressInput(searchStr);
+    });
+  }
+
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
   function submitOrder() {
-    if (getDeadlineInfo().pastDeadline) { alert('Sorry, the order window is closed.'); return; }
+    const info = getDeliveryInfo();
     const name = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
     const email = document.getElementById('co-email').value.trim();
@@ -625,6 +657,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name, phone, email, address,
+        deliveryDate: info.deliveryDate,
         zone: `Zone ${deliveryZoneNum} ($${deliveryZone})`,
         cart,
         subtotal: sub.toFixed(2),
@@ -649,10 +682,11 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    checkDeadline();
-    setInterval(checkDeadline, 60000); // update every minute
+    updateDeadlineBanner();
+    setInterval(updateDeadlineBanner, 60000); // update every minute
     renderItems();
     updateTotals();
+    initAutocomplete();
     const addr = document.getElementById('co-address');
     if (addr && addr.value) onAddressInput(addr.value);
   });
