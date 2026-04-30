@@ -335,14 +335,14 @@
         <div>
           <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
           <div id="driver-tip-grid" class="grid grid-cols-4 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-driver" data-val="3" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>3</div></div>
-            <div class="pick pick-mini text-center tip-driver active" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>5</div></div>
-            <div class="pick pick-mini text-center tip-driver" data-val="10" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>10</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num">5<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-driver active" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num">8<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="12" onclick="selectTip('driver',this)"><div class="pick-num">12<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="custom" onclick="selectTip('driver',this)"><div class="pick-num" style="font-size:.85rem">Custom</div></div>
           </div>
           <div id="driver-custom-row" class="custom-tip-row">
             <span class="text-sm text-charcoal/50">$</span>
-            <input id="driver-custom-input" type="number" min="0" step="1" placeholder="0" class="custom-tip-input" oninput="onDriverCustomInput(this.value)"/>
+            <input id="driver-custom-input" type="number" min="0" step="0.01" placeholder="0" class="custom-tip-input" oninput="onDriverCustomInput(this.value)"/>
             <span class="text-xs text-charcoal/40 font-light">dollar amount</span>
           </div>
         </div>
@@ -377,7 +377,7 @@
             <div class="sum-row"><span class="sum-label">Tax (7%)</span><span class="sum-val" id="co-tax">$0.00</span></div>
             <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">Zone 2</span></span><span class="sum-val" id="co-delivery">$30.00</span></div>
             <div class="sum-row"><span class="sum-label">Chef Tip <span id="co-chef-label" class="text-charcoal/35 ml-1">15%</span></span><span class="sum-val" id="co-chef-tip">$0.00</span></div>
-            <div class="sum-row"><span class="sum-label">Driver Tip</span><span class="sum-val" id="co-driver-tip">$5.00</span></div>
+            <div class="sum-row"><span class="sum-label">Driver Tip <span id="co-driver-label" class="text-charcoal/35 ml-1">8%</span></span><span class="sum-val" id="co-driver-tip">$0.00</span></div>
           </div>
 
           <div class="sum-divider"></div>
@@ -408,8 +408,9 @@
   let deliveryZone = 30;
   let deliveryZoneNum = 2;
   let chefTipPct = 15;
-  let chefTipFixed = null;   // dollar amount when Custom is used
-  let driverTipAmt = 5;
+  let chefTipFixed = null;    // dollar amount when chef Custom is used
+  let driverTipPct = 8;       // percentage-based driver tip
+  let driverTipFixed = null;  // dollar amount when driver Custom is used
 
   // ── DEADLINE: Wednesday 3:00 PM America/New_York (Miami) ──
   function getDeadlineInfo() {
@@ -501,10 +502,14 @@
       const customRow = document.getElementById('driver-custom-row');
       if (raw === 'custom') {
         customRow.classList.add('show');
-        driverTipAmt = parseFloat(document.getElementById('driver-custom-input').value) || 0;
+        driverTipFixed = parseFloat(document.getElementById('driver-custom-input').value) || 0;
+        driverTipPct = 0;
       } else {
         customRow.classList.remove('show');
-        driverTipAmt = parseInt(raw, 10);
+        driverTipFixed = null;
+        driverTipPct = parseInt(raw, 10);
+        const lbl = document.getElementById('co-driver-label');
+        if (lbl) lbl.textContent = raw + '%';
       }
     }
     updateTotals();
@@ -518,7 +523,9 @@
   }
 
   function onDriverCustomInput(val) {
-    driverTipAmt = parseFloat(val) || 0;
+    driverTipFixed = parseFloat(val) || 0;
+    const lbl = document.getElementById('co-driver-label');
+    if (lbl) lbl.textContent = '$' + driverTipFixed.toFixed(2);
     updateTotals();
   }
 
@@ -527,6 +534,7 @@
     const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const tax = sub * 0.07;
     const chefTip = chefTipFixed !== null ? chefTipFixed : sub * chefTipPct / 100;
+    const driverTipAmt = driverTipFixed !== null ? driverTipFixed : sub * driverTipPct / 100;
     const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
 
     const fmt = n => '$' + n.toFixed(2);
@@ -540,8 +548,9 @@
     const zEl = document.getElementById('co-zone-label');
     if (zEl) zEl.textContent = `Zone ${deliveryZoneNum}`;
     const chefLbl = document.getElementById('co-chef-label');
-    if (chefLbl && chefTipFixed === null) chefLbl.textContent = chefTipPct + '%';
-    if (chefLbl && chefTipFixed !== null) chefLbl.textContent = '$' + chefTip.toFixed(2);
+    if (chefLbl) chefLbl.textContent = chefTipFixed !== null ? '$' + chefTip.toFixed(2) : chefTipPct + '%';
+    const driverLbl = document.getElementById('co-driver-label');
+    if (driverLbl) driverLbl.textContent = driverTipFixed !== null ? '$' + driverTipAmt.toFixed(2) : driverTipPct + '%';
   }
 
   function renderItems() {
@@ -607,7 +616,8 @@
     const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const tax = sub * 0.07;
     const chefTip = chefTipFixed !== null ? chefTipFixed : sub * chefTipPct / 100;
-    const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
+    const driverTip = driverTipFixed !== null ? driverTipFixed : sub * driverTipPct / 100;
+    const total = sub + tax + deliveryZone + chefTip + driverTip;
 
     const btn = document.getElementById('submit-btn');
     btn.textContent = 'Placing Order...';
@@ -623,17 +633,19 @@
         subtotal: sub.toFixed(2),
         tax: tax.toFixed(2),
         delivery: deliveryZone.toFixed(2),
-        driverTip: driverTipAmt.toFixed(2),
+        driverTip: driverTip.toFixed(2),
         chefTip: chefTip.toFixed(2),
         total: total.toFixed(2),
         notes
       })
     })
     .then(() => {
+      sessionStorage.setItem('chefaleh_last_total', total.toFixed(2));
       localStorage.removeItem(CART_KEY);
       window.location.href = '/confirmation.html';
     })
     .catch(() => {
+      sessionStorage.setItem('chefaleh_last_total', total.toFixed(2));
       localStorage.removeItem(CART_KEY);
       window.location.href = '/confirmation.html';
     });
