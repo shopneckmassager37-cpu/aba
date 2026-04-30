@@ -279,8 +279,9 @@
     .pac-item:hover { background-color: #EFEDE6; }
     .pac-item-query { font-size: 14px; color: #1A1A1A; }
     .pac-matched { color: #D4AF37; }
+    .pac-container { z-index: 9999 !important; }
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt6A1soXtJ4ZdqRGYCP0o80wmDSvGKYJE&libraries=places"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt6A1soXtJ4ZdqRGYCP0o80wmDSvGKYJE&libraries=places&callback=initAutocomplete" async defer></script>
 </head>
 <body class="text-charcoal font-sans">
 
@@ -599,7 +600,11 @@
 
   function initAutocomplete() {
     const input = document.getElementById('co-address');
-    if (!input) return;
+    if (!input) {
+      // If the DOM isn't ready, try again in a moment
+      setTimeout(initAutocomplete, 100);
+      return;
+    }
     
     const autocomplete = new google.maps.places.Autocomplete(input, {
       componentRestrictions: { country: 'us' },
@@ -613,11 +618,13 @@
       
       // Extract city/neighborhood for zone detection
       let searchStr = place.formatted_address;
-      place.address_components.forEach(comp => {
-        if (comp.types.includes('locality') || comp.types.includes('neighborhood') || comp.types.includes('sublocality')) {
-          searchStr += ' ' + comp.long_name;
-        }
-      });
+      if (place.address_components) {
+        place.address_components.forEach(comp => {
+          if (comp.types.includes('locality') || comp.types.includes('neighborhood') || comp.types.includes('sublocality')) {
+            searchStr += ' ' + comp.long_name;
+          }
+        });
+      }
       
       onAddressInput(searchStr);
     });
@@ -686,7 +693,6 @@
     setInterval(updateDeadlineBanner, 60000); // update every minute
     renderItems();
     updateTotals();
-    initAutocomplete();
     const addr = document.getElementById('co-address');
     if (addr && addr.value) onAddressInput(addr.value);
   });
