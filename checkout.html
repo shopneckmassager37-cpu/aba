@@ -238,7 +238,7 @@
 <section class="hero max-w-7xl mx-auto px-6">
   <p class="hero-eyebrow"><span class="gold-line"></span> &nbsp; Final Step &nbsp; <span class="gold-line"></span></p>
   <h1 class="hero-title">Complete Your Order</h1>
-  <p class="hero-sub">Review your selection, choose your delivery zone, and add a personal note for the chef.</p>
+  <p class="hero-sub">Review your selection, confirm your delivery details, and add a personal note for the chef.</p>
 </section>
 
 <main class="max-w-7xl mx-auto px-6 pb-24">
@@ -258,26 +258,13 @@
         </div>
       </div>
 
-      <!-- Delivery Zone -->
+      <!-- Delivery Zone - Auto Detected -->
       <div class="panel p-8 md:p-10">
         <p class="section-eyebrow">02 · Delivery</p>
-        <h2 class="section-title mb-6">Choose Your Zone</h2>
-        <div id="zone-grid" class="grid grid-cols-3 gap-3 md:gap-4">
-          <div class="pick py-7 px-3 text-center" data-zone="15" onclick="selectZone(this)">
-            <div class="pick-label">Zone 1</div>
-            <div class="pick-price">$15</div>
-            <div class="pick-sub">Nearby</div>
-          </div>
-          <div class="pick active py-7 px-3 text-center" data-zone="30" onclick="selectZone(this)">
-            <div class="pick-label">Zone 2</div>
-            <div class="pick-price">$30</div>
-            <div class="pick-sub">Mid-range</div>
-          </div>
-          <div class="pick py-7 px-3 text-center" data-zone="60" onclick="selectZone(this)">
-            <div class="pick-label">Zone 3</div>
-            <div class="pick-price">$60</div>
-            <div class="pick-sub">Extended</div>
-          </div>
+        <h2 class="section-title mb-2">Delivery Zone</h2>
+        <p class="text-sm text-charcoal/45 font-light mb-5">Automatically detected from your delivery address below.</p>
+        <div id="zone-display" style="border:1px solid rgba(26,26,26,.1);padding:1.25rem 1.5rem;transition:all .3s;background:white">
+          <p style="font-size:.875rem;font-weight:300;color:rgba(26,26,26,.5);font-style:italic">Enter your delivery address below to detect your zone.</p>
         </div>
       </div>
 
@@ -290,22 +277,38 @@
         <div class="mb-7">
           <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Chef</p>
           <div id="chef-tip-grid" class="grid grid-cols-5 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-chef" data-val="0" onclick="selectTip('chef',this)"><div class="pick-num">0<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="custom" onclick="selectTip('chef',this)"><div class="pick-num" style="font-size:.75rem;letter-spacing:.03em;line-height:1.4">Custom<span class="pick-suf">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef" data-val="5" onclick="selectTip('chef',this)"><div class="pick-num">5<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef" data-val="10" onclick="selectTip('chef',this)"><div class="pick-num">10<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef active" data-val="15" onclick="selectTip('chef',this)"><div class="pick-num">15<span class="text-base">%</span></div></div>
             <div class="pick pick-mini text-center tip-chef" data-val="20" onclick="selectTip('chef',this)"><div class="pick-num">20<span class="text-base">%</span></div></div>
+          </div>
+          <div id="chef-custom-wrapper" style="display:none;align-items:center;gap:.5rem;margin-top:.75rem">
+            <input type="number" id="chef-custom-input" min="0" max="100" step="1" placeholder="Enter %"
+              oninput="applyCustomTip('chef')"
+              style="width:90px;border:1px solid rgba(26,26,26,.15);background:white;padding:.6rem .75rem;
+                     font-size:.875rem;font-family:'Jost',sans-serif;font-weight:300;outline:none;
+                     transition:border-color .2s"/>
+            <span style="font-size:.8rem;color:rgba(26,26,26,.5)">%</span>
           </div>
         </div>
 
         <div>
           <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
           <div id="driver-tip-grid" class="grid grid-cols-5 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-driver" data-val="0" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>0</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="custom" onclick="selectTip('driver',this)"><div class="pick-num" style="font-size:.75rem;letter-spacing:.03em;line-height:1.4">Custom<span class="pick-suf">$</span></div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="3" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>3</div></div>
             <div class="pick pick-mini text-center tip-driver active" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>5</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>8</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="10" onclick="selectTip('driver',this)"><div class="pick-num"><span class="text-base">$</span>10</div></div>
+          </div>
+          <div id="driver-custom-wrapper" style="display:none;align-items:center;gap:.5rem;margin-top:.75rem">
+            <span style="font-size:.8rem;color:rgba(26,26,26,.5)">$</span>
+            <input type="number" id="driver-custom-input" min="0" step="1" placeholder="Enter amount"
+              oninput="applyCustomTip('driver')"
+              style="width:110px;border:1px solid rgba(26,26,26,.15);background:white;padding:.6rem .75rem;
+                     font-size:.875rem;font-family:'Jost',sans-serif;font-weight:300;outline:none;
+                     transition:border-color .2s"/>
           </div>
         </div>
       </div>
@@ -318,7 +321,7 @@
           <input type="text" id="co-name" class="field" placeholder="Full Name *"/>
           <input type="tel" id="co-phone" class="field" placeholder="Phone Number *"/>
           <input type="email" id="co-email" class="field md:col-span-2" placeholder="Email Address *"/>
-          <input type="text" id="co-address" class="field md:col-span-2" placeholder="Delivery Address *"/>
+          <input type="text" id="co-address" class="field md:col-span-2" placeholder="Delivery Address *" oninput="onAddressInput()"/>
           <textarea id="co-notes" class="field md:col-span-2" rows="3" placeholder="Special instructions (optional)" style="resize:none"></textarea>
         </div>
       </div>
@@ -334,7 +337,7 @@
           <div>
             <div class="sum-row"><span class="sum-label">Subtotal</span><span class="sum-val" id="co-sub">$0.00</span></div>
             <div class="sum-row"><span class="sum-label">Tax (7%)</span><span class="sum-val" id="co-tax">$0.00</span></div>
-            <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">Zone 2</span></span><span class="sum-val" id="co-delivery">$30.00</span></div>
+            <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">—</span></span><span class="sum-val" id="co-delivery">—</span></div>
             <div class="sum-row"><span class="sum-label">Chef Tip <span id="co-chef-label" class="text-charcoal/35 ml-1">15%</span></span><span class="sum-val" id="co-chef-tip">$0.00</span></div>
             <div class="sum-row"><span class="sum-label">Driver Tip</span><span class="sum-val" id="co-driver-tip">$5.00</span></div>
           </div>
@@ -364,7 +367,13 @@
 
 <script>
   const CART_KEY = 'chefaleh_cart';
-  let deliveryZone = 30;
+  const ZONE_AREAS = [
+    { keywords: ['miami beach','surfside','bal harbour','north bay village'], fee: 15, label: 'Zone 1', sub: 'Nearby' },
+    { keywords: ['aventura','sunny isles','north miami beach','hollywood','hallandale'], fee: 30, label: 'Zone 2', sub: 'Mid-range' },
+    { keywords: ['fort lauderdale','pompano beach','boca raton'], fee: 60, label: 'Zone 3', sub: 'Extended' }
+  ];
+
+  let deliveryZone = null;
   let chefTipPct = 15;
   let driverTipAmt = 5;
 
@@ -373,13 +382,45 @@
     catch { return []; }
   }
 
-  function selectZone(el) {
-    document.querySelectorAll('#zone-grid .pick').forEach(b => b.classList.remove('active'));
-    el.classList.add('active');
-    deliveryZone = parseInt(el.dataset.zone, 10);
-    const zoneLabels = { 15: 'Zone 1', 30: 'Zone 2', 60: 'Zone 3' };
+  function onAddressInput() {
+    const address = document.getElementById('co-address').value;
+    const lower = address.toLowerCase();
+    const zone = ZONE_AREAS.find(z => z.keywords.some(kw => lower.includes(kw))) || null;
+    const display = document.getElementById('zone-display');
     const zEl = document.getElementById('co-zone-label');
-    if (zEl) zEl.textContent = zoneLabels[deliveryZone] || '';
+
+    if (zone) {
+      deliveryZone = zone.fee;
+      if (display) {
+        display.style.borderColor = '#D4AF37';
+        display.style.background = 'rgba(212,175,55,.04)';
+        display.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:#1A1A1A">${zone.label} — ${zone.sub}</div>
+              <div style="font-size:.85rem;color:rgba(26,26,26,.55);margin-top:.3rem">$${zone.fee} delivery fee</div>
+            </div>
+            <div style="font-size:1.5rem;color:#D4AF37">✓</div>
+          </div>`;
+      }
+      if (zEl) zEl.textContent = zone.label;
+    } else if (address.trim()) {
+      deliveryZone = null;
+      if (display) {
+        display.style.borderColor = 'rgba(26,26,26,.1)';
+        display.style.background = 'white';
+        display.innerHTML = `<p style="font-size:.875rem;font-weight:300;color:rgba(26,26,26,.5);font-style:italic">Address not recognized. Please include your city (e.g. Miami Beach, Aventura, Fort Lauderdale).</p>`;
+      }
+      if (zEl) zEl.textContent = '—';
+    } else {
+      deliveryZone = null;
+      if (display) {
+        display.style.borderColor = 'rgba(26,26,26,.1)';
+        display.style.background = 'white';
+        display.innerHTML = `<p style="font-size:.875rem;font-weight:300;color:rgba(26,26,26,.5);font-style:italic">Enter your delivery address below to detect your zone.</p>`;
+      }
+      if (zEl) zEl.textContent = '—';
+    }
     updateTotals();
   }
 
@@ -387,7 +428,33 @@
     const gridId = type === 'chef' ? 'chef-tip-grid' : 'driver-tip-grid';
     document.querySelectorAll('#' + gridId + ' .pick').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
-    const val = parseInt(el.dataset.val, 10);
+    const val = el.dataset.val;
+    const customWrapper = document.getElementById(type + '-custom-wrapper');
+
+    if (val === 'custom') {
+      if (customWrapper) customWrapper.style.display = 'flex';
+      if (type === 'chef') { chefTipPct = 0; }
+      else { driverTipAmt = 0; }
+      const input = document.getElementById(type + '-custom-input');
+      if (input) { input.value = ''; input.focus(); }
+    } else {
+      if (customWrapper) customWrapper.style.display = 'none';
+      const numVal = parseFloat(val) || 0;
+      if (type === 'chef') {
+        chefTipPct = numVal;
+        const lbl = document.getElementById('co-chef-label');
+        if (lbl) lbl.textContent = numVal + '%';
+      } else {
+        driverTipAmt = numVal;
+      }
+    }
+    updateTotals();
+  }
+
+  function applyCustomTip(type) {
+    const input = document.getElementById(type + '-custom-input');
+    if (!input) return;
+    const val = parseFloat(input.value) || 0;
     if (type === 'chef') {
       chefTipPct = val;
       const lbl = document.getElementById('co-chef-label');
@@ -403,13 +470,14 @@
     const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     const tax = sub * 0.07;
     const chefTip = sub * chefTipPct / 100;
-    const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
+    const delivery = deliveryZone !== null ? deliveryZone : 0;
+    const total = sub + tax + delivery + chefTip + driverTipAmt;
 
     const fmt = n => '$' + n.toFixed(2);
     const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
     set('co-sub', fmt(sub));
     set('co-tax', fmt(tax));
-    set('co-delivery', fmt(deliveryZone));
+    set('co-delivery', deliveryZone !== null ? fmt(deliveryZone) : '—');
     set('co-chef-tip', fmt(chefTip));
     set('co-driver-tip', fmt(driverTipAmt));
     set('co-tot', fmt(total));
@@ -458,6 +526,10 @@
       alert('Please fill in all required fields.');
       return;
     }
+    if (deliveryZone === null) {
+      alert('Your address could not be matched to a delivery zone. Please include your city (e.g. Miami Beach, Aventura, Fort Lauderdale).');
+      return;
+    }
     const cart = readCart();
     if (!cart.length) { alert('Your cart is empty.'); return; }
 
@@ -501,6 +573,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     renderItems();
     updateTotals();
+    onAddressInput();
   });
 </script>
 </body>

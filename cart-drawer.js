@@ -1,11 +1,19 @@
 /* cart-drawer.js — shared cart drawer + order form for all pages */
 
 const TAX_RATE = 0.07;
+const ZONE_AREAS = [
+  { keywords: ['miami beach','surfside','bal harbour','north bay village'], fee: 15, label: 'Zone 1 — Local' },
+  { keywords: ['aventura','sunny isles','north miami beach','hollywood','hallandale'], fee: 30, label: 'Zone 2 — Extended' },
+  { keywords: ['fort lauderdale','pompano beach','boca raton'], fee: 60, label: 'Zone 3 — Long Range' }
+];
+
 let drawerStep = 'cart'; // 'cart' | 'form' | 'done'
 let deliveryFee = null;
 let deliveryLabel = '';
 let chefTipPct = 15;
 let driverTipAmt = 10;
+let chefCustomMode = false;
+let driverCustomMode = false;
 
 /* ── inject drawer HTML once DOM is ready ── */
 document.addEventListener('DOMContentLoaded', () => {
@@ -209,26 +217,14 @@ function renderFormStep() {
   const delivery = deliveryFee !== null ? deliveryFee : 0;
   const total    = sub + tax + chefTip + driverTipAmt + delivery;
 
-  const field = (id, label, type, placeholder) => `
+  const field = (id, label, type, placeholder, extra='') => `
     <div style="margin-bottom:12px">
       <label style="display:block;font-size:10px;letter-spacing:.15em;text-transform:uppercase;
                     color:rgba(26,26,26,.4);margin-bottom:6px">${label}</label>
-      <input id="f-${id}" type="${type}" placeholder="${placeholder}"
+      <input id="f-${id}" type="${type}" placeholder="${placeholder}" ${extra}
         style="width:100%;border:1px solid rgba(26,26,26,.15);background:white;padding:11px 14px;
                font-size:13px;font-family:'Jost',sans-serif;font-weight:300;outline:none;
                transition:border-color .2s;box-sizing:border-box"/>
-    </div>`;
-
-  const zoneBtn = (fee, label, areas) => `
-    <div class="zone-opt" data-fee="${fee}"
-      onclick="selectZoneOpt(this,${fee},'${label}')"
-      style="border:2px solid rgba(26,26,26,.1);padding:14px 16px;cursor:pointer;
-             margin-bottom:8px;transition:border-color .2s,background .2s;background:white">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1rem;font-weight:300;color:#1A1A1A">${label}</span>
-        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;color:#D4AF37">$${fee}</span>
-      </div>
-      <p style="font-size:11px;color:rgba(26,26,26,.4);font-weight:300">${areas}</p>
     </div>`;
 
   const tipBtn = (val, label, group) => `
@@ -264,24 +260,24 @@ function renderFormStep() {
 
       <div style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:20px 0"></div>
 
-      <!-- Delivery Zone -->
-      <p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;font-weight:300;
-                color:#1A1A1A;margin-bottom:14px">Delivery Zone</p>
-      ${zoneBtn(15,'Zone 1 — Local','Miami Beach · Surfside · Bal Harbour · North Bay Village')}
-      ${zoneBtn(30,'Zone 2 — Extended','Aventura · Sunny Isles · North Miami Beach · Hollywood · Hallandale')}
-      ${zoneBtn(60,'Zone 3 — Long Range','Fort Lauderdale · Pompano Beach · Boca Raton')}
-
-      <div style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:20px 0"></div>
-
       <!-- Address -->
       <p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;font-weight:300;
                 color:#1A1A1A;margin-bottom:14px">Delivery Address</p>
-      ${field('addr','Street Address *','text','123 Maple Street')}
+      ${field('addr','Street Address *','text','123 Maple Street','oninput="detectZone()"')}
       ${field('apt','Apt / Suite','text','Apt 4B')}
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:0 10px">
-        ${field('city','City *','text','Miami Beach')}
+        ${field('city','City *','text','Miami Beach','oninput="detectZone()"')}
         ${field('state','State *','text','FL')}
         ${field('zip','ZIP *','text','33139')}
+      </div>
+
+      <!-- Delivery Zone - Auto Detected -->
+      <p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;font-weight:300;
+                color:#1A1A1A;margin-bottom:8px;margin-top:16px">Delivery Zone</p>
+      <p style="font-size:11px;color:rgba(26,26,26,.4);font-weight:300;margin-bottom:10px">Automatically detected from your city</p>
+      <div id="drawer-zone-display"
+        style="border:2px solid rgba(26,26,26,.1);padding:14px 16px;background:white;transition:all .2s">
+        <p style="font-size:11px;color:rgba(26,26,26,.5);font-weight:300;font-style:italic">Enter your city above to detect delivery zone.</p>
       </div>
 
       <div style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:20px 0"></div>
@@ -291,12 +287,23 @@ function renderFormStep() {
                 color:#1A1A1A;margin-bottom:6px">Driver Tip</p>
       <p style="font-size:11px;color:rgba(26,26,26,.4);font-weight:300;margin-bottom:12px">Fixed amount</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px">
-        ${tipBtn(0,'No Tip','driver')}
+        <button class="tip-driver" data-val="custom"
+          onclick="selectTip(this,'driver','custom')"
+          style="padding:9px 14px;border:1px solid rgba(26,26,26,.15);background:white;cursor:pointer;
+                 font-size:12px;font-family:'Jost',sans-serif;font-weight:300;color:#1A1A1A;
+                 transition:all .2s">Custom $</button>
         ${tipBtn(3,'$3','driver')}
         ${tipBtn(5,'$5','driver')}
         ${tipBtn(10,'$10','driver')}
         ${tipBtn(15,'$15','driver')}
         ${tipBtn(20,'$20','driver')}
+      </div>
+      <div id="drawer-driver-custom" style="display:none;align-items:center;gap:8px;margin-top:8px">
+        <span style="font-size:13px;color:rgba(26,26,26,.5)">$</span>
+        <input type="number" id="drawer-driver-custom-input" min="0" step="1" placeholder="Enter amount"
+          oninput="applyDrawerCustomTip('driver')"
+          style="width:100px;border:1px solid rgba(26,26,26,.15);background:white;padding:8px 10px;
+                 font-size:12px;font-family:'Jost',sans-serif;font-weight:300;outline:none"/>
       </div>
 
       <div style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:20px 0"></div>
@@ -306,11 +313,22 @@ function renderFormStep() {
                 color:#1A1A1A;margin-bottom:6px">Chef Tip</p>
       <p style="font-size:11px;color:rgba(26,26,26,.4);font-weight:300;margin-bottom:12px">% of order subtotal</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px">
-        ${tipBtn(0,'No Tip','chef')}
+        <button class="tip-chef" data-val="custom"
+          onclick="selectTip(this,'chef','custom')"
+          style="padding:9px 14px;border:1px solid rgba(26,26,26,.15);background:white;cursor:pointer;
+                 font-size:12px;font-family:'Jost',sans-serif;font-weight:300;color:#1A1A1A;
+                 transition:all .2s">Custom %</button>
         ${tipBtn(10,'10%','chef')}
         ${tipBtn(15,'15%','chef')}
         ${tipBtn(20,'20%','chef')}
         ${tipBtn(25,'25%','chef')}
+      </div>
+      <div id="drawer-chef-custom" style="display:none;align-items:center;gap:8px;margin-top:8px">
+        <input type="number" id="drawer-chef-custom-input" min="0" max="100" step="1" placeholder="Enter %"
+          oninput="applyDrawerCustomTip('chef')"
+          style="width:90px;border:1px solid rgba(26,26,26,.15);background:white;padding:8px 10px;
+                 font-size:12px;font-family:'Jost',sans-serif;font-weight:300;outline:none"/>
+        <span style="font-size:13px;color:rgba(26,26,26,.5)">%</span>
       </div>
 
       <div style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:20px 0"></div>
@@ -329,15 +347,23 @@ function renderFormStep() {
       </p>
     </div>`;
 
-  /* restore tip selections */
+  /* restore tip selections and zone */
   requestAnimationFrame(() => {
-    highlightTip('driver', driverTipAmt);
-    highlightTip('chef',   chefTipPct);
-    if (deliveryFee !== null) {
-      document.querySelectorAll('.zone-opt').forEach(el => {
-        if (parseInt(el.dataset.fee) === deliveryFee) applyZoneStyle(el, true);
-      });
+    if (driverCustomMode) {
+      highlightTip('driver', 'custom');
+      const dw = document.getElementById('drawer-driver-custom');
+      if (dw) dw.style.display = 'flex';
+    } else {
+      highlightTip('driver', driverTipAmt);
     }
+    if (chefCustomMode) {
+      highlightTip('chef', 'custom');
+      const cw = document.getElementById('drawer-chef-custom');
+      if (cw) cw.style.display = 'flex';
+    } else {
+      highlightTip('chef', chefTipPct);
+    }
+    detectZone();
   });
 
   const sub2 = getSubtotal();
@@ -456,33 +482,82 @@ function buildDoneSummary() {
     </div>`;
 }
 
-/* ── zone / tip helpers ── */
-function applyZoneStyle(el, sel) {
-  el.style.borderColor  = sel ? '#D4AF37' : 'rgba(26,26,26,.1)';
-  el.style.background   = sel ? 'rgba(212,175,55,.05)' : 'white';
-}
+/* ── zone detection ── */
+function detectZone() {
+  const city = (document.getElementById('f-city')?.value || '').toLowerCase();
+  const addr = (document.getElementById('f-addr')?.value || '').toLowerCase();
+  const combined = city + ' ' + addr;
+  const zone = ZONE_AREAS.find(z => z.keywords.some(kw => combined.includes(kw))) || null;
+  const display = document.getElementById('drawer-zone-display');
 
-function selectZoneOpt(el, fee, label) {
-  document.querySelectorAll('.zone-opt').forEach(z => applyZoneStyle(z, false));
-  applyZoneStyle(el, true);
-  deliveryFee   = fee;
-  deliveryLabel = label;
+  if (zone) {
+    deliveryFee   = zone.fee;
+    deliveryLabel = zone.label;
+    if (display) {
+      display.style.borderColor = '#D4AF37';
+      display.style.background  = 'rgba(212,175,55,.04)';
+      display.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1rem;font-weight:300;color:#1A1A1A">${zone.label}</span>
+          <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;color:#D4AF37">$${zone.fee}</span>
+        </div>
+        <p style="font-size:11px;color:rgba(26,26,26,.4);font-weight:300">✓ Detected from your address</p>`;
+    }
+  } else if (city.trim() || addr.trim()) {
+    deliveryFee   = null;
+    deliveryLabel = '';
+    if (display) {
+      display.style.borderColor = 'rgba(26,26,26,.1)';
+      display.style.background  = 'white';
+      display.innerHTML = `<p style="font-size:11px;color:rgba(26,26,26,.5);font-weight:300;font-style:italic">City not recognized. We deliver to Miami Beach, Aventura, Fort Lauderdale &amp; surrounding areas.</p>`;
+    }
+  } else {
+    deliveryFee   = null;
+    deliveryLabel = '';
+    if (display) {
+      display.style.borderColor = 'rgba(26,26,26,.1)';
+      display.style.background  = 'white';
+      display.innerHTML = `<p style="font-size:11px;color:rgba(26,26,26,.5);font-weight:300;font-style:italic">Enter your city above to detect delivery zone.</p>`;
+    }
+  }
   updateFormTotals();
 }
 
 function highlightTip(group, val) {
   document.querySelectorAll('.tip-'+group).forEach(b => {
-    const active = parseFloat(b.dataset.val) === val;
+    const bVal = b.dataset.val;
+    const active = bVal === 'custom' ? val === 'custom' : parseFloat(bVal) === val;
     b.style.background   = active ? '#D4AF37' : 'white';
     b.style.borderColor  = active ? '#D4AF37' : 'rgba(26,26,26,.15)';
-    b.style.color        = active ? '#1A1A1A' : '#1A1A1A';
+    b.style.color        = '#1A1A1A';
   });
 }
 
 function selectTip(el, group, val) {
+  const customWrapId = 'drawer-' + group + '-custom';
+  const customWrap = document.getElementById(customWrapId);
+  if (val === 'custom') {
+    if (group === 'driver') { driverCustomMode = true; driverTipAmt = 0; }
+    else { chefCustomMode = true; chefTipPct = 0; }
+    highlightTip(group, 'custom');
+    if (customWrap) customWrap.style.display = 'flex';
+    const input = document.getElementById(customWrapId + '-input');
+    if (input) { input.value = ''; input.focus(); }
+  } else {
+    if (group === 'driver') { driverTipAmt = val; driverCustomMode = false; }
+    else { chefTipPct = val; chefCustomMode = false; }
+    highlightTip(group, val);
+    if (customWrap) customWrap.style.display = 'none';
+  }
+  updateFormTotals();
+}
+
+function applyDrawerCustomTip(group) {
+  const input = document.getElementById('drawer-' + group + '-custom-input');
+  if (!input) return;
+  const val = parseFloat(input.value) || 0;
   if (group === 'driver') driverTipAmt = val;
   else chefTipPct = val;
-  highlightTip(group, val);
   updateFormTotals();
 }
 
@@ -515,7 +590,7 @@ function submitOrder() {
     else el.style.borderColor = '';
   });
   if (!ok)               { alert('Please fill in all required fields.'); return; }
-  if (deliveryFee === null) { alert('Please select a delivery zone.'); return; }
+  if (deliveryFee === null) { alert('Your address could not be matched to a delivery zone. Please include your city (e.g. Miami Beach, Aventura, Fort Lauderdale).'); return; }
   if (getCart().length === 0) { alert('Your cart is empty.'); return; }
 
   const btn = document.getElementById('submit-btn');
