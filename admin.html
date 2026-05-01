@@ -181,21 +181,29 @@ select.input { background:white; }
 
 <script src="supabase.js"></script>
 <script>
-const ADMIN_PASSWORD = 'Dandush770@';
 let categories = [];
 let products = [];
 let activeCatFilter = 'all';
 let dragSrcEl = null;
 
 // ── AUTH ──
-function doLogin() {
+async function doLogin() {
   const val = document.getElementById('pw-input').value;
-  if (val === ADMIN_PASSWORD) {
-    sessionStorage.setItem('admin_auth', '1');
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('admin-app').classList.remove('hidden');
-    loadAll();
-  } else {
+  try {
+    const res = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: val })
+    });
+    if (res.ok) {
+      sessionStorage.setItem('admin_auth', '1');
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('admin-app').classList.remove('hidden');
+      loadAll();
+    } else {
+      document.getElementById('login-err').classList.remove('hidden');
+    }
+  } catch {
     document.getElementById('login-err').classList.remove('hidden');
   }
 }
