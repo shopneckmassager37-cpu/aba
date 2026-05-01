@@ -35,6 +35,30 @@
 </head>
 <body>
 
+<!-- FULL-SCREEN ANNOUNCEMENT BANNER -->
+<div id="site-banner" class="fixed inset-0 z-[200] flex items-center justify-center bg-charcoal/95 backdrop-blur-sm px-6">
+  <div class="relative max-w-lg w-full text-center">
+    <div class="gold-bar mb-10"></div>
+    <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-5 font-light">Important Update</p>
+    <h2 class="font-serif text-cream font-light leading-tight mb-6" style="font-size:clamp(2rem,5vw,3.2rem)">
+      Orders for This Friday<br/><em>Are Now Open</em>
+    </h2>
+    <p class="text-cream/50 font-light text-sm leading-relaxed mb-2">
+      Place your Shabbat order by <span class="text-gold">Wednesday 5:00 PM</span> for Friday delivery.
+    </p>
+    <p class="text-cream/30 text-xs font-light mb-10 tracking-wide">South Florida · Miami Beach · Aventura · Boca Raton</p>
+    <div class="gold-bar mb-10"></div>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-xs tracking-[.3em] uppercase font-medium hover:bg-white transition-all duration-300">
+        Order Now &rarr;
+      </a>
+      <button onclick="closeBanner()" class="text-cream/40 text-xs tracking-[.3em] uppercase font-light py-4 hover:text-cream transition-colors duration-300">
+        Continue to Site
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- COOKIE BANNER -->
 <div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
   <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="cookie-policy.html" class="underline hover:text-gold transition-colors">Learn more</a></p>
@@ -400,6 +424,11 @@
 
 <script src="cart.js"></script>
 <script>
+  function closeBanner() {
+    const b = document.getElementById('site-banner');
+    if (b) { b.style.opacity = '0'; b.style.transition = 'opacity .4s ease'; setTimeout(() => b.remove(), 400); }
+  }
+
   setTimeout(() => {
     const c = document.getElementById('cookie');
     if (c) c.classList.remove('translate-y-full');
