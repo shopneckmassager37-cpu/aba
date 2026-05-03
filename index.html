@@ -9,55 +9,63 @@
   <script>
     tailwind.config = {
       theme: { extend: {
-        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
-        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
+        colors: {
+          cream: '#F9F7F2',
+          charcoal: '#1A1A1A',
+          gold: '#D4AF37',
+          'cream-dark': '#EFEDE6',
+          'charcoal-soft': '#2C2C2C'
+        },
+        fontFamily: {
+          serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+          sans: ['Jost', 'sans-serif']
+        }
       }}
     }
   </script>
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
-    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
-    .gold-bar-left{height:2px;width:50px;background:#D4AF37}
-    ::-webkit-scrollbar{width:5px}
-    ::-webkit-scrollbar-track{background:#F9F7F2}
-    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
-    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    .fade-up{animation:fadeUp .8s ease forwards}
-    .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
-    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,8,5,.55) 0%,rgba(10,8,5,.35) 40%,rgba(10,8,5,.72) 100%)}
-    /* NAV mobile */
-    #mobile-menu{display:none}
-    #mobile-menu.open{display:flex}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #F9F7F2; color: #1A1A1A; font-family: 'Jost', sans-serif; }
+
+    .gold-bar { height: 1px; background: linear-gradient(to right, transparent, #D4AF37, transparent); }
+    .gold-bar-left { height: 2px; width: 50px; background: #D4AF37; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #F9F7F2; }
+    ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 2px; }
+
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .fade-up { animation: fadeUp .9s ease forwards; }
+
+    .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,8,5,.60) 0%, rgba(10,8,5,.38) 45%, rgba(10,8,5,.78) 100%); }
+
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: flex; }
+
+    /* nav transparent on top of hero */
+    nav.scrolled { background: rgba(26,26,26,.97) !important; border-color: rgba(212,175,55,.15) !important; }
+    nav.scrolled .nav-logo { color: #F9F7F2 !important; }
+    nav.scrolled .nav-link { color: rgba(249,247,242,.55) !important; }
+    nav.scrolled .nav-link:hover { color: #D4AF37 !important; }
+    nav.scrolled .nav-link.active { color: #D4AF37 !important; }
+
+    .hover-zoom { overflow: hidden; }
+    .hover-zoom img { transition: transform .75s cubic-bezier(.25,.46,.45,.94); }
+    .hover-zoom:hover img { transform: scale(1.06); }
+
+    /* zone card highlight */
+    .zone-featured { background: #2C2C2C; border-top: 2px solid #D4AF37; }
+
+    /* dish stagger */
+    .dish-mid { margin-top: 3rem; }
+    @media (max-width: 767px) { .dish-mid { margin-top: 0; } }
   </style>
 </head>
 <body>
-
-<!-- FULL-SCREEN ANNOUNCEMENT BANNER -->
-<div id="site-banner" class="fixed inset-0 z-[200] flex items-center justify-center bg-charcoal/95 backdrop-blur-sm px-6">
-  <div class="relative max-w-lg w-full text-center">
-    <div class="gold-bar mb-10"></div>
-    <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-5 font-light">Important Update</p>
-    <h2 class="font-serif text-cream font-light leading-tight mb-6" style="font-size:clamp(2rem,5vw,3.2rem)">
-      Orders for This Friday<br/><em>Are Now Open</em>
-    </h2>
-    <p class="text-cream/50 font-light text-sm leading-relaxed mb-2">
-      Place your Shabbat order by <span class="text-gold">Wednesday 5:00 PM</span> for Friday delivery.
-    </p>
-    <p class="text-cream/30 text-xs font-light mb-10 tracking-wide">South Florida · Miami Beach · Aventura · Boca Raton</p>
-    <div class="gold-bar mb-10"></div>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-xs tracking-[.3em] uppercase font-medium hover:bg-white transition-all duration-300">
-        Order Now &rarr;
-      </a>
-      <button onclick="closeBanner()" class="text-cream/40 text-xs tracking-[.3em] uppercase font-light py-4 hover:text-cream transition-colors duration-300">
-        Continue to Site
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- COOKIE BANNER -->
 <div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
@@ -66,42 +74,41 @@
 </div>
 
 <!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
-  <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
-    <a href="index.html" class="font-serif text-xl md:text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+<nav id="main-nav" class="fixed top-0 left-0 right-0 z-40 transition-all duration-400" style="background:rgba(10,8,5,.45);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.08)">
+  <div class="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between">
+    <a href="index.html" class="nav-logo font-serif text-xl md:text-2xl tracking-[.22em] text-white font-light transition-colors duration-300">CHEFALEH</a>
 
     <!-- Desktop links -->
-    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-medium">
-      <a href="index.html" class="text-gold">Home</a>
-      <a href="about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
-      <a href="menu.html"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
-      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
+    <div class="hidden md:flex items-center gap-8 text-[11px] tracking-[.22em] uppercase font-medium">
+      <a href="index.html" class="nav-link active text-gold transition-colors duration-200">Home</a>
+      <a href="about.html" class="nav-link text-white/60 hover:text-gold transition-colors duration-200">About</a>
+      <a href="menu.html"  class="nav-link text-white/60 hover:text-gold transition-colors duration-200">Menu</a>
+      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 text-[11px] tracking-[.2em] uppercase font-medium hover:bg-white transition-all duration-300">
         Cart
         <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
       </button>
     </div>
 
-    <!-- Mobile right icons -->
+    <!-- Mobile right -->
     <div class="flex md:hidden items-center gap-3">
-      <button onclick="openDrawer()" class="relative flex items-center bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
+      <button onclick="openDrawer()" class="relative flex items-center bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-white transition-all">
         Cart
         <span class="cart-count-badge hidden ml-1.5 w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
-      <!-- Hamburger -->
       <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
-        <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
-        <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
-        <span id="ham3" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
+        <span id="ham1" class="block w-5 h-[1.5px] bg-white transition-all duration-300"></span>
+        <span id="ham2" class="block w-5 h-[1.5px] bg-white transition-all duration-300"></span>
+        <span id="ham3" class="block w-5 h-[1.5px] bg-white transition-all duration-300"></span>
       </button>
     </div>
   </div>
 
-  <!-- Mobile dropdown menu -->
-  <div id="mobile-menu" class="md:hidden flex-col bg-cream border-t border-charcoal/10 px-5 pb-5 pt-3 gap-0">
-    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">Home</a>
-    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">About</a>
-    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Menu</a>
-    <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors">Cart</button>
+  <!-- Mobile dropdown -->
+  <div id="mobile-menu" class="md:hidden flex-col px-5 pb-5 pt-3 gap-0" style="background:rgba(10,8,5,.95);border-top:1px solid rgba(255,255,255,.08)">
+    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-white/8">Home</a>
+    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">About</a>
+    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">Menu</a>
+    <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors">Cart</button>
   </div>
 </nav>
 
@@ -120,139 +127,143 @@
     <a href="checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
+<style>#drawer.open { transform: translateX(0) !important; }</style>
 
-<style>
-  #drawer.open { transform: translateX(0) !important; }
-</style>
-
-
-<!-- HERO — Shabbat table image from Unsplash -->
+<!-- ─────────────────────────────────────────────────────────────
+     HERO
+──────────────────────────────────────────────────────────────── -->
 <section class="relative min-h-screen flex items-center overflow-hidden">
-  <img
-    src="images/shabbat_table_hero.png"
-    alt="Elegant Shabbat Table"
-    class="hero-img"
-  />
+  <img src="images/shabbat_table_hero.png" alt="Elegant Shabbat Table" class="hero-img"/>
   <div class="hero-overlay"></div>
 
-  <div class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-8 py-32 flex flex-col items-center text-center fade-up">
-    <p class="text-gold text-[10px] md:text-xs tracking-[.45em] uppercase mb-5 font-light" style="text-shadow:0 1px 6px rgba(0,0,0,.8)">
+  <div class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 py-36 flex flex-col items-center text-center fade-up">
+    <p class="text-gold text-[10px] md:text-[11px] tracking-[.5em] uppercase mb-6 font-light" style="text-shadow:0 1px 8px rgba(0,0,0,.8)">
       Private Chef Experience
     </p>
-    <h1 class="font-serif text-white font-semibold leading-[1.08] mb-6" style="font-size:clamp(2.6rem,7vw,5.5rem);text-shadow:0 3px 18px rgba(0,0,0,.65)">
-      Elevated Traditions,<br/><em class="font-light text-white">Curated for Your Table</em>
+    <h1 class="font-serif text-white font-semibold leading-[1.07] mb-7" style="font-size:clamp(2.8rem,7.5vw,5.8rem);text-shadow:0 4px 20px rgba(0,0,0,.7)">
+      Elevated Traditions,<br/><em class="font-light italic text-white/90">Curated for Your Table</em>
     </h1>
-    <p class="text-white/90 font-light text-sm md:text-base leading-relaxed mb-10 max-w-md md:max-w-lg mx-auto" style="text-shadow:0 1px 8px rgba(0,0,0,.7)">
-      Bespoke Shabbat cuisine crafted with hand-selected ingredients and small-batch precision.
+    <p class="text-white/80 font-light text-sm md:text-[15px] leading-relaxed mb-11 max-w-md md:max-w-xl mx-auto" style="text-shadow:0 1px 10px rgba(0,0,0,.7)">
+      Bespoke Shabbat cuisine crafted with hand-selected ingredients<br class="hidden sm:block"/> and small-batch precision.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
-      <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-xs tracking-[.3em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center">
+      <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-[11px] tracking-[.32em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">
         View Menu &rarr;
       </a>
-      <a href="about.html" class="text-white text-xs tracking-[.3em] uppercase font-light py-4 hover:text-gold transition-colors duration-300" style="text-shadow:0 1px 6px rgba(0,0,0,.6)">
+      <a href="about.html" class="text-white/80 text-[11px] tracking-[.32em] uppercase font-light py-4 hover:text-gold transition-colors duration-300" style="text-shadow:0 1px 8px rgba(0,0,0,.6)">
         Our Story
       </a>
     </div>
   </div>
 
-  <div class="absolute bottom-8 right-6 md:right-10 z-10 opacity-40 flex flex-col items-center gap-3">
-    <div class="w-px h-12 bg-white/50"></div>
-    <span class="text-white text-[9px] tracking-[.3em] uppercase" style="writing-mode:vertical-rl">Scroll</span>
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 right-8 z-10 opacity-35 flex flex-col items-center gap-2">
+    <div class="w-px h-10 bg-white/60"></div>
+    <span class="text-white text-[9px] tracking-[.35em] uppercase" style="writing-mode:vertical-rl">Scroll</span>
   </div>
 </section>
 
 <!-- GOLD MARQUEE -->
-<div class="bg-gold py-3 overflow-hidden">
-  <div class="flex whitespace-nowrap" style="animation:marquee 20s linear infinite">
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Shabbat Delivery</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Fresh Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">ORB Certified Kosher</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Always Open — Delivery Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">South Florida</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Israeli &amp; Mediterranean</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Shabbat Delivery</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Fresh Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">ORB Certified Kosher</span><span class="text-charcoal/30 px-3">✦</span>
-    <span class="text-charcoal text-[11px] tracking-[.3em] uppercase px-8">Always Open — Delivery Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
+<div class="bg-gold py-3.5 overflow-hidden">
+  <div class="flex whitespace-nowrap" style="animation:marquee 22s linear infinite">
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Shabbat Delivery</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Fresh Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">ORB Certified Kosher</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Always Open — Delivery Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">South Florida</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Israeli &amp; Mediterranean</span><span class="text-charcoal/30 px-3">✦</span>
+    <!-- duplicate for seamless loop -->
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Shabbat Delivery</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Fresh Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">ORB Certified Kosher</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Always Open — Delivery Every Friday</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">South Florida</span><span class="text-charcoal/30 px-3">✦</span>
+    <span class="text-charcoal text-[10px] tracking-[.32em] uppercase px-8">Israeli &amp; Mediterranean</span><span class="text-charcoal/30 px-3">✦</span>
   </div>
 </div>
 
-
-<!-- HOW IT WORKS -->
-<section id="how-it-works" class="py-20 md:py-32 bg-charcoal">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
+<!-- ─────────────────────────────────────────────────────────────
+     HOW IT WORKS
+──────────────────────────────────────────────────────────────── -->
+<section id="how-it-works" class="py-24 md:py-36 bg-charcoal">
+  <div class="max-w-7xl mx-auto px-5 md:px-10">
     <div class="text-center mb-16 md:mb-20">
-      <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">The Process</p>
-      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2.2rem,5vw,4rem)">How It Works</h2>
+      <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-4 font-light">The Process</p>
+      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2.4rem,5.5vw,4.2rem)">How It Works</h2>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
-      <div class="group bg-charcoal p-8 md:p-10 hover:bg-charcoal-soft transition-colors duration-300">
-        <span class="font-serif text-6xl md:text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-6 md:mb-8 font-light">01</span>
-        <h3 class="font-serif text-cream text-xl font-light mb-3 md:mb-4">Weekly Menu</h3>
-        <p class="text-cream/40 text-sm font-light leading-relaxed">Each week, we release a curated Shabbat menu with a focused selection across every category.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/6">
+      <div class="group bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-[5.5rem] text-gold/10 group-hover:text-gold/20 transition-colors block mb-7 font-light leading-none">01</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-3">Weekly Menu</h3>
+        <p class="text-cream/38 text-sm font-light leading-relaxed">Each week, we release a curated Shabbat menu with a focused selection across every category.</p>
       </div>
-      <div class="group bg-charcoal p-8 md:p-10 hover:bg-charcoal-soft transition-colors duration-300">
-        <span class="font-serif text-6xl md:text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-6 md:mb-8 font-light">02</span>
-        <h3 class="font-serif text-cream text-xl font-light mb-3 md:mb-4">Order Anytime</h3>
-        <p class="text-cream/40 text-sm font-light leading-relaxed">Place your order whenever you like. Orders placed by <strong class="text-gold/80">Wednesday 5:00 PM</strong> arrive this Friday. Later orders arrive the following Friday.</p>
+      <div class="group bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-[5.5rem] text-gold/10 group-hover:text-gold/20 transition-colors block mb-7 font-light leading-none">02</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-3">Order Anytime</h3>
+        <p class="text-cream/38 text-sm font-light leading-relaxed">Place your order whenever you like. Orders placed by <strong class="text-gold/75 font-medium">Wednesday 5:00 PM</strong> arrive this Friday. Later orders arrive the following Friday.</p>
       </div>
-      <div class="group bg-charcoal p-8 md:p-10 hover:bg-charcoal-soft transition-colors duration-300">
-        <span class="font-serif text-6xl md:text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-6 md:mb-8 font-light">03</span>
-        <h3 class="font-serif text-cream text-xl font-light mb-3 md:mb-4">Friday Delivery</h3>
-        <p class="text-cream/40 text-sm font-light leading-relaxed">Your order arrives Friday between 3:00–5:00 PM, ready to place on the table.</p>
+      <div class="group bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-[5.5rem] text-gold/10 group-hover:text-gold/20 transition-colors block mb-7 font-light leading-none">03</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-3">Friday Delivery</h3>
+        <p class="text-cream/38 text-sm font-light leading-relaxed">Your order arrives Friday between 3:00–5:00 PM, ready to place on the table.</p>
       </div>
-      <div class="group bg-charcoal p-8 md:p-10 hover:bg-charcoal-soft transition-colors duration-300">
-        <span class="font-serif text-6xl md:text-7xl text-gold/12 group-hover:text-gold/22 transition-colors block mb-6 md:mb-8 font-light">04</span>
-        <h3 class="font-serif text-cream text-xl font-light mb-3 md:mb-4">Effortless Hosting</h3>
-        <p class="text-cream/40 text-sm font-light leading-relaxed">Tray format — abundant, effortless, designed for the Shabbat table.</p>
+      <div class="group bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
+        <span class="font-serif text-[5.5rem] text-gold/10 group-hover:text-gold/20 transition-colors block mb-7 font-light leading-none">04</span>
+        <h3 class="font-serif text-cream text-xl font-light mb-3">Effortless Hosting</h3>
+        <p class="text-cream/38 text-sm font-light leading-relaxed">Tray format — abundant, effortless, designed for the Shabbat table.</p>
       </div>
     </div>
+
     <div class="gold-bar mt-16 mb-8"></div>
-    <p class="text-center text-cream/25 text-xs font-light tracking-wider leading-relaxed max-w-lg mx-auto">
+    <p class="text-center text-cream/22 text-xs font-light tracking-wider leading-relaxed max-w-lg mx-auto">
       Pre-order model only · Orders confirmed upon payment receipt · Limited weekly production · Always open for next available delivery date
     </p>
   </div>
 </section>
 
-<!-- TRANSITION charcoal → cream -->
-<div style="height:80px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
+<!-- ─────────────────────────────────────────────────────────────
+     WE COOK WITH INTENTION
+──────────────────────────────────────────────────────────────── -->
+<section id="standards" class="py-24 md:py-28 bg-cream">
+  <div class="max-w-7xl mx-auto px-5 md:px-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 md:gap-24 items-center">
 
-<!-- OUR STANDARDS -->
-<section id="standards" class="py-20 md:py-24 bg-cream">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
+      <!-- Left: text -->
       <div>
-        <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Our Philosophy</p>
-        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(2rem,4vw,3.5rem)">We Cook With<br/><em>Intention</em></h2>
-        <div class="gold-bar-left mb-8 md:mb-10"></div>
-        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">At Chefaleh, we don't just focus on flavor — we focus on what goes into every ingredient. We cook exclusively with extra virgin olive oil and avocado oil — never seed oils.</p>
-        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">We use unbleached, organic flours and avoid processed shortcuts. No soy-based fillers, no unnecessary additives, no compromises.</p>
-        <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Real ingredients, properly sourced, cooked with intention. This isn't about trends — it's about quality, digestion, and how food should actually be prepared.</p>
+        <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-5 font-light">Our Philosophy</p>
+        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(2.2rem,4.5vw,3.8rem)">We Cook With<br/><em class="italic">Intention</em></h2>
+        <div class="gold-bar-left mb-9"></div>
+        <p class="text-charcoal/55 font-light leading-relaxed mb-5 text-[15px]">At Chefaleh, we don't just focus on flavor — we focus on what goes into every ingredient. We cook exclusively with extra virgin olive oil and avocado oil — never seed oils.</p>
+        <p class="text-charcoal/55 font-light leading-relaxed mb-5 text-[15px]">We use unbleached, organic flours and avoid processed shortcuts. No soy-based fillers, no unnecessary additives, no compromises.</p>
+        <p class="text-charcoal/55 font-light leading-relaxed text-[15px]">Real ingredients, properly sourced, cooked with intention. This isn't about trends — it's about quality, digestion, and how food should actually be prepared.</p>
       </div>
+
+      <!-- Right: 4 cards + image -->
       <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
-            <p class="text-gold text-lg mb-3">✦</p>
+          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/6 transition-colors">
+            <p class="text-gold text-base mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Clean Oils Only</h4>
-            <p class="text-charcoal/40 text-xs font-light leading-relaxed">EVOO &amp; avocado oil. Never seed oils.</p>
+            <p class="text-charcoal/38 text-xs font-light leading-relaxed">EVOO &amp; avocado oil. Never seed oils.</p>
           </div>
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
-            <p class="text-gold text-lg mb-3">✦</p>
+          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/6 transition-colors">
+            <p class="text-gold text-base mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Organic Flour</h4>
-            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Unbleached, organic. No shortcuts.</p>
+            <p class="text-charcoal/38 text-xs font-light leading-relaxed">Unbleached, organic. No shortcuts.</p>
           </div>
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
-            <p class="text-gold text-lg mb-3">✦</p>
+          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/6 transition-colors">
+            <p class="text-gold text-base mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Zero Fillers</h4>
-            <p class="text-charcoal/40 text-xs font-light leading-relaxed">No soy fillers or additives.</p>
+            <p class="text-charcoal/38 text-xs font-light leading-relaxed">No soy fillers or additives.</p>
           </div>
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
-            <p class="text-gold text-lg mb-3">✦</p>
+          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/6 transition-colors">
+            <p class="text-gold text-base mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Small Batch Only</h4>
-            <p class="text-charcoal/40 text-xs font-light leading-relaxed">Limited weekly production. Every dish made to order.</p>
+            <p class="text-charcoal/38 text-xs font-light leading-relaxed">Limited weekly production. Every dish made to order.</p>
           </div>
         </div>
-        <div class="overflow-hidden" style="height:160px">
+        <div class="hover-zoom" style="height:170px">
           <img src="images/new_meat.png" alt="Premium meat dish" class="w-full h-full object-cover object-center"/>
         </div>
       </div>
@@ -260,163 +271,181 @@
   </div>
 </section>
 
-<!-- TRANSITION cream → charcoal -->
-<div style="height:80px;background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
-
-<!-- QUOTE -->
-<section class="py-20 md:py-24 bg-charcoal relative overflow-hidden">
-  <div class="absolute inset-0 opacity-10">
-    <img src="images/food1.jpg" alt="" class="w-full h-full object-cover object-center"/>
-    <div class="absolute inset-0 bg-charcoal/70"></div>
+<!-- ─────────────────────────────────────────────────────────────
+     QUOTE
+──────────────────────────────────────────────────────────────── -->
+<section class="py-24 md:py-28 bg-charcoal relative overflow-hidden">
+  <!-- subtle bg texture -->
+  <div class="absolute inset-0 opacity-8 pointer-events-none">
+    <img src="images/food1.jpg" alt="" class="w-full h-full object-cover"/>
+    <div class="absolute inset-0 bg-charcoal/75"></div>
   </div>
-  <div class="relative z-10 max-w-3xl mx-auto px-5 md:px-8 text-center">
-    <p class="text-gold font-serif text-5xl mb-6 font-light">"</p>
-    <blockquote class="font-serif text-cream font-light leading-relaxed mb-8" style="font-size:clamp(1.4rem,3vw,2.2rem)">
-      Stunning and beautiful presentation.<br/><em>Really delicious food!</em>
+
+  <div class="relative z-10 max-w-3xl mx-auto px-5 md:px-10 text-center">
+    <p class="text-gold font-serif text-6xl mb-4 font-light leading-none">"</p>
+    <blockquote class="font-serif text-cream font-light leading-relaxed mb-8" style="font-size:clamp(1.5rem,3.2vw,2.4rem)">
+      Stunning and beautiful presentation.<br/><em class="italic">Really delicious food!</em>
     </blockquote>
-    <p class="text-cream/30 text-xs tracking-[.3em] uppercase font-light">— Chaya Gitlin, Google Review</p>
+    <div class="w-10 h-px bg-gold/40 mx-auto mb-5"></div>
+    <p class="text-cream/30 text-[10px] tracking-[.35em] uppercase font-light">— Chaya Gitlin &nbsp;·&nbsp; Google Review</p>
   </div>
 </section>
 
-<!-- TRANSITION charcoal → cream-dark -->
-<div style="height:80px;background:linear-gradient(to bottom,#1A1A1A,#EFEDE6)"></div>
-
-<!-- FEATURED DISHES -->
-<section id="featured" class="py-20 md:py-24 bg-cream-dark">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
+<!-- ─────────────────────────────────────────────────────────────
+     FEATURED DISHES
+──────────────────────────────────────────────────────────────── -->
+<section id="featured" class="py-24 md:py-28 bg-cream-dark">
+  <div class="max-w-7xl mx-auto px-5 md:px-10">
     <div class="text-center mb-12 md:mb-16">
-      <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">This Week's Highlights</p>
-      <a href="menu.html" class="hover:opacity-70 transition-opacity">
-        <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3.2rem)">Featured<br/><em>Dishes</em></h2>
-      </a>
+      <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-4 font-light">This Week's Highlights</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Featured<br/><em class="italic">Dishes</em></h2>
       <div class="gold-bar max-w-xs mx-auto my-6"></div>
-      <p class="text-charcoal/50 font-light text-sm max-w-md mx-auto">Each week, our chefs curate a selection of signature dishes crafted from the finest seasonal ingredients.</p>
+      <p class="text-charcoal/48 font-light text-sm max-w-md mx-auto">Each week, our chefs curate a selection of signature dishes crafted from the finest seasonal ingredients.</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 md:mb-12">
-      <div class="group overflow-hidden" style="height:280px;max-height:380px">
-        <img src="images/food3.png" alt="Featured dish" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+      <div class="hover-zoom" style="height:300px">
+        <img src="images/food3.png" alt="Featured dish" class="w-full h-full object-cover"/>
       </div>
-      <div class="group overflow-hidden md:mt-12" style="height:280px;max-height:380px">
-        <img src="images/food4.png" alt="Featured dish" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/>
+      <div class="hover-zoom dish-mid" style="height:300px">
+        <img src="images/food4.png" alt="Featured dish" class="w-full h-full object-cover"/>
       </div>
-      <div class="group overflow-hidden" style="height:280px;max-height:380px">
-        <img src="images/food5.png" alt="Featured dish" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"/>
+      <div class="hover-zoom" style="height:300px">
+        <img src="images/food5.png" alt="Featured dish" class="w-full h-full object-cover"/>
       </div>
     </div>
+
     <div class="text-center">
-      <a href="menu.html" class="inline-block bg-charcoal text-cream px-10 md:px-12 py-4 text-xs tracking-[.25em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">See Full Menu</a>
+      <a href="menu.html" class="inline-block bg-charcoal text-cream px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">See Full Menu</a>
     </div>
   </div>
 </section>
 
-<!-- TRANSITION cream-dark → charcoal -->
-<div style="height:80px;background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
-
-<!-- DELIVERY ZONES -->
-<section class="py-20 md:py-24 bg-charcoal">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
-    <div class="text-center mb-12 md:mb-16">
-      <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Service Area</p>
-      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2rem,4vw,3rem)">Delivery Zones</h2>
+<!-- ─────────────────────────────────────────────────────────────
+     DELIVERY ZONES
+──────────────────────────────────────────────────────────────── -->
+<section class="py-24 md:py-28 bg-charcoal">
+  <div class="max-w-7xl mx-auto px-5 md:px-10">
+    <div class="text-center mb-14 md:mb-18">
+      <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-4 font-light">Service Area</p>
+      <h2 class="font-serif text-cream font-light" style="font-size:clamp(2.2rem,4.5vw,3.2rem)">Delivery Zones</h2>
     </div>
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
-      <div class="bg-charcoal p-8 md:p-10 hover:bg-charcoal-soft transition-colors group">
+      <!-- Zone 1 -->
+      <div class="bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
         <div class="flex items-start justify-between mb-6">
           <div>
-            <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Zone 1 · Local</p>
+            <p class="text-gold text-[10px] tracking-[.35em] uppercase mb-2 font-light">Zone 1 · Local</p>
             <h3 class="font-serif text-cream text-2xl font-light">Core Area</h3>
           </div>
           <span class="font-serif text-gold text-3xl font-light">$15</span>
         </div>
         <div class="gold-bar mb-6"></div>
-        <ul class="space-y-2 text-cream/40 text-sm font-light">
-          <li>Miami Beach (all)</li><li>Surfside</li><li>Bal Harbour</li><li>North Bay Village</li>
+        <ul class="space-y-2.5 text-cream/38 text-sm font-light">
+          <li>Miami Beach (all)</li>
+          <li>Surfside</li>
+          <li>Bal Harbour</li>
+          <li>North Bay Village</li>
         </ul>
       </div>
-      <div class="bg-charcoal-soft p-8 md:p-10 border-t-2 border-gold group">
+
+      <!-- Zone 2 — highlighted -->
+      <div class="zone-featured p-9 md:p-11">
         <div class="flex items-start justify-between mb-6">
           <div>
-            <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Zone 2 · Mid Range</p>
+            <p class="text-gold text-[10px] tracking-[.35em] uppercase mb-2 font-light">Zone 2 · Mid Range</p>
             <h3 class="font-serif text-cream text-2xl font-light">Extended Area</h3>
           </div>
           <span class="font-serif text-gold text-3xl font-light">$30</span>
         </div>
         <div class="gold-bar mb-6"></div>
-        <ul class="space-y-2 text-cream/40 text-sm font-light">
-          <li>Aventura</li><li>Sunny Isles Beach</li><li>North Miami Beach</li><li>Hollywood</li><li>Hallandale Beach</li>
+        <ul class="space-y-2.5 text-cream/38 text-sm font-light">
+          <li>Aventura</li>
+          <li>Sunny Isles Beach</li>
+          <li>North Miami Beach</li>
+          <li>Hollywood</li>
+          <li>Hallandale Beach</li>
         </ul>
       </div>
-      <div class="bg-charcoal p-8 md:p-10 hover:bg-charcoal-soft transition-colors group">
+
+      <!-- Zone 3 -->
+      <div class="bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
         <div class="flex items-start justify-between mb-6">
           <div>
-            <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Zone 3 · Premium</p>
+            <p class="text-gold text-[10px] tracking-[.35em] uppercase mb-2 font-light">Zone 3 · Premium</p>
             <h3 class="font-serif text-cream text-2xl font-light">Long Range</h3>
           </div>
           <span class="font-serif text-gold text-3xl font-light">$60</span>
         </div>
         <div class="gold-bar mb-6"></div>
-        <ul class="space-y-2 text-cream/40 text-sm font-light">
-          <li>Fort Lauderdale</li><li>Pompano Beach</li><li>Boca Raton</li>
+        <ul class="space-y-2.5 text-cream/38 text-sm font-light">
+          <li>Fort Lauderdale</li>
+          <li>Pompano Beach</li>
+          <li>Boca Raton</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TRANSITION charcoal → cream -->
-<div style="height:80px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
-
-<!-- CTA -->
+<!-- ─────────────────────────────────────────────────────────────
+     CTA — READY TO ELEVATE
+──────────────────────────────────────────────────────────────── -->
 <section class="bg-cream py-0">
   <div class="grid grid-cols-1 lg:grid-cols-2">
-    <div class="bg-cream-dark">
-      <img src="images/food1.jpg" alt="Chefaleh food" class="w-full h-full object-cover" style="min-height:300px"/>
+    <!-- Image left -->
+    <div class="hover-zoom" style="min-height:340px">
+      <img src="images/food1.jpg" alt="Chefaleh dish" class="w-full h-full object-cover" style="min-height:340px"/>
     </div>
-    <div class="flex flex-col justify-center px-8 md:px-12 py-16 md:py-20 bg-charcoal">
-      <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Ready?</p>
-      <h2 class="font-serif text-cream font-light mb-4" style="font-size:clamp(1.8rem,4vw,3rem)">Ready to Elevate<br/><em>Your Shabbat?</em></h2>
+    <!-- Text right -->
+    <div class="flex flex-col justify-center px-9 md:px-14 py-16 md:py-22 bg-charcoal">
+      <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-5 font-light">Ready?</p>
+      <h2 class="font-serif text-cream font-light mb-5 leading-tight" style="font-size:clamp(2rem,4.5vw,3.2rem)">Ready to Elevate<br/><em class="italic">Your Shabbat?</em></h2>
       <div class="gold-bar-left mb-8"></div>
-      <p class="text-cream/50 text-sm font-light mb-2">Orders for this Friday close Wednesday at 5:00 PM Miami time</p>
-      <p class="text-cream/30 text-xs font-light mb-10 tracking-wide">Orders placed after Wednesday arrive the following Friday</p>
-      <a href="menu.html" class="self-start bg-gold text-charcoal px-10 md:px-12 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">Place Your Order</a>
+      <p class="text-cream/48 text-sm font-light mb-2">Orders for this Friday close Wednesday at 5:00 PM Miami time</p>
+      <p class="text-cream/28 text-xs font-light mb-11 tracking-wide">Orders placed after Wednesday arrive the following Friday</p>
+      <a href="menu.html" class="self-start bg-gold text-charcoal px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-medium hover:bg-cream transition-all duration-300">Place Your Order</a>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="bg-charcoal border-t border-cream/5 py-14 md:py-16">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
+<!-- ─────────────────────────────────────────────────────────────
+     FOOTER
+──────────────────────────────────────────────────────────────── -->
+<footer class="bg-charcoal border-t border-cream/5 py-14 md:py-18">
+  <div class="max-w-7xl mx-auto px-5 md:px-10">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-12">
       <div class="col-span-2 md:col-span-2">
-        <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
-        <p class="text-cream/30 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
-        <p class="text-cream/20 text-xs mt-4 font-light">(305) 985-0770</p>
+        <a href="index.html" class="font-serif text-2xl tracking-[.22em] text-cream font-light block mb-5">CHEFALEH</a>
+        <p class="text-cream/28 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
+        <p class="text-cream/20 text-xs mt-5 font-light">(305) 985-0770</p>
       </div>
       <div>
-        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-4 md:mb-5 font-light">Navigate</p>
-        <div class="flex flex-col gap-3 text-sm font-light text-cream/30">
+        <p class="text-cream/38 text-[10px] tracking-[.25em] uppercase mb-5 font-light">Navigate</p>
+        <div class="flex flex-col gap-3 text-sm font-light text-cream/28">
           <a href="index.html" class="hover:text-gold transition-colors">Home</a>
           <a href="about.html" class="hover:text-gold transition-colors">About</a>
           <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
-          <a href="order.html" class="hover:text-gold transition-colors">Order</a>
+          <a href="checkout.html" class="hover:text-gold transition-colors">Order</a>
         </div>
       </div>
       <div>
-        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-4 md:mb-5 font-light">Order Info</p>
-        <div class="text-xs font-light text-cream/30 space-y-2">
+        <p class="text-cream/38 text-[10px] tracking-[.25em] uppercase mb-5 font-light">Order Info</p>
+        <div class="text-xs font-light text-cream/28 space-y-2">
           <p>Deadline: <span class="text-gold">Wednesday 5:00 PM Miami</span></p>
-          <p>Delivery: <span class="text-cream/50">Friday 3–5 PM</span></p>
-          <p class="mt-3 text-cream/20">1622 NE 205th Terrace<br/>Miami, FL 33179</p>
+          <p>Delivery: <span class="text-cream/48">Friday 3–5 PM</span></p>
+          <p class="mt-4 text-cream/18 leading-relaxed">1622 NE 205th Terrace<br/>Miami, FL 33179</p>
         </div>
       </div>
     </div>
-    <div class="gold-bar mb-6 md:mb-8"></div>
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/20">
+    <div class="gold-bar mb-7"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/18">
       <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
-      <div class="flex gap-4 md:gap-6">
+      <div class="flex gap-5 md:gap-7">
         <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy Policy</a>
-        <a href="terms-of-use.html" class="hover:text-gold transition-colors">Terms of Use</a>
-        <a href="cookie-policy.html" class="hover:text-gold transition-colors">Cookie Policy</a>
+        <a href="terms-of-use.html"   class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="cookie-policy.html"  class="hover:text-gold transition-colors">Cookie Policy</a>
       </div>
     </div>
   </div>
@@ -424,16 +453,23 @@
 
 <script src="cart.js"></script>
 <script>
-  function closeBanner() {
-    const b = document.getElementById('site-banner');
-    if (b) { b.style.opacity = '0'; b.style.transition = 'opacity .4s ease'; setTimeout(() => b.remove(), 400); }
-  }
-
+  /* ── Cookie banner ── */
   setTimeout(() => {
     const c = document.getElementById('cookie');
     if (c) c.classList.remove('translate-y-full');
   }, 1500);
 
+  /* ── Nav scroll effect ── */
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  /* ── Mobile hamburger ── */
   function toggleMenu() {
     const menu = document.getElementById('mobile-menu');
     const h1 = document.getElementById('ham1');
@@ -442,15 +478,14 @@
     const open = menu.classList.toggle('open');
     if (open) {
       h1.style.transform = 'translateY(6.5px) rotate(45deg)';
-      h2.style.opacity = '0';
+      h2.style.opacity   = '0';
       h3.style.transform = 'translateY(-6.5px) rotate(-45deg)';
     } else {
       h1.style.transform = '';
-      h2.style.opacity = '';
+      h2.style.opacity   = '';
       h3.style.transform = '';
     }
   }
 </script>
-<script src="cart.js"></script>
 </body>
 </html>
