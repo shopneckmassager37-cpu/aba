@@ -19,7 +19,10 @@ export default async function handler(req, res) {
   const itemsHtml = parsedItems
     .map(i => `
       <tr>
-        <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px;color:#1a1a1a">${i.name}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px;color:#1a1a1a">
+          ${i.name}
+          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${i.instructions}</div>` : ''}
+        </td>
         <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;color:#999;font-size:13px;text-align:center">×${i.qty}</td>
         <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;text-align:right;font-size:14px;color:#1a1a1a">$${(parseFloat(i.price) * parseInt(i.qty)).toFixed(2)}</td>
       </tr>`)

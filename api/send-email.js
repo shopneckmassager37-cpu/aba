@@ -12,7 +12,10 @@ export default async function handler(req, res) {
   const itemsHtml = (cart || [])
     .map(i => `
       <tr>
-        <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px">${i.name}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px">
+          ${i.name}
+          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${i.instructions}</div>` : ''}
+        </td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;color:#888;font-size:14px;text-align:center">×${i.qty}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;text-align:right;font-size:14px">$${(i.price * i.qty).toFixed(2)}</td>
       </tr>`)
@@ -23,7 +26,13 @@ export default async function handler(req, res) {
     name, email, phone, address, zone,
     subtotal, tax, delivery, driverTip, chefTip, total,
     notes: notes || '',
-    items: JSON.stringify((cart || []).map(i => ({ name: i.name, qty: i.qty, price: i.price, badge: i.badge || '' })))
+    items: JSON.stringify((cart || []).map(i => ({ 
+      name: i.name, 
+      qty: i.qty, 
+      price: i.price, 
+      badge: i.badge || '',
+      instructions: i.instructions || ''
+    })))
   });
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
