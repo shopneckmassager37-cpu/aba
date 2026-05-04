@@ -12,9 +12,13 @@ fs.readdirSync(__dirname).forEach(file => {
 });
 
 export default defineConfig({
+  base: './',
   build: {
     rollupOptions: {
       input
-    }
+    },
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true
   }
 });
