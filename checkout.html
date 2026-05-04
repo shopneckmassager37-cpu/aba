@@ -315,8 +315,8 @@
 <!-- NAV -->
 <nav class="nav-bar sticky top-0 z-30 py-5">
   <div class="max-w-7xl mx-auto px-6 grid grid-cols-3 items-center">
-    <a href="menu.html" class="nav-link justify-self-start">← Back to Menu</a>
-    <a href="index.html" class="brand justify-self-center">CHEFALEH</a>
+    <a href="menu" class="nav-link justify-self-start">← Back to Menu</a>
+    <a href="index" class="brand justify-self-center">CHEFALEH</a>
     <span class="nav-link justify-self-end opacity-60">Checkout</span>
   </div>
 </nav>
@@ -341,7 +341,7 @@
         <div id="checkout-items"></div>
         <div id="empty-cart" class="empty hidden">
           <p>Your cart is empty.</p>
-          <a href="menu.html">Browse Menu</a>
+          <a href="menu">Browse Menu</a>
         </div>
       </div>
 
@@ -752,12 +752,12 @@
     .then(() => {
       sessionStorage.setItem('chefaleh_last_total', total.toFixed(2));
       localStorage.removeItem(CART_KEY);
-      window.location.href = '/confirmation.html';
+      window.location.href = '/confirmation';
     })
     .catch(() => {
       sessionStorage.setItem('chefaleh_last_total', total.toFixed(2));
       localStorage.removeItem(CART_KEY);
-      window.location.href = '/confirmation.html';
+      window.location.href = '/confirmation';
     });
   }
 

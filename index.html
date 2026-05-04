@@ -69,20 +69,20 @@
 
 <!-- COOKIE BANNER -->
 <div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
-  <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="cookie-policy.html" class="underline hover:text-gold transition-colors">Learn more</a></p>
+  <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="cookie-policy" class="underline hover:text-gold transition-colors">Learn more</a></p>
   <button onclick="document.getElementById('cookie').remove()" class="text-xs tracking-widest uppercase border border-gold text-gold px-6 py-2 hover:bg-gold hover:text-charcoal transition-all shrink-0">Accept</button>
 </div>
 
 <!-- NAV -->
 <nav id="main-nav" class="fixed top-0 left-0 right-0 z-40 transition-all duration-400" style="background:rgba(10,8,5,.45);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.08)">
   <div class="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between">
-    <a href="index.html" class="nav-logo font-serif text-xl md:text-2xl tracking-[.22em] text-white font-light transition-colors duration-300">CHEFALEH</a>
+    <a href="index" class="nav-logo font-serif text-xl md:text-2xl tracking-[.22em] text-white font-light transition-colors duration-300">CHEFALEH</a>
 
     <!-- Desktop links -->
     <div class="hidden md:flex items-center gap-8 text-[11px] tracking-[.22em] uppercase font-medium">
-      <a href="index.html" class="nav-link active text-gold transition-colors duration-200">Home</a>
-      <a href="about.html" class="nav-link text-white/60 hover:text-gold transition-colors duration-200">About</a>
-      <a href="menu.html"  class="nav-link text-white/60 hover:text-gold transition-colors duration-200">Menu</a>
+      <a href="index" class="nav-link active text-gold transition-colors duration-200">Home</a>
+      <a href="about" class="nav-link text-white/60 hover:text-gold transition-colors duration-200">About</a>
+      <a href="menu"  class="nav-link text-white/60 hover:text-gold transition-colors duration-200">Menu</a>
       <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 text-[11px] tracking-[.2em] uppercase font-medium hover:bg-white transition-all duration-300">
         Cart
         <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
@@ -105,9 +105,9 @@
 
   <!-- Mobile dropdown -->
   <div id="mobile-menu" class="md:hidden flex-col px-5 pb-5 pt-3 gap-0" style="background:rgba(10,8,5,.95);border-top:1px solid rgba(255,255,255,.08)">
-    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-white/8">Home</a>
-    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">About</a>
-    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">Menu</a>
+    <a href="index" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-white/8">Home</a>
+    <a href="about" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">About</a>
+    <a href="menu"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">Menu</a>
     <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors">Cart</button>
   </div>
 </nav>
@@ -124,7 +124,7 @@
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
     <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
-    <a href="checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
+    <a href="checkout" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
 <style>#drawer.open { transform: translateX(0) !important; }</style>
@@ -147,10 +147,10 @@
       Bespoke Shabbat cuisine crafted with hand-selected ingredients<br class="hidden sm:block"/> and small-batch precision.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
-      <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-[11px] tracking-[.32em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">
+      <a href="menu" class="bg-gold text-charcoal px-10 py-4 text-[11px] tracking-[.32em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">
         View Menu &rarr;
       </a>
-      <a href="about.html" class="text-white/80 text-[11px] tracking-[.32em] uppercase font-light py-4 hover:text-gold transition-colors duration-300" style="text-shadow:0 1px 8px rgba(0,0,0,.6)">
+      <a href="about" class="text-white/80 text-[11px] tracking-[.32em] uppercase font-light py-4 hover:text-gold transition-colors duration-300" style="text-shadow:0 1px 8px rgba(0,0,0,.6)">
         Our Story
       </a>
     </div>
@@ -316,7 +316,7 @@
     </div>
 
     <div class="text-center">
-      <a href="menu.html" class="inline-block bg-charcoal text-cream px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">See Full Menu</a>
+      <a href="menu" class="inline-block bg-charcoal text-cream px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">See Full Menu</a>
     </div>
   </div>
 </section>
@@ -405,7 +405,7 @@
       <div class="gold-bar-left mb-8"></div>
       <p class="text-cream/48 text-sm font-light mb-2">Orders for this Friday close Wednesday at 5:00 PM Miami time</p>
       <p class="text-cream/28 text-xs font-light mb-11 tracking-wide">Orders placed after Wednesday arrive the following Friday</p>
-      <a href="menu.html" class="self-start bg-gold text-charcoal px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-medium hover:bg-cream transition-all duration-300">Place Your Order</a>
+      <a href="menu" class="self-start bg-gold text-charcoal px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-medium hover:bg-cream transition-all duration-300">Place Your Order</a>
     </div>
   </div>
 </section>
@@ -417,17 +417,17 @@
   <div class="max-w-7xl mx-auto px-5 md:px-10">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-12">
       <div class="col-span-2 md:col-span-2">
-        <a href="index.html" class="font-serif text-2xl tracking-[.22em] text-cream font-light block mb-5">CHEFALEH</a>
+        <a href="index" class="font-serif text-2xl tracking-[.22em] text-cream font-light block mb-5">CHEFALEH</a>
         <p class="text-cream/28 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
         <p class="text-cream/20 text-xs mt-5 font-light">(305) 985-0770</p>
       </div>
       <div>
         <p class="text-cream/38 text-[10px] tracking-[.25em] uppercase mb-5 font-light">Navigate</p>
         <div class="flex flex-col gap-3 text-sm font-light text-cream/28">
-          <a href="index.html" class="hover:text-gold transition-colors">Home</a>
-          <a href="about.html" class="hover:text-gold transition-colors">About</a>
-          <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
-          <a href="checkout.html" class="hover:text-gold transition-colors">Order</a>
+          <a href="index" class="hover:text-gold transition-colors">Home</a>
+          <a href="about" class="hover:text-gold transition-colors">About</a>
+          <a href="menu"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="checkout" class="hover:text-gold transition-colors">Order</a>
         </div>
       </div>
       <div>
@@ -443,9 +443,9 @@
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/18">
       <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
       <div class="flex gap-5 md:gap-7">
-        <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy Policy</a>
-        <a href="terms-of-use.html"   class="hover:text-gold transition-colors">Terms of Use</a>
-        <a href="cookie-policy.html"  class="hover:text-gold transition-colors">Cookie Policy</a>
+        <a href="privacy-policy" class="hover:text-gold transition-colors">Privacy Policy</a>
+        <a href="terms-of-use"   class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="cookie-policy"  class="hover:text-gold transition-colors">Cookie Policy</a>
       </div>
     </div>
   </div>
