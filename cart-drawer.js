@@ -148,7 +148,10 @@ function renderCartStep() {
     return;
   }
 
-  body.innerHTML = cart.map(i => `
+  body.innerHTML = cart.map(i => {
+    const n = i.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const b = (i.badge || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return `
     <div style="display:flex;align-items:flex-start;gap:12px;padding:16px 24px;border-bottom:1px solid rgba(26,26,26,.07)">
       <div style="flex:1;min-width:0">
         <p style="font-size:13px;color:#1A1A1A;font-weight:300;line-height:1.3">${i.name}</p>
@@ -156,17 +159,18 @@ function renderCartStep() {
         ${i.instructions ? `<p style="font-size:10px;color:#D4AF37;font-weight:300;margin-top:3px;font-style:italic">${i.instructions}</p>` : ''}
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-        <button onclick="deck('${i.name}',-1,${i.price},'${i.badge}')"
+        <button onclick="deck('${n}',-1,${i.price},'${b}')"
           style="width:28px;height:28px;border:1px solid rgba(26,26,26,.15);background:none;cursor:pointer;
                  font-size:14px;color:#1A1A1A;line-height:1;transition:background .2s;font-family:'Jost',sans-serif">−</button>
         <span style="font-size:13px;font-weight:300;width:18px;text-align:center;color:#1A1A1A">${i.qty}</span>
-        <button onclick="deck('${i.name}',1,${i.price},'${i.badge}')"
+        <button onclick="deck('${n}',1,${i.price},'${b}')"
           style="width:28px;height:28px;border:1px solid rgba(26,26,26,.15);background:none;cursor:pointer;
                  font-size:14px;color:#1A1A1A;line-height:1;transition:background .2s;font-family:'Jost',sans-serif">+</button>
       </div>
       <span style="font-size:13px;font-weight:300;color:#1A1A1A;width:56px;text-align:right;flex-shrink:0">
         $${(i.price * i.qty).toFixed(2)}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   foot.innerHTML = `
     <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(26,26,26,.5);font-weight:300;margin-bottom:6px">

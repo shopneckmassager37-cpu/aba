@@ -362,6 +362,8 @@ function makeCard(item) {
     : '';
 
   const itemJson = JSON.stringify(item).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+  const safeName  = item.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const safeBadge = (item.badge || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
   return `
   <div class="mcard overflow-hidden" style="${cardBg}">
@@ -379,10 +381,10 @@ function makeCard(item) {
         <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
         <div class="cta-row items-center gap-2">
           ${qty > 0 ? `
-          <button onclick="deck('${item.name}',-1,${item.price},'${item.badge||''}')" class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">−</button>
+          <button onclick="deck('${safeName}',-1,${item.price},'${safeBadge}')" class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">−</button>
           <span class="qty-display text-sm font-light w-5 text-center ${dark?'text-cream':'text-charcoal'}">${qty}</span>
           <button onclick="openModal(${itemJson})" class="w-9 h-9 border ${btnBase} transition-all text-sm leading-none" title="Special instructions">✎</button>
-          <button onclick="deck('${item.name}',1,${item.price},'${item.badge||''}')"  class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>
+          <button onclick="deck('${safeName}',1,${item.price},'${safeBadge}')"  class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>
           ` : `
           <button onclick="openModal(${itemJson})" class="px-5 py-2.5 text-[11px] tracking-wider uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
           `}
