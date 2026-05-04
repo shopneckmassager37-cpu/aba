@@ -106,7 +106,10 @@ function renderDrawer() {
   if (cart.length === 0) {
     el.innerHTML = '<p class="text-charcoal/40 text-sm font-light text-center py-8">Your cart is empty.</p>';
   } else {
-    el.innerHTML = cart.map(i => `
+    el.innerHTML = cart.map(i => {
+      const n = i.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      const b = (i.badge || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      return `
       <div class="flex items-start gap-3 py-3 border-b border-charcoal/8">
         <div class="flex-1 min-w-0">
           <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
@@ -114,12 +117,13 @@ function renderDrawer() {
           ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button onclick="deck('${i.name}',-1,${i.price},'${i.badge}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
+          <button onclick="deck('${n}',-1,${i.price},'${b}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
           <span class="text-xs font-light w-4 text-center">${i.qty}</span>
-          <button onclick="deck('${i.name}',1,${i.price},'${i.badge}')"  class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal transition-all text-xs leading-none">+</button>
+          <button onclick="deck('${n}',1,${i.price},'${b}')"  class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal transition-all text-xs leading-none">+</button>
         </div>
         <span class="text-sm font-light text-charcoal w-14 text-right shrink-0">$${(i.price*i.qty).toFixed(2)}</span>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
   
   const d = (id,v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
