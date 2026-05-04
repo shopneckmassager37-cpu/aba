@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   try {
     await resend.emails.send({
       from: 'Chefaleh Orders <orders@chefaleh.com>',
-      to: 'avicam@gmail.com',
+      to: 'chefaleh@chefaleh.com',
       reply_to: email,
       subject: `🧾 New Order — ${name} · $${total}`,
       html: `
