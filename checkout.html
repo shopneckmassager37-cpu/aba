@@ -643,6 +643,7 @@
       resultsDiv.style.display = 'none';
       return;
     }
+    onAddressInput(val);
     searchTimeout = setTimeout(() => fetchAddresses(val), 400);
   });
 
@@ -689,6 +690,18 @@
     // Use the specific area (city/suburb) for better detection, but fall back to full string
     onAddressInput(area + ' | ' + full);
   };
+
+  function onAddressInput(address) {
+    const zone = detectZone(address);
+    deliveryZone = zone.fee;
+    deliveryZoneNum = zone.num;
+    const badge = document.getElementById('zone-badge');
+    if (badge) {
+      badge.textContent = zone.label;
+      badge.style.color = '#D4AF37';
+    }
+    updateTotals();
+  }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

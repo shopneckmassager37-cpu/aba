@@ -88,21 +88,6 @@ export default async function handler(req, res) {
               ${notes ? `<p style="font-size:13px;color:#888;margin:10px 0 0;font-style:italic">Note: ${notes}</p>` : ''}
             </div>
 
-            <!-- Next steps -->
-            <div style="margin-top:20px;background:#faf7ec;border-left:3px solid #D4AF37;padding:20px">
-              <h4 style="font-family:Georgia,serif;font-size:14px;color:#1a1a1a;margin:0 0 12px;text-transform:uppercase;letter-spacing:1px">Payment Instructions</h4>
-              <p style="font-size:13px;color:#555;margin:0 0 10px;line-height:1.6">
-                Please complete your payment via one of the methods below to finalize your order:
-              </p>
-              <table style="width:100%;font-size:13px;color:#1a1a1a">
-                <tr><td style="padding:4px 0;width:80px"><strong>Zelle:</strong></td><td style="padding:4px 0">avicam@gmail.com</td></tr>
-                <tr><td style="padding:4px 0"><strong>Venmo:</strong></td><td style="padding:4px 0">@Avicam</td></tr>
-                <tr><td style="padding:4px 0;vertical-align:top"><strong>Crowded:</strong></td><td style="padding:4px 0"><a href="https://collect.crowded.me/collection/d0b9a878-479d-47db-9d48-6f14cddd9393" style="color:#D4AF37">Click here to pay</a></td></tr>
-              </table>
-              <p style="font-size:12px;color:#888;margin:12px 0 0;font-style:italic">
-                * Please include your name in the payment note.
-              </p>
-            </div>
           </div>
 
           <!-- Footer -->
