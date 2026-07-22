@@ -3,45 +3,21 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Menu — Chefaleh</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Menu — Chefaleh Kosher Shabbat Delivery</title>
+  <meta name="description" content="Browse Chefaleh's weekly Shabbat menu: challah, salads, soups, fish, poultry, signature meats, Peruvian &amp; Ecuadorian dishes, sides and desserts. Order by Wednesday 5PM for Friday delivery."/>
+  <link rel="canonical" href="https://chefaleh.com/menu.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Chefaleh"/>
+  <meta property="og:title" content="Menu — Chefaleh Kosher Shabbat Delivery"/>
+  <meta property="og:description" content="A curated weekly Shabbat menu — challah, salads, soups, fish, poultry, signature meats, Peruvian &amp; Ecuadorian dishes, sides and desserts."/>
+  <meta property="og:url" content="https://chefaleh.com/menu.html"/>
+  <meta property="og:image" content="https://chefaleh.com/images/food3.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Menu — Chefaleh Kosher Shabbat Delivery"/>
+  <meta name="twitter:description" content="A curated weekly Shabbat menu, hand-delivered fresh every Friday across South Florida."/>
+  <meta name="twitter:image" content="https://chefaleh.com/images/food3.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: { extend: {
-        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
-        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
-      }}
-    }
-  </script>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
-    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
-    .gold-bar-left{height:2px;width:50px;background:#D4AF37}
-    .mcard{transition:transform .3s ease,box-shadow .3s ease}
-    .mcard:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(26,26,26,.12)}
-    .mcard .cimg{transition:transform .6s ease}
-    .mcard:hover .cimg{transform:scale(1.07)}
-    /* cta-row always visible on mobile, hover-only on desktop */
-    .mcard .cta-row{display:flex;align-items:center;gap:8px}
-    @media(min-width:768px){
-      .mcard .cta-row.hide-desktop{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s ease,opacity .3s ease;display:block}
-      .mcard:hover .cta-row.hide-desktop{max-height:60px;opacity:1;display:flex}
-    }
-    .snav a{border-bottom:2px solid transparent;transition:all .2s}
-    .snav a:hover,.snav a.act{color:#D4AF37;border-bottom-color:#D4AF37}
-    #drawer{transition:transform .35s ease}
-    #drawer.open{transform:translateX(0)!important}
-    #instr-modal{display:none}
-    #instr-modal.open{display:flex}
-    #mobile-menu{display:none}
-    #mobile-menu.open{display:flex}
-    ::-webkit-scrollbar{width:5px}
-    ::-webkit-scrollbar-track{background:#F9F7F2}
-    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
-  </style>
+  <link rel="stylesheet" href="/styles.css"/>
 </head>
 <body>
 
@@ -140,11 +116,6 @@
   </div>
 </div>
 
-<style>
-  #drawer.open { transform: translateX(0) !important; }
-</style>
-
-
 <!-- MENU HEADER -->
 <div class="pt-24 pb-12 bg-charcoal text-center">
   <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Always Open — Delivery Every Friday</p>
@@ -164,18 +135,6 @@
 
   <p id="summer-sub" style="color:rgba(249,247,242,.45);font-family:'Jost',sans-serif;font-size:.82rem;font-weight:300;letter-spacing:.1em;opacity:0;animation:summerFade .8s ease 1.5s forwards">We will be back with a full menu for chagim 2026</p>
 </div>
-
-<style>
-@keyframes summerLetterIn {
-  0%   { opacity:0; transform:translateY(55px) scale(.9); filter:blur(6px); }
-  60%  { filter:blur(0); }
-  100% { opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
-}
-@keyframes summerFade {
-  0%   { opacity:0; transform:translateY(18px); }
-  100% { opacity:1; transform:translateY(0); }
-}
-</style>
 
 <script>
 (function(){

@@ -4,92 +4,80 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light"/>
-  <title>Chefaleh — Private Chef Shabbat Delivery</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Chefaleh — Private Chef Shabbat Delivery in Miami</title>
+  <meta name="description" content="Bespoke kosher Shabbat cuisine, delivered fresh every Friday across Miami Beach, Aventura, Sunny Isles, Hollywood, Fort Lauderdale &amp; Boca Raton. Order by Wednesday 5PM."/>
+  <link rel="canonical" href="https://chefaleh.com/"/>
+  <meta property="og:type" content="restaurant.restaurant"/>
+  <meta property="og:site_name" content="Chefaleh"/>
+  <meta property="og:title" content="Chefaleh — Private Chef Shabbat Delivery in Miami"/>
+  <meta property="og:description" content="Bespoke kosher Shabbat cuisine, delivered fresh every Friday across South Florida. Hand-selected ingredients, small-batch precision, ORB certified kosher."/>
+  <meta property="og:url" content="https://chefaleh.com/"/>
+  <meta property="og:image" content="https://chefaleh.com/images/shabbat_table_hero.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Chefaleh — Private Chef Shabbat Delivery in Miami"/>
+  <meta name="twitter:description" content="Bespoke kosher Shabbat cuisine, delivered fresh every Friday across South Florida. Order by Wednesday 5PM for Friday delivery."/>
+  <meta name="twitter:image" content="https://chefaleh.com/images/shabbat_table_hero.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: { extend: {
-        colors: {
-          cream: '#F9F7F2',
-          charcoal: '#1A1A1A',
-          gold: '#D4AF37',
-          'cream-dark': '#EFEDE6',
-          'charcoal-soft': '#2C2C2C'
+  <link rel="stylesheet" href="/styles.css"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FoodEstablishment",
+    "name": "Chefaleh",
+    "description": "Private chef–driven kosher Shabbat and event catering, hand-delivered fresh every Friday across South Florida.",
+    "image": "https://chefaleh.com/images/shabbat_table_hero.png",
+    "url": "https://chefaleh.com/",
+    "telephone": "+1-305-985-0770",
+    "priceRange": "$$",
+    "servesCuisine": ["Kosher", "Israeli", "Mediterranean", "Peruvian", "Ecuadorian"],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1622 NE 205th Terrace",
+      "addressLocality": "Miami",
+      "addressRegion": "FL",
+      "postalCode": "33179",
+      "addressCountry": "US"
+    },
+    "areaServed": [
+      { "@type": "City", "name": "Miami Beach" },
+      { "@type": "City", "name": "Surfside" },
+      { "@type": "City", "name": "Bal Harbour" },
+      { "@type": "City", "name": "North Bay Village" },
+      { "@type": "City", "name": "Aventura" },
+      { "@type": "City", "name": "Sunny Isles Beach" },
+      { "@type": "City", "name": "North Miami Beach" },
+      { "@type": "City", "name": "Hollywood" },
+      { "@type": "City", "name": "Hallandale Beach" },
+      { "@type": "City", "name": "Fort Lauderdale" },
+      { "@type": "City", "name": "Pompano Beach" },
+      { "@type": "City", "name": "Boca Raton" }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Delivery Zones",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "name": "Zone 1 — Local Delivery (Miami Beach, Surfside, Bal Harbour, North Bay Village)",
+          "price": "15",
+          "priceCurrency": "USD"
         },
-        fontFamily: {
-          serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-          sans: ['Jost', 'sans-serif']
+        {
+          "@type": "Offer",
+          "name": "Zone 2 — Extended Delivery (Aventura, Sunny Isles Beach, North Miami Beach, Hollywood, Hallandale Beach)",
+          "price": "30",
+          "priceCurrency": "USD"
+        },
+        {
+          "@type": "Offer",
+          "name": "Zone 3 — Long Range Delivery (Fort Lauderdale, Pompano Beach, Boca Raton)",
+          "price": "60",
+          "priceCurrency": "USD"
         }
-      }}
+      ]
     }
+  }
   </script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; color-scheme: light; }
-    body { background: #F9F7F2; color: #1A1A1A; font-family: 'Jost', sans-serif; }
-
-    .gold-bar { height: 1px; background: linear-gradient(to right, transparent, #D4AF37, transparent); }
-    .gold-bar-left { height: 2px; width: 50px; background: #D4AF37; }
-
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: #F9F7F2; }
-    ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 2px; }
-
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-    .fade-up { animation: fadeUp .9s ease forwards; }
-
-    .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,8,5,.60) 0%, rgba(10,8,5,.38) 45%, rgba(10,8,5,.78) 100%); }
-
-    #mobile-menu { display: none; }
-    #mobile-menu.open { display: flex; }
-
-    /* nav transparent on top of hero */
-    nav.scrolled { background: rgba(26,26,26,.97) !important; border-color: rgba(212,175,55,.15) !important; }
-    nav.scrolled .nav-logo { color: #F9F7F2 !important; }
-    nav.scrolled .nav-link { color: rgba(249,247,242,.55) !important; }
-    nav.scrolled .nav-link:hover { color: #D4AF37 !important; }
-    nav.scrolled .nav-link.active { color: #D4AF37 !important; }
-
-    .hover-zoom { overflow: hidden; }
-    .hover-zoom img { transition: transform .75s cubic-bezier(.25,.46,.45,.94); }
-    .hover-zoom:hover img { transform: scale(1.06); }
-
-    /* zone card highlight */
-    .zone-featured { background: #2C2C2C; border-top: 2px solid #D4AF37; }
-
-    /* dish stagger */
-    .dish-mid { margin-top: 3rem; }
-    @media (max-width: 767px) { .dish-mid { margin-top: 0; } }
-
-    /* Explicit color overrides — Tailwind CDN opacity modifiers (text-cream/38 etc.)
-       can fail on some mobile browsers. These rules hardcode the exact rgba values. */
-    .text-cream\/38  { color: rgba(249,247,242,.38) !important; }
-    .text-cream\/22  { color: rgba(249,247,242,.22) !important; }
-    .text-cream\/28  { color: rgba(249,247,242,.28) !important; }
-    .text-cream\/30  { color: rgba(249,247,242,.30) !important; }
-    .text-cream\/48  { color: rgba(249,247,242,.48) !important; }
-    .text-cream\/20  { color: rgba(249,247,242,.20) !important; }
-    .text-cream\/18  { color: rgba(249,247,242,.18) !important; }
-    .text-charcoal\/38 { color: rgba(26,26,26,.38) !important; }
-    .text-charcoal\/55 { color: rgba(26,26,26,.55) !important; }
-    .text-charcoal\/48 { color: rgba(26,26,26,.48) !important; }
-    .text-charcoal\/50 { color: rgba(26,26,26,.50) !important; }
-    .text-charcoal\/40 { color: rgba(26,26,26,.40) !important; }
-    .text-gold\/75   { color: rgba(212,175,55,.75) !important; }
-    .text-gold\/10   { color: rgba(212,175,55,.10) !important; }
-    .text-gold\/20   { color: rgba(212,175,55,.20) !important; }
-
-    /* Background opacity modifiers */
-    .bg-white\/6  { background-color: rgba(255,255,255,.06) !important; }
-    .bg-white\/5  { background-color: rgba(255,255,255,.05) !important; }
-    .bg-gold\/6   { background-color: rgba(212,175,55,.06) !important; }
-    .bg-charcoal\/75 { background-color: rgba(26,26,26,.75) !important; }
-    .bg-charcoal\/40 { background-color: rgba(26,26,26,.40) !important; }
-  </style>
 </head>
 <body>
 
@@ -153,7 +141,6 @@
     <a href="checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
-<style>#drawer.open { transform: translateX(0) !important; }</style>
 
 <!-- ─────────────────────────────────────────────────────────────
      HERO
