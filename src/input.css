@@ -214,6 +214,23 @@ body.admin-body { font-family: system-ui, sans-serif; background: #f5f5f5; }
 select.input { background: white; }
 
 /* ─────────────────────────────────────────────────────────────
+   BLOG PAGES
+──────────────────────────────────────────────────────────────── */
+.blog-prose p { margin-bottom: 1.25rem; }
+.blog-prose h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: #1A1A1A;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.25;
+}
+.blog-prose ul { list-style: none; padding-left: 0; margin-bottom: 1.25rem; }
+.blog-prose li { padding-left: 1.1rem; position: relative; margin-bottom: .5rem; }
+.blog-prose li::before { content: '—'; color: #D4AF37; position: absolute; left: 0; }
+
+/* ─────────────────────────────────────────────────────────────
    EXPLICIT COLOR-OPACITY OVERRIDES
    Tailwind's CDN JIT engine (and some mobile browsers) can fail
    to render arbitrary opacity modifiers on custom theme colors

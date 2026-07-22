@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     './*.html',
+    './blog/**/*.html',
     './cart.js',
     './cart-drawer.js',
   ],
