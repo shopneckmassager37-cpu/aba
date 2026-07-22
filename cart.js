@@ -11,14 +11,15 @@ function saveCart(cart) {
   refreshCartUI();
 }
 
-function addItem(name, price, badge, instructions) {
+function addItem(name, price, badge, instructions, glutenFree) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
-  if (found) { 
-    found.qty++; 
-    if (instructions !== undefined) found.instructions = instructions; 
-  } else { 
-    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '' }); 
+  if (found) {
+    found.qty++;
+    if (instructions !== undefined) found.instructions = instructions;
+    if (glutenFree !== undefined) found.glutenFree = glutenFree;
+  } else {
+    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree });
   }
   saveCart(cart);
   if (typeof openDrawer === 'function') openDrawer();
@@ -32,7 +33,7 @@ function setQty(name, qty) {
   saveCart(cart);
 }
 
-function deck(name, delta, price, badge, instructions) {
+function deck(name, delta, price, badge, instructions, glutenFree) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   const newQty = found ? found.qty + delta : delta;
@@ -41,9 +42,10 @@ function deck(name, delta, price, badge, instructions) {
   } else if (found) {
     found.qty = newQty;
     if (instructions !== undefined) found.instructions = instructions;
+    if (glutenFree !== undefined) found.glutenFree = glutenFree;
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '');
+    addItem(name, price, badge, instructions || '', glutenFree);
   }
   if (typeof renderAll === 'function') renderAll();
 }
@@ -115,6 +117,7 @@ function renderDrawer() {
           <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
           <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
           ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
+          ${i.glutenFree ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Gluten-free</p>` : ''}
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <button onclick="deck('${n}',-1,${i.price},'${b}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>

@@ -113,7 +113,7 @@
             <img id="pm-img-preview" src="" alt="" class="w-20 h-20 object-cover rounded border border-gray-200 hidden"/>
           </div>
         </div>
-        <div class="col-span-2 flex gap-6">
+        <div class="col-span-2 flex gap-6 flex-wrap">
           <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
             <input type="checkbox" id="pm-dark" class="w-4 h-4"/> Dark card (meat section style)
           </label>
@@ -122,6 +122,9 @@
           </label>
           <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
             <input type="checkbox" id="pm-visible" class="w-4 h-4" checked/> Visible
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input type="checkbox" id="pm-gf" class="w-4 h-4"/> Offer gluten-free option
           </label>
         </div>
       </div>
@@ -283,6 +286,7 @@ function productRow(p, cat) {
       <div class="flex items-center gap-2">
         <span class="font-medium text-sm text-gray-800 truncate">${p.name}</span>
         ${p.tag ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${p.tag}</span>` : ''}
+        ${p.gluten_free_option ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GF option</span>` : ''}
         ${!p.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Hidden</span>` : ''}
       </div>
       <div class="text-xs text-gray-400 mt-0.5">$${p.price} · ${p.badge||''} · ${catName}</div>
@@ -386,6 +390,7 @@ function openProductModal(id) {
     document.getElementById('pm-dark').checked = !!p.dark;
     document.getElementById('pm-small').checked = !!p.small;
     document.getElementById('pm-visible').checked = p.visible !== false;
+    document.getElementById('pm-gf').checked = !!p.gluten_free_option;
     updateImgPreview(p.img);
   } else {
     document.getElementById('product-modal-title').textContent = 'Add Product';
@@ -399,6 +404,7 @@ function openProductModal(id) {
     document.getElementById('pm-dark').checked = false;
     document.getElementById('pm-small').checked = false;
     document.getElementById('pm-visible').checked = true;
+    document.getElementById('pm-gf').checked = false;
     updateImgPreview('');
   }
   modal.classList.remove('hidden');
@@ -454,6 +460,7 @@ async function saveProduct() {
     dark: document.getElementById('pm-dark').checked,
     small: document.getElementById('pm-small').checked,
     visible: document.getElementById('pm-visible').checked,
+    gluten_free_option: document.getElementById('pm-gf').checked,
   };
   try {
     if (id) {
