@@ -537,6 +537,7 @@ function renderAll() {
     const hasPeru = peru.length > 0;
     if (peruWrap) peruWrap.style.display = hasPeru ? '' : 'none';
     if (divider) divider.style.display = hasPeru ? '' : 'none';
+    tradEl.classList.toggle('lg:grid-cols-4', !hasPeru);
   });
   refreshCartUI();
 }
