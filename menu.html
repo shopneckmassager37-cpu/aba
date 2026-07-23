@@ -157,7 +157,6 @@
 <!-- STICKY SUBNAV -->
 <div class="snav sticky top-[65px] md:top-[72px] z-30 bg-cream border-b border-charcoal/8 overflow-x-auto">
   <div class="max-w-7xl mx-auto px-2 md:px-8 flex">
-    <a href="#peruvian"  class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Peruvian &amp; Ecuadorian</a>
     <a href="#challah"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Challah</a>
     <a href="#salads"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Salads</a>
     <a href="#soups"     class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Soups</a>
@@ -169,67 +168,6 @@
   </div>
 </div>
 
-<!-- ===== PERUVIAN & ECUADORIAN ===== -->
-<section id="peruvian" class="py-20 bg-cream">
-  <div class="max-w-7xl mx-auto px-4 md:px-8">
-    <div class="mb-10 md:mb-14">
-      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Chef John's Table</p>
-      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Peruvian &amp; Ecuadorian</h2>
-      <p class="text-charcoal/40 text-xs font-light mt-2">Bold South American flavor, prepared kosher for your Shabbat table</p>
-      <div class="gold-bar-left mt-4"></div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" id="g-peruvian"></div>
-  </div>
-</section>
-
-<!-- ── CLASSIC SHABBAT MENU DIVIDER ── -->
-<div id="classic-banner" style="background:#111;padding:64px 20px 60px;text-align:center;overflow:hidden;border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15)">
-
-  <p id="classic-label" style="color:#D4AF37;font-family:'Jost',sans-serif;font-size:.6rem;letter-spacing:.55em;text-transform:uppercase;font-weight:300;margin-bottom:24px;opacity:0">The Weekly Staples</p>
-
-  <div id="classic-title" style="font-family:'Cormorant Garamond',Georgia,serif;color:#F9F7F2;font-weight:300;line-height:1.05;margin-bottom:24px;font-size:clamp(2.8rem,7vw,5.5rem);display:flex;justify-content:center;flex-wrap:wrap"></div>
-
-  <div id="classic-line" style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);max-width:180px;margin:0 auto 24px;opacity:0"></div>
-
-  <p id="classic-sub" style="color:rgba(249,247,242,.45);font-family:'Jost',sans-serif;font-size:.8rem;font-weight:300;letter-spacing:.05em;opacity:0">Challah, salads, soups, fish, poultry &amp; meat — the dishes that built our table</p>
-</div>
-
-<script>
-(function(){
-  const banner = document.getElementById('classic-banner');
-  let played = false;
-
-  function playAnimation(){
-    if (played) return;
-    played = true;
-
-    document.getElementById('classic-label').style.animation = 'summerFade .7s ease .1s forwards';
-    document.getElementById('classic-line').style.animation  = 'summerFade .7s ease 1.3s forwards';
-    document.getElementById('classic-sub').style.animation   = 'summerFade .8s ease 1.5s forwards';
-
-    const words = ['Shabbat', ' ', 'Menu'];
-    const container = document.getElementById('classic-title');
-    let delay = 0.28;
-    words.join('').split('').forEach(ch => {
-      const s = document.createElement('span');
-      s.style.cssText = 'display:inline-block;white-space:pre;opacity:0;animation:summerLetterIn .65s cubic-bezier(.22,1,.36,1) ' + delay.toFixed(2) + 's forwards';
-      s.textContent = ch;
-      container.appendChild(s);
-      delay += ch === ' ' ? 0.12 : 0.075;
-    });
-  }
-
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { if (entry.isIntersecting) playAnimation(); });
-    }, { threshold: 0.35 });
-    observer.observe(banner);
-  } else {
-    playAnimation();
-  }
-})();
-</script>
-
 <!-- ===== CHALLAH ===== -->
 <section id="challah" class="py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
@@ -238,7 +176,17 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Challah & Bread</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" id="g-challah"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-challah-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-challah-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-challah-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-challah-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -252,7 +200,17 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Salads & Dips</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" id="g-salads"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-salads-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-salads-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-salads-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-salads-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -266,7 +224,17 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Soups</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" id="g-soups"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-soups-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-soups-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-soups-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-soups-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -280,7 +248,17 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Fish</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" id="g-fish"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-fish-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-fish-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-fish-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-fish-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -294,7 +272,17 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Poultry</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" id="g-poultry"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-poultry-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-poultry-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-poultry-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-poultry-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -309,7 +297,17 @@
       <p class="text-cream/30 text-xs font-light mt-2">Premium beef — the crown of your Shabbat table</p>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5" id="g-meat"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-cream/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/5" id="g-meat-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/20" id="g-meat-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-meat-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/60 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/5" id="g-meat-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -323,7 +321,17 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Sides</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="g-sides"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-sides-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-sides-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-sides-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-sides-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -337,7 +345,17 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Desserts</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="g-desserts"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-desserts-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-desserts-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-desserts-peru-wrap" style="display:none">
+        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-desserts-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -503,10 +521,22 @@ function deck(name, delta, price, badge, instructions, glutenFree) {
 
 function renderAll() {
   categoriesData.forEach(cat => {
-    const el = document.getElementById('g-' + cat.slug);
-    if (!el) return;
+    const tradEl = document.getElementById('g-' + cat.slug + '-trad');
+    if (!tradEl) return;
+    const peruEl = document.getElementById('g-' + cat.slug + '-peru');
+    const peruWrap = document.getElementById('g-' + cat.slug + '-peru-wrap');
+    const divider = document.getElementById('g-' + cat.slug + '-divider');
+
     const items = (menu[cat.slug] || []).filter(p => p.visible !== false);
-    el.innerHTML = items.map(item => makeCard(item)).join('');
+    const trad = items.filter(p => !p.is_peruvian);
+    const peru = items.filter(p => p.is_peruvian);
+
+    tradEl.innerHTML = trad.map(item => makeCard(item)).join('');
+    if (peruEl) peruEl.innerHTML = peru.map(item => makeCard(item)).join('');
+
+    const hasPeru = peru.length > 0;
+    if (peruWrap) peruWrap.style.display = hasPeru ? '' : 'none';
+    if (divider) divider.style.display = hasPeru ? '' : 'none';
   });
   refreshCartUI();
 }

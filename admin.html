@@ -126,6 +126,9 @@
           <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
             <input type="checkbox" id="pm-gf" class="w-4 h-4"/> Offer gluten-free option
           </label>
+          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input type="checkbox" id="pm-peruvian" class="w-4 h-4"/> Peruvian &amp; Ecuadorian dish
+          </label>
         </div>
       </div>
     </div>
@@ -287,6 +290,7 @@ function productRow(p, cat) {
         <span class="font-medium text-sm text-gray-800 truncate">${p.name}</span>
         ${p.tag ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${p.tag}</span>` : ''}
         ${p.gluten_free_option ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GF option</span>` : ''}
+        ${p.is_peruvian ? `<span class="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Peruvian &amp; Ecuadorian</span>` : ''}
         ${!p.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Hidden</span>` : ''}
       </div>
       <div class="text-xs text-gray-400 mt-0.5">$${p.price} · ${p.badge||''} · ${catName}</div>
@@ -391,6 +395,7 @@ function openProductModal(id) {
     document.getElementById('pm-small').checked = !!p.small;
     document.getElementById('pm-visible').checked = p.visible !== false;
     document.getElementById('pm-gf').checked = !!p.gluten_free_option;
+    document.getElementById('pm-peruvian').checked = !!p.is_peruvian;
     updateImgPreview(p.img);
   } else {
     document.getElementById('product-modal-title').textContent = 'Add Product';
@@ -405,6 +410,7 @@ function openProductModal(id) {
     document.getElementById('pm-small').checked = false;
     document.getElementById('pm-visible').checked = true;
     document.getElementById('pm-gf').checked = false;
+    document.getElementById('pm-peruvian').checked = false;
     updateImgPreview('');
   }
   modal.classList.remove('hidden');
@@ -461,6 +467,7 @@ async function saveProduct() {
     small: document.getElementById('pm-small').checked,
     visible: document.getElementById('pm-visible').checked,
     gluten_free_option: document.getElementById('pm-gf').checked,
+    is_peruvian: document.getElementById('pm-peruvian').checked,
   };
   try {
     if (id) {
