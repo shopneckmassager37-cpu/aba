@@ -519,6 +519,18 @@ function deck(name, delta, price, badge, instructions, glutenFree) {
   renderAll();
 }
 
+function makePeruPlaceholder(dark) {
+  const textColor = dark ? 'text-cream/40' : 'text-charcoal/40';
+  const subColor = dark ? 'text-cream/25' : 'text-charcoal/28';
+  const borderColor = dark ? 'border-gold/25' : 'border-gold/30';
+  return `
+  <div class="sm:col-span-2 border border-dashed ${borderColor} flex flex-col items-center justify-center text-center py-12 px-6">
+    <p class="text-gold text-xl mb-3">✦</p>
+    <p class="font-serif ${textColor} text-lg font-light mb-1">Coming Soon</p>
+    <p class="${subColor} text-xs font-light max-w-[220px]">New Peruvian &amp; Ecuadorian dishes are being added to this section</p>
+  </div>`;
+}
+
 function renderAll() {
   categoriesData.forEach(cat => {
     const tradEl = document.getElementById('g-' + cat.slug + '-trad');
@@ -530,14 +542,17 @@ function renderAll() {
     const items = (menu[cat.slug] || []).filter(p => p.visible !== false);
     const trad = items.filter(p => !p.is_peruvian);
     const peru = items.filter(p => p.is_peruvian);
+    const dark = cat.slug === 'meat';
 
     tradEl.innerHTML = trad.map(item => makeCard(item)).join('');
-    if (peruEl) peruEl.innerHTML = peru.map(item => makeCard(item)).join('');
+    if (peruEl) {
+      peruEl.innerHTML = peru.length
+        ? peru.map(item => makeCard(item)).join('')
+        : makePeruPlaceholder(dark);
+    }
 
-    const hasPeru = peru.length > 0;
-    if (peruWrap) peruWrap.style.display = hasPeru ? '' : 'none';
-    if (divider) divider.style.display = hasPeru ? '' : 'none';
-    tradEl.classList.toggle('lg:grid-cols-4', !hasPeru);
+    if (peruWrap) peruWrap.style.display = '';
+    if (divider) divider.style.display = '';
   });
   refreshCartUI();
 }
