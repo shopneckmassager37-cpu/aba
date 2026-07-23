@@ -268,14 +268,33 @@ function renderProductsList() {
       const catProds = list.filter(p => p.category_id === cat.id);
       if (!catProds.length) return;
       html += `<div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-4 mb-1 px-1">${cat.name}</div>`;
-      html += catProds.map(p => productRow(p, cat)).join('');
+      html += renderCuisineGroups(catProds, cat);
     });
     el.innerHTML = html;
   } else {
     const cat = categories.find(c => c.id === activeCatFilter);
-    el.innerHTML = list.map(p => productRow(p, cat)).join('');
+    el.innerHTML = renderCuisineGroups(list, cat);
   }
   attachProductDrag();
+}
+
+// Sub-groups a category's products into Traditional / Peruvian & Ecuadorian,
+// mirroring the same split shown on the live menu page.
+function renderCuisineGroups(catProds, cat) {
+  const trad = catProds.filter(p => !p.is_peruvian);
+  const peru = catProds.filter(p => p.is_peruvian);
+  let html = '';
+  if (trad.length) {
+    html += `<div class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mt-3 mb-1.5 px-1 flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>Traditional</div>`;
+    html += trad.map(p => productRow(p, cat)).join('');
+  }
+  if (peru.length) {
+    html += `<div class="text-[10px] font-semibold text-orange-500 uppercase tracking-wider mt-3 mb-1.5 px-1 flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Peruvian &amp; Ecuadorian</div>`;
+    html += peru.map(p => productRow(p, cat)).join('');
+  }
+  return html;
 }
 
 function productRow(p, cat) {
