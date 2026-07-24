@@ -35,6 +35,7 @@
     <div class="flex items-center gap-3">
       <button onclick="showTab('products')" id="tab-products" class="tab-btn px-4 py-1.5 rounded text-sm bg-white text-gray-900 font-medium">Products</button>
       <button onclick="showTab('categories')" id="tab-categories" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Categories</button>
+      <button onclick="showTab('allergens')" id="tab-allergens" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Allergens</button>
       <a href="menu.html" target="_blank" class="text-xs text-gray-400 hover:text-white ml-2">↗ View Menu</a>
       <button onclick="doLogout()" class="text-xs text-gray-500 hover:text-white ml-2">Logout</button>
     </div>
@@ -61,6 +62,16 @@
     </div>
     <p class="text-xs text-gray-400 mb-3">Drag rows to reorder. Changes save immediately.</p>
     <div id="categories-list" class="space-y-2"></div>
+  </div>
+
+  <!-- ALLERGENS TAB -->
+  <div id="tab-allergens-panel" class="p-6 hidden">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-800">Allergens</h2>
+      <button onclick="openAllergenModal(null)" class="bg-gray-900 text-white px-4 py-2 rounded text-sm hover:bg-gray-700">+ Add Allergen</button>
+    </div>
+    <p class="text-xs text-gray-400 mb-3">Drag to reorder. This list is what appears as checkboxes when editing a product's allergens, and as tags on the public menu.</p>
+    <div id="allergens-list" class="space-y-2"></div>
   </div>
 
 </div>
@@ -130,6 +141,11 @@
             <input type="checkbox" id="pm-peruvian" class="w-4 h-4"/> Peruvian &amp; Ecuadorian dish
           </label>
         </div>
+        <div class="col-span-2">
+          <label class="label">Allergens</label>
+          <div id="pm-allergens" class="flex flex-wrap gap-3 border border-gray-200 rounded px-3 py-2.5"></div>
+          <p class="text-[11px] text-gray-400 mt-1">Manage the available list in the Allergens tab.</p>
+        </div>
       </div>
     </div>
     <div class="px-6 pb-5 flex gap-3 justify-end">
@@ -171,10 +187,32 @@
   </div>
 </div>
 
+<!-- ALLERGEN MODAL -->
+<div id="allergen-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/50 px-4">
+  <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm">
+    <div class="flex items-center justify-between px-6 py-4 border-b">
+      <h3 id="allergen-modal-title" class="font-semibold text-gray-800">Add Allergen</h3>
+      <button onclick="closeAllergenModal()" class="text-gray-400 hover:text-gray-700 text-xl">✕</button>
+    </div>
+    <div class="px-6 py-5 space-y-4">
+      <input type="hidden" id="am-id"/>
+      <div>
+        <label class="label">Name *</label>
+        <input id="am-name" type="text" class="input" placeholder="Gluten"/>
+      </div>
+    </div>
+    <div class="px-6 pb-5 flex gap-3 justify-end">
+      <button onclick="closeAllergenModal()" class="px-4 py-2 text-sm border border-gray-200 rounded text-gray-500 hover:border-gray-400">Cancel</button>
+      <button onclick="saveAllergen()" class="px-6 py-2 text-sm bg-gray-900 text-white rounded hover:bg-gray-700">Save</button>
+    </div>
+  </div>
+</div>
+
 <script src="supabase.js"></script>
 <script>
 let categories = [];
 let products = [];
+let allergens = [];
 let activeCatFilter = 'all';
 let dragSrcEl = null;
 
@@ -187,8 +225,10 @@ async function doLogin() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: val })
     });
-    if (res.ok) {
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.token) {
       sessionStorage.setItem('admin_auth', '1');
+      sessionStorage.setItem('admin_token', data.token);
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('admin-app').classList.remove('hidden');
       loadAll();
@@ -202,7 +242,17 @@ async function doLogin() {
 
 function doLogout() {
   sessionStorage.removeItem('admin_auth');
+  sessionStorage.removeItem('admin_token');
   location.reload();
+}
+
+// If a write fails because the session expired, bounce back to login.
+function handleAuthError(e) {
+  if (String(e.message || '').includes('Unauthorized')) {
+    doLogout();
+    return true;
+  }
+  return false;
 }
 
 if (sessionStorage.getItem('admin_auth') === '1') {
@@ -212,7 +262,7 @@ if (sessionStorage.getItem('admin_auth') === '1') {
 
 // ── TABS ──
 function showTab(name) {
-  ['products','categories'].forEach(t => {
+  ['products','categories','allergens'].forEach(t => {
     document.getElementById(`tab-${t}-panel`).classList.toggle('hidden', t !== name);
     const btn = document.getElementById(`tab-${t}`);
     if (t === name) { btn.classList.add('bg-white','text-gray-900','font-medium'); btn.classList.remove('text-gray-400'); }
@@ -222,10 +272,11 @@ function showTab(name) {
 
 // ── LOAD DATA ──
 async function loadAll() {
-  [categories, products] = await Promise.all([getCategories(), getProducts()]);
+  [categories, products, allergens] = await Promise.all([getCategories(), getProducts(), getAllergens()]);
   renderCategoryFilter();
   renderProductsList();
   renderCategoriesList();
+  renderAllergensList();
 }
 
 // ── SAVE STATUS ──
@@ -311,6 +362,7 @@ function productRow(p, cat) {
         ${p.gluten_free_option ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GF option</span>` : ''}
         ${p.is_peruvian ? `<span class="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Peruvian &amp; Ecuadorian</span>` : ''}
         ${!p.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Hidden</span>` : ''}
+        ${(p.allergens||[]).map(a => `<span class="text-[10px] bg-red-50 text-red-500 px-2 py-0.5 rounded-full">${a}</span>`).join('')}
       </div>
       <div class="text-xs text-gray-400 mt-0.5">$${p.price} · ${p.badge||''} · ${catName}</div>
     </div>
@@ -368,7 +420,7 @@ async function toggleProductVisible(id, current) {
     if (p) p.visible = !current;
     renderProductsList();
     flashSaved();
-  } catch { flashError(); }
+  } catch (e) { if (!handleAuthError(e)) flashError(); }
 }
 
 async function toggleCategoryVisible(id, current) {
@@ -378,7 +430,7 @@ async function toggleCategoryVisible(id, current) {
     if (c) c.visible = !current;
     renderCategoriesList();
     flashSaved();
-  } catch { flashError(); }
+  } catch (e) { if (!handleAuthError(e)) flashError(); }
 }
 
 // ── DELETE PRODUCT ──
@@ -390,10 +442,27 @@ async function deleteProductConfirm(id, name, catId) {
     renderProductsList();
     renderCategoryFilter();
     flashSaved();
-  } catch { flashError(); }
+  } catch (e) { if (!handleAuthError(e)) flashError(); }
 }
 
 // ── PRODUCT MODAL ──
+function renderAllergenCheckboxes(selected) {
+  const el = document.getElementById('pm-allergens');
+  if (!allergens.length) {
+    el.innerHTML = `<span class="text-xs text-gray-400">No allergens defined yet — add some in the Allergens tab.</span>`;
+    return;
+  }
+  const sel = new Set(selected || []);
+  el.innerHTML = allergens.map(a => `
+    <label class="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
+      <input type="checkbox" class="pm-allergen-cb w-3.5 h-3.5" value="${a.name}" ${sel.has(a.name) ? 'checked' : ''}/> ${a.name}
+    </label>`).join('');
+}
+
+function getSelectedAllergens() {
+  return Array.from(document.querySelectorAll('.pm-allergen-cb:checked')).map(cb => cb.value);
+}
+
 function openProductModal(id) {
   const modal = document.getElementById('product-modal');
   const catSel = document.getElementById('pm-category');
@@ -415,6 +484,7 @@ function openProductModal(id) {
     document.getElementById('pm-visible').checked = p.visible !== false;
     document.getElementById('pm-gf').checked = !!p.gluten_free_option;
     document.getElementById('pm-peruvian').checked = !!p.is_peruvian;
+    renderAllergenCheckboxes(p.allergens);
     updateImgPreview(p.img);
   } else {
     document.getElementById('product-modal-title').textContent = 'Add Product';
@@ -430,6 +500,7 @@ function openProductModal(id) {
     document.getElementById('pm-visible').checked = true;
     document.getElementById('pm-gf').checked = false;
     document.getElementById('pm-peruvian').checked = false;
+    renderAllergenCheckboxes([]);
     updateImgPreview('');
   }
   modal.classList.remove('hidden');
@@ -487,6 +558,7 @@ async function saveProduct() {
     visible: document.getElementById('pm-visible').checked,
     gluten_free_option: document.getElementById('pm-gf').checked,
     is_peruvian: document.getElementById('pm-peruvian').checked,
+    allergens: getSelectedAllergens(),
   };
   try {
     if (id) {
@@ -503,7 +575,7 @@ async function saveProduct() {
     renderCategoryFilter();
     closeProductModal();
     flashSaved();
-  } catch (e) { console.error(e); flashError(); }
+  } catch (e) { console.error(e); if (!handleAuthError(e)) flashError(); }
 }
 
 // ── CATEGORIES LIST ──
@@ -625,7 +697,110 @@ async function saveCategory() {
     renderCategoryFilter();
     closeCategoryModal();
     flashSaved();
-  } catch (e) { console.error(e); flashError(); }
+  } catch (e) { console.error(e); if (!handleAuthError(e)) flashError(); }
+}
+
+// ── ALLERGENS LIST ──
+function renderAllergensList() {
+  const el = document.getElementById('allergens-list');
+  el.innerHTML = allergens.map(a => `
+    <div class="bg-white rounded-lg border border-gray-100 px-4 py-3 flex items-center gap-3"
+         draggable="true" data-id="${a.id}">
+      <span class="handle text-gray-300 text-lg">⠿</span>
+      <div class="flex-1">
+        <span class="font-medium text-sm text-gray-800">${a.name}</span>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="openAllergenModal('${a.id}')" class="text-xs px-3 py-1.5 rounded border border-gray-200 text-gray-600 hover:bg-gray-50">Edit</button>
+        <button onclick="deleteAllergenConfirm('${a.id}','${a.name.replace(/'/g,"\\'")}')" class="text-xs px-3 py-1.5 rounded border border-red-100 text-red-400 hover:bg-red-50">Delete</button>
+      </div>
+    </div>`).join('');
+  attachAllergenDrag();
+}
+
+function attachAllergenDrag() {
+  document.querySelectorAll('#allergens-list [draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragSrcEl = row;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => row.classList.remove('dragging'));
+    row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('drag-over'); });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (!dragSrcEl || dragSrcEl === row) return;
+      const srcId = dragSrcEl.dataset.id;
+      const dstId = row.dataset.id;
+      const srcA = allergens.find(a => a.id === srcId);
+      const dstA = allergens.find(a => a.id === dstId);
+      if (!srcA || !dstA) return;
+      const srcOrder = srcA.sort_order, dstOrder = dstA.sort_order;
+      try {
+        await Promise.all([
+          updateAllergen(srcId, { sort_order: dstOrder }),
+          updateAllergen(dstId, { sort_order: srcOrder })
+        ]);
+        srcA.sort_order = dstOrder; dstA.sort_order = srcOrder;
+        allergens.sort((a,b) => a.sort_order - b.sort_order);
+        renderAllergensList();
+        flashSaved();
+      } catch (e) { if (!handleAuthError(e)) flashError(); }
+    });
+  });
+}
+
+function openAllergenModal(id) {
+  const modal = document.getElementById('allergen-modal');
+  if (id) {
+    const a = allergens.find(a => a.id === id);
+    document.getElementById('allergen-modal-title').textContent = 'Edit Allergen';
+    document.getElementById('am-id').value = a.id;
+    document.getElementById('am-name').value = a.name;
+  } else {
+    document.getElementById('allergen-modal-title').textContent = 'Add Allergen';
+    document.getElementById('am-id').value = '';
+    document.getElementById('am-name').value = '';
+  }
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeAllergenModal() {
+  document.getElementById('allergen-modal').classList.add('hidden');
+  document.getElementById('allergen-modal').classList.remove('flex');
+}
+
+async function saveAllergen() {
+  const id = document.getElementById('am-id').value;
+  const name = document.getElementById('am-name').value.trim();
+  if (!name) { alert('Name is required.'); return; }
+  try {
+    if (id) {
+      await updateAllergen(id, { name });
+      const idx = allergens.findIndex(a => a.id === id);
+      if (idx >= 0) allergens[idx] = { ...allergens[idx], name };
+    } else {
+      const maxOrder = Math.max(0, ...allergens.map(a => a.sort_order));
+      const [created] = await createAllergen({ name, sort_order: maxOrder + 1 });
+      allergens.push(created);
+    }
+    renderAllergensList();
+    closeAllergenModal();
+    flashSaved();
+  } catch (e) { console.error(e); if (!handleAuthError(e)) flashError(); }
+}
+
+async function deleteAllergenConfirm(id, name) {
+  if (!confirm(`Delete "${name}"? This will remove it from any products using it.`)) return;
+  try {
+    await deleteAllergen(id);
+    allergens = allergens.filter(a => a.id !== id);
+    renderAllergensList();
+    flashSaved();
+  } catch (e) { if (!handleAuthError(e)) flashError(); }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

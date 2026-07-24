@@ -13,6 +13,11 @@ body { background: #F9F7F2; color: #1A1A1A; font-family: 'Jost', sans-serif; }
 ::-webkit-scrollbar-track { background: #F9F7F2; }
 ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 2px; }
 
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+}
+
 /* ─────────────────────────────────────────────────────────────
    SHARED DECORATIVE ELEMENTS
 ──────────────────────────────────────────────────────────────── */
@@ -122,6 +127,9 @@ nav.scrolled .nav-link.active { color: #D4AF37 !important; }
 }
 .field:focus { border-color: #D4AF37; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(212,175,55,.08); }
 .field::placeholder { color: rgba(26,26,26,.35); font-weight: 300; }
+.field.invalid { border-color: #C0392B; }
+.field-err { display: none; color: #C0392B; font-size: .7rem; font-weight: 400; margin-top: .35rem; }
+.field-err.show { display: block; }
 
 .item-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.25rem 0; border-bottom: 1px solid rgba(26,26,26,.06); }
 .item-row:last-child { border-bottom: none; }
@@ -203,6 +211,7 @@ nav.scrolled .nav-link.active { color: #D4AF37 !important; }
    ADMIN PAGE
 ──────────────────────────────────────────────────────────────── */
 body.admin-body { font-family: system-ui, sans-serif; background: #f5f5f5; }
+body.admin-body a:focus-visible, body.admin-body button:focus-visible, body.admin-body input:focus-visible, body.admin-body textarea:focus-visible, body.admin-body select:focus-visible, body.admin-body [tabindex]:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
 .drag-over { outline: 2px dashed #3b82f6; background: #eff6ff; }
 .handle { cursor: grab; user-select: none; }
 .handle:active { cursor: grabbing; }

@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "dev": "vite --port 3000"
+    "dev": "vite --port 3000",
+    "build:css": "tailwindcss -i ./src/input.css -o ./styles.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./styles.css --watch"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.19",

@@ -94,13 +94,23 @@
         <p class="section-eyebrow">03 · Your Details</p>
         <h2 class="section-title mb-6">Delivery Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="text" id="co-name" class="field" placeholder="Full Name *"/>
-          <input type="tel" id="co-phone" class="field" placeholder="Phone Number *"/>
-          <input type="email" id="co-email" class="field md:col-span-2" placeholder="Email Address *"/>
+          <div>
+            <input type="text" id="co-name" class="field" placeholder="Full Name *" required/>
+            <p id="err-co-name" class="field-err">Please enter your full name.</p>
+          </div>
+          <div>
+            <input type="tel" id="co-phone" class="field" placeholder="Phone Number *" required/>
+            <p id="err-co-phone" class="field-err">Please enter a phone number.</p>
+          </div>
+          <div class="md:col-span-2">
+            <input type="email" id="co-email" class="field w-full" placeholder="Email Address *" required/>
+            <p id="err-co-email" class="field-err">Please enter a valid email address.</p>
+          </div>
           <div class="md:col-span-2 relative">
-            <input type="text" id="co-address" class="field" placeholder="Delivery Address *" style="padding-right:160px" autocomplete="off"/>
+            <input type="text" id="co-address" class="field" placeholder="Delivery Address *" style="padding-right:160px" autocomplete="off" required/>
             <span id="zone-badge" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#888;pointer-events:none">Detecting zone…</span>
             <div id="address-results" class="address-results"></div>
+            <p id="err-co-address" class="field-err">Please enter your delivery address.</p>
           </div>
           <textarea id="co-notes" class="field md:col-span-2" rows="3" placeholder="Special instructions (optional)" style="resize:none"></textarea>
         </div>
@@ -164,7 +174,7 @@
     const min = miami.getMinutes();
 
     // Past deadline for THIS Friday? (Wed >= 5PM)
-    const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) || day > 3 || day === 0;
+    const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) || (day > 3 && day <= 6);
 
     let deliveryDate = new Date(miami);
     if (pastDeadline) {
@@ -415,6 +425,19 @@
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function setFieldValid(id, valid) {
+    const field = document.getElementById(id);
+    const err = document.getElementById('err-' + id);
+    field.classList.toggle('invalid', !valid);
+    if (err) err.classList.toggle('show', !valid);
+  }
+
+  document.querySelectorAll('#co-name, #co-phone, #co-email, #co-address').forEach(el => {
+    el.addEventListener('input', () => setFieldValid(el.id, true));
+  });
+
   function submitOrder() {
     const info = getDeliveryInfo();
     const name = document.getElementById('co-name').value.trim();
@@ -423,8 +446,17 @@
     const address = document.getElementById('co-address').value.trim();
     const notes = document.getElementById('co-notes').value.trim();
 
-    if (!name || !phone || !email || !address) {
-      alert('Please fill in all required fields.');
+    const nameOk = !!name;
+    const phoneOk = phone.length >= 7;
+    const emailOk = EMAIL_RE.test(email);
+    const addressOk = !!address;
+    setFieldValid('co-name', nameOk);
+    setFieldValid('co-phone', phoneOk);
+    setFieldValid('co-email', emailOk);
+    setFieldValid('co-address', addressOk);
+
+    if (!nameOk || !phoneOk || !emailOk || !addressOk) {
+      document.querySelector('.field.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     const cart = readCart();
@@ -457,15 +489,17 @@
         notes
       })
     })
-    .then(() => {
+    .then(async r => {
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || data.error) throw new Error(data.error || 'Failed to place order');
       sessionStorage.setItem('chefaleh_last_total', total.toFixed(2));
       localStorage.removeItem(CART_KEY);
       window.location.href = '/confirmation.html';
     })
-    .catch(() => {
-      sessionStorage.setItem('chefaleh_last_total', total.toFixed(2));
-      localStorage.removeItem(CART_KEY);
-      window.location.href = '/confirmation.html';
+    .catch(err => {
+      alert(err.message || 'Something went wrong placing your order. Please try again.');
+      btn.textContent = 'Place Order';
+      btn.disabled = false;
     });
   }
 

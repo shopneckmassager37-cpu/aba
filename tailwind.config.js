@@ -13,12 +13,12 @@ module.exports = {
     extend: {
       colors: {
         cream: '#F9F7F2',
-        'cream-dark': '#EFEDE6',
-        'cream-darker': '#E5E2D8',
         charcoal: '#1A1A1A',
-        'charcoal-soft': '#2C2C2C',
         gold: '#D4AF37',
         'gold-dark': '#B8941F',
+        'cream-dark': '#EFEDE6',
+        'cream-darker': '#E5E2D8',
+        'charcoal-soft': '#2C2C2C',
       },
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
