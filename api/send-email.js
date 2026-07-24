@@ -1,38 +1,149 @@
+import { createHmac } from 'crypto';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+const SUPABASE_URL = 'https://gubckjmffliwukroluxm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1YmNram1mZmxpd3Vrcm9sdXhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDA4NDYsImV4cCI6MjA5MzExNjg0Nn0.qDuyWCltbNlIPsDdX8tUzZMF1VJgPXipH9wageTqTQw';
+
+const TAX_RATE = 0.07;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const CONFIRM_FIELDS = ['orderId', 'name', 'email', 'phone', 'address', 'zone', 'subtotal', 'tax', 'delivery', 'driverTip', 'chefTip', 'total', 'notes', 'items'];
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function clampText(s, max) {
+  // Strip control chars (incl. CR/LF) to prevent header injection when a field is used in a subject line.
+  return String(s ?? '').replace(/[\r\n\t\x00-\x1F\x7F]/g, ' ').trim().slice(0, max);
+}
+
+function isReasonableAmount(n, max) {
+  return typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= max;
+}
+
+function getConfirmSecret() {
+  return process.env.ORDER_CONFIRM_SECRET || process.env.CONFIRM_SECRET || process.env.RESEND_API_KEY;
+}
+
+function canonicalizeConfirmPayload(payload) {
+  return CONFIRM_FIELDS
+    .map(field => `${field}=${encodeURIComponent(payload[field] ?? '')}`)
+    .join('&');
+}
+
+function signConfirmPayload(payload) {
+  const secret = getConfirmSecret();
+  if (!secret) throw new Error('Missing order confirmation secret');
+  return createHmac('sha256', secret).update(canonicalizeConfirmPayload(payload)).digest('hex');
+}
+
+async function fetchVisibleProducts() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/products?select=name,price,visible`, {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+  });
+  if (!res.ok) throw new Error('Could not load menu for validation');
+  return res.json();
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, phone, address, zone, cart, subtotal, tax, delivery, driverTip, chefTip, total, notes } = req.body;
+  const body = req.body || {};
+  const name = clampText(body.name, 100);
+  const phone = clampText(body.phone, 40);
+  const email = clampText(body.email, 200);
+  const address = clampText(body.address, 300);
+  const zoneLabel = clampText(body.zone, 60);
+  const notes = clampText(body.notes, 500);
+  const deliveryDate = clampText(body.deliveryDate, 60);
+  const rawCart = Array.isArray(body.cart) ? body.cart : [];
 
-  const itemsHtml = (cart || [])
+  if (!name || !phone || !EMAIL_RE.test(email) || !address) {
+    return res.status(400).json({ error: 'Missing or invalid contact details' });
+  }
+  if (!rawCart.length) {
+    return res.status(400).json({ error: 'Cart is empty' });
+  }
+
+  const delivery = parseFloat(body.delivery);
+  const driverTip = parseFloat(body.driverTip);
+  const chefTip = parseFloat(body.chefTip);
+  if (!isReasonableAmount(delivery, 200) || !isReasonableAmount(driverTip, 500) || !isReasonableAmount(chefTip, 2000)) {
+    return res.status(400).json({ error: 'Invalid order totals' });
+  }
+
+  // Recompute the subtotal/tax server-side from real menu prices — never trust client-sent prices.
+  let catalog;
+  try {
+    catalog = await fetchVisibleProducts();
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+  const byName = new Map(catalog.filter(p => p.visible !== false).map(p => [p.name, p.price]));
+
+  const cart = [];
+  for (const item of rawCart) {
+    const price = byName.get(item?.name);
+    const qty = parseInt(item?.qty, 10);
+    if (price === undefined || !Number.isFinite(qty) || qty <= 0 || qty > 100) {
+      return res.status(400).json({ error: `Unknown or invalid item: ${clampText(item?.name, 100)}` });
+    }
+    cart.push({
+      name: item.name,
+      qty,
+      price,
+      badge: clampText(item.badge, 60),
+      instructions: clampText(item.instructions, 300),
+    });
+  }
+
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + tax + delivery + driverTip + chefTip;
+
+  const itemsHtml = cart
     .map(i => `
       <tr>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px">
-          ${i.name}
-          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${i.instructions}</div>` : ''}
+          ${escapeHtml(i.name)}
+          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${escapeHtml(i.instructions)}</div>` : ''}
         </td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;color:#888;font-size:14px;text-align:center">×${i.qty}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;text-align:right;font-size:14px">$${(i.price * i.qty).toFixed(2)}</td>
       </tr>`)
     .join('');
 
-  // Build confirm URL — passes all order data as query params
-  const confirmParams = new URLSearchParams({
-    name, email, phone, address, zone,
-    subtotal, tax, delivery, driverTip, chefTip, total,
-    notes: notes || '',
-    items: JSON.stringify((cart || []).map(i => ({ 
-      name: i.name, 
-      qty: i.qty, 
-      price: i.price, 
+  const safeName = escapeHtml(name);
+  const safePhone = escapeHtml(phone);
+  const safeEmail = escapeHtml(email);
+  const safeAddress = escapeHtml(address);
+  const safeZone = escapeHtml(zoneLabel);
+  const safeNotes = escapeHtml(notes);
+  const safeDeliveryDate = escapeHtml(deliveryDate || 'Next Friday');
+  const fmt = n => n.toFixed(2);
+  const orderId = `CHF-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+
+  const confirmPayload = {
+    orderId,
+    name, email, phone, address, zone: zoneLabel,
+    subtotal: fmt(subtotal), tax: fmt(tax), delivery: fmt(delivery),
+    driverTip: fmt(driverTip), chefTip: fmt(chefTip), total: fmt(total),
+    notes,
+    items: JSON.stringify(cart.map(i => ({
+      name: i.name,
+      qty: i.qty,
+      price: i.price,
       badge: i.badge || '',
       instructions: i.instructions || ''
     })))
+  };
+  const confirmParams = new URLSearchParams({
+    ...confirmPayload,
+    token: signConfirmPayload(confirmPayload)
   });
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
@@ -57,7 +168,7 @@ export default async function handler(req, res) {
           <!-- Thank you -->
           <div style="padding:44px 32px 32px;text-align:center;border-bottom:1px solid #f0ede6">
             <div style="font-size:36px;margin-bottom:16px">🙏</div>
-            <h2 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#1a1a1a;margin:0 0 12px">Thank You, ${name}!</h2>
+            <h2 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#1a1a1a;margin:0 0 12px">Thank You, ${safeName}!</h2>
             <p style="font-size:15px;color:#666;margin:0 auto;line-height:1.8;max-width:420px">
               We've received your order and are excited to cook for you. To complete your reservation, please send payment using one of the options below.
             </p>
@@ -66,7 +177,7 @@ export default async function handler(req, res) {
           <!-- Amount due -->
           <div style="padding:32px 32px 0;text-align:center">
             <p style="font-size:12px;color:#999;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px">Amount Due</p>
-            <div style="font-family:Georgia,serif;font-size:48px;color:#D4AF37;font-weight:600;line-height:1">$${total}</div>
+            <div style="font-family:Georgia,serif;font-size:48px;color:#D4AF37;font-weight:600;line-height:1">$${fmt(total)}</div>
             <p style="font-size:12px;color:#bbb;margin:8px 0 0">Please include your name in the payment note</p>
           </div>
 
@@ -123,14 +234,14 @@ export default async function handler(req, res) {
               <tbody>${itemsHtml}</tbody>
             </table>
             <table style="width:100%;border-collapse:collapse;max-width:260px;margin-left:auto">
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Subtotal</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${subtotal}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Tax (7%)</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${tax}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Delivery (${zone})</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${delivery}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Chef Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${chefTip}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Driver Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${driverTip}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Subtotal</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(subtotal)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Tax (7%)</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(tax)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Delivery (${safeZone})</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(delivery)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Chef Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(chefTip)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Driver Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(driverTip)}</td></tr>
               <tr style="border-top:2px solid #D4AF37">
                 <td style="padding:12px 10px;font-size:16px;font-family:Georgia,serif;color:#1a1a1a">Total</td>
-                <td style="padding:12px 10px;text-align:right;font-size:20px;font-family:Georgia,serif;color:#D4AF37;font-weight:600">$${total}</td>
+                <td style="padding:12px 10px;text-align:right;font-size:20px;font-family:Georgia,serif;color:#D4AF37;font-weight:600">$${fmt(total)}</td>
               </tr>
             </table>
           </div>
@@ -150,7 +261,7 @@ export default async function handler(req, res) {
       from: 'Chefaleh Orders <orders@chefaleh.com>',
       to: 'chefaleh@chefaleh.com',
       reply_to: email,
-      subject: `🧾 New Order — ${name} · $${total}`,
+      subject: `🧾 New Order — ${name} · $${fmt(total)}`,
       html: `
         <div style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;background:#fff">
           <div style="background:#1a1a1a;padding:28px 32px">
@@ -159,16 +270,16 @@ export default async function handler(req, res) {
           </div>
 
           <div style="padding:32px">
-            <h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1a1a;margin:0 0 20px">Order from ${name}</h2>
+            <h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1a1a;margin:0 0 20px">Order from ${safeName}</h2>
 
             <table style="width:100%;border-collapse:collapse;margin-bottom:24px;background:#fafaf8;border:1px solid #ede9e1">
-              <tr><td style="padding:9px 14px;font-size:12px;color:#999;width:110px;text-transform:uppercase;letter-spacing:1px">Name</td><td style="padding:9px 14px;font-size:14px;font-weight:600">${name}</td></tr>
-              <tr style="background:#f5f2ea"><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Phone</td><td style="padding:9px 14px;font-size:14px"><a href="tel:${phone}" style="color:#1a1a1a">${phone}</a></td></tr>
-              <tr><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Email</td><td style="padding:9px 14px;font-size:14px"><a href="mailto:${email}" style="color:#D4AF37">${email}</a></td></tr>
-              <tr><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Address</td><td style="padding:9px 14px;font-size:14px">${address}</td></tr>
-              <tr style="background:#f5f2ea"><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Delivery For</td><td style="padding:9px 14px;font-size:14px;font-weight:700;color:#D4AF37">${req.body.deliveryDate || 'Next Friday'}</td></tr>
-              <tr><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Zone</td><td style="padding:9px 14px;font-size:14px">${zone}</td></tr>
-              ${notes ? `<tr style="background:#f5f2ea"><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Notes</td><td style="padding:9px 14px;font-size:14px;font-style:italic;color:#555">${notes}</td></tr>` : ''}
+              <tr><td style="padding:9px 14px;font-size:12px;color:#999;width:110px;text-transform:uppercase;letter-spacing:1px">Name</td><td style="padding:9px 14px;font-size:14px;font-weight:600">${safeName}</td></tr>
+              <tr style="background:#f5f2ea"><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Phone</td><td style="padding:9px 14px;font-size:14px"><a href="tel:${safePhone}" style="color:#1a1a1a">${safePhone}</a></td></tr>
+              <tr><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Email</td><td style="padding:9px 14px;font-size:14px"><a href="mailto:${safeEmail}" style="color:#D4AF37">${safeEmail}</a></td></tr>
+              <tr><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Address</td><td style="padding:9px 14px;font-size:14px">${safeAddress}</td></tr>
+              <tr style="background:#f5f2ea"><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Delivery For</td><td style="padding:9px 14px;font-size:14px;font-weight:700;color:#D4AF37">${safeDeliveryDate}</td></tr>
+              <tr><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Zone</td><td style="padding:9px 14px;font-size:14px">${safeZone}</td></tr>
+              ${notes ? `<tr style="background:#f5f2ea"><td style="padding:9px 14px;font-size:12px;color:#999;text-transform:uppercase;letter-spacing:1px">Notes</td><td style="padding:9px 14px;font-size:14px;font-style:italic;color:#555">${safeNotes}</td></tr>` : ''}
             </table>
 
             <h3 style="font-family:Georgia,serif;font-size:15px;font-weight:400;color:#1a1a1a;margin:0 0 8px">Items Ordered</h3>
@@ -184,14 +295,14 @@ export default async function handler(req, res) {
             </table>
 
             <table style="width:100%;border-collapse:collapse;max-width:260px;margin-left:auto">
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Subtotal</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${subtotal}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Tax (7%)</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${tax}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Delivery</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${delivery}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Chef Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${chefTip}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Driver Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${driverTip}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Subtotal</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(subtotal)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Tax (7%)</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(tax)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Delivery</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(delivery)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Chef Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(chefTip)}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Driver Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${fmt(driverTip)}</td></tr>
               <tr style="border-top:2px solid #D4AF37">
                 <td style="padding:12px 10px;font-size:16px;font-family:Georgia,serif">Total</td>
-                <td style="padding:12px 10px;text-align:right;font-size:18px;font-family:Georgia,serif;color:#D4AF37;font-weight:600">$${total}</td>
+                <td style="padding:12px 10px;text-align:right;font-size:18px;font-family:Georgia,serif;color:#D4AF37;font-weight:600">$${fmt(total)}</td>
               </tr>
             </table>
           </div>
@@ -203,7 +314,7 @@ export default async function handler(req, res) {
                style="display:inline-block;background:#D4AF37;color:#1a1a1a;padding:14px 36px;font-family:Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none">
               ✓ Confirm Order &amp; Notify Customer
             </a>
-            <p style="font-size:11px;color:#bbb;margin:14px 0 0">This will send a confirmation email to: ${email}</p>
+            <p style="font-size:11px;color:#bbb;margin:14px 0 0">This will send a confirmation email to: ${safeEmail}</p>
           </div>
 
           <div style="background:#f5f2ea;padding:16px 32px;text-align:center">

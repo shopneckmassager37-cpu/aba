@@ -1,17 +1,68 @@
+import { createHmac, timingSafeEqual } from 'crypto';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const CONFIRM_FIELDS = ['orderId', 'name', 'email', 'phone', 'address', 'zone', 'subtotal', 'tax', 'delivery', 'driverTip', 'chefTip', 'total', 'notes', 'items'];
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function getFirst(value) {
+  return Array.isArray(value) ? value[0] : value ?? '';
+}
+
+function getConfirmSecret() {
+  return process.env.ORDER_CONFIRM_SECRET || process.env.CONFIRM_SECRET || process.env.RESEND_API_KEY;
+}
+
+function canonicalizeConfirmPayload(payload) {
+  return CONFIRM_FIELDS
+    .map(field => `${field}=${encodeURIComponent(payload[field] ?? '')}`)
+    .join('&');
+}
+
+function signConfirmPayload(payload) {
+  const secret = getConfirmSecret();
+  if (!secret) return '';
+  return createHmac('sha256', secret).update(canonicalizeConfirmPayload(payload)).digest('hex');
+}
+
+function isValidConfirmToken(payload, token) {
+  if (!token) return false;
+  const expected = signConfirmPayload(payload);
+  const givenBuffer = Buffer.from(token, 'hex');
+  const expectedBuffer = Buffer.from(expected, 'hex');
+  return givenBuffer.length === expectedBuffer.length && timingSafeEqual(givenBuffer, expectedBuffer);
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).send('Method not allowed');
   }
 
-  const { name, email, phone, address, zone, subtotal, tax, delivery, driverTip, chefTip, total, notes, items } = req.query;
+  const query = req.query || {};
+  const confirmPayload = Object.fromEntries(
+    CONFIRM_FIELDS.map(field => [field, getFirst(query[field])])
+  );
+  const token = getFirst(query.token);
+
+  if (!isValidConfirmToken(confirmPayload, token)) {
+    return res.status(403).send('Invalid or expired confirmation link');
+  }
+
+  const { orderId, name, email, phone, address, zone, subtotal, tax, delivery, driverTip, chefTip, total, notes, items } = confirmPayload;
 
   if (!email || !name) {
     return res.status(400).send('Missing required fields');
   }
+
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeOrderId = escapeHtml(orderId);
+  const safeAddress = escapeHtml(address);
+  const safeZone = escapeHtml(zone);
+  const safeNotes = escapeHtml(notes);
 
   let parsedItems = [];
   try { parsedItems = JSON.parse(items || '[]'); } catch {}
@@ -20,10 +71,10 @@ export default async function handler(req, res) {
     .map(i => `
       <tr>
         <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px;color:#1a1a1a">
-          ${i.name}
-          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${i.instructions}</div>` : ''}
+          ${escapeHtml(i.name)}
+          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${escapeHtml(i.instructions)}</div>` : ''}
         </td>
-        <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;color:#999;font-size:13px;text-align:center">×${i.qty}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;color:#999;font-size:13px;text-align:center">×${parseInt(i.qty)}</td>
         <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;text-align:right;font-size:14px;color:#1a1a1a">$${(parseFloat(i.price) * parseInt(i.qty)).toFixed(2)}</td>
       </tr>`)
     .join('');
@@ -47,7 +98,7 @@ export default async function handler(req, res) {
             <div style="font-size:36px;margin-bottom:16px">✅</div>
             <h2 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#1a1a1a;margin:0 0 12px">Order Confirmed</h2>
             <p style="font-size:15px;color:#666;margin:0;line-height:1.7;max-width:400px;margin:0 auto">
-              Thank you, <strong style="color:#1a1a1a">${name}</strong>. Your order has been confirmed and is being prepared with care.
+              Thank you, <strong style="color:#1a1a1a">${safeName}</strong>. Your order has been confirmed and is being prepared with care.
             </p>
           </div>
 
@@ -56,6 +107,7 @@ export default async function handler(req, res) {
             <h3 style="font-family:Georgia,serif;font-size:17px;font-weight:400;color:#1a1a1a;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid #ede9e1">
               Order Summary
             </h3>
+            <p style="font-size:12px;color:#999;margin:0 0 12px">Order ID: ${safeOrderId}</p>
 
             <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
               <thead>
@@ -72,7 +124,7 @@ export default async function handler(req, res) {
             <table style="width:100%;border-collapse:collapse;max-width:260px;margin-left:auto">
               <tr><td style="padding:5px 10px;font-size:12px;color:#999">Subtotal</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${subtotal}</td></tr>
               <tr><td style="padding:5px 10px;font-size:12px;color:#999">Tax (7%)</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${tax}</td></tr>
-              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Delivery (${zone})</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${delivery}</td></tr>
+              <tr><td style="padding:5px 10px;font-size:12px;color:#999">Delivery (${safeZone})</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${delivery}</td></tr>
               <tr><td style="padding:5px 10px;font-size:12px;color:#999">Chef Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${chefTip}</td></tr>
               <tr><td style="padding:5px 10px;font-size:12px;color:#999">Driver Tip</td><td style="padding:5px 10px;text-align:right;font-size:13px">$${driverTip}</td></tr>
               <tr style="border-top:2px solid #D4AF37">
@@ -84,8 +136,8 @@ export default async function handler(req, res) {
             <!-- Delivery info -->
             <div style="margin-top:28px;background:#faf9f5;border:1px solid #ede9e1;padding:18px 20px">
               <p style="font-size:12px;color:#999;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px">Delivery To</p>
-              <p style="font-size:14px;color:#1a1a1a;margin:0">${address}</p>
-              ${notes ? `<p style="font-size:13px;color:#888;margin:10px 0 0;font-style:italic">Note: ${notes}</p>` : ''}
+              <p style="font-size:14px;color:#1a1a1a;margin:0">${safeAddress}</p>
+              ${notes ? `<p style="font-size:13px;color:#888;margin:10px 0 0;font-style:italic">Note: ${safeNotes}</p>` : ''}
             </div>
 
           </div>
@@ -120,8 +172,9 @@ export default async function handler(req, res) {
         <div class="box">
           <div style="font-size:2.5rem;margin-bottom:16px">✅</div>
           <h1>CONFIRMED</h1>
-          <p>Confirmation sent to <span class="name">${name}</span></p>
-          <p class="email">${email}</p>
+          <p style="font-size:.8rem;color:#aaa;letter-spacing:1px">${safeOrderId}</p>
+          <p>Confirmation sent to <span class="name">${safeName}</span></p>
+          <p class="email">${safeEmail}</p>
           <p style="margin-top:20px;font-size:.8rem;color:#bbb">You can close this tab.</p>
         </div>
       </body>

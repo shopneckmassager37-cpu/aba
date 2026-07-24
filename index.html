@@ -5,28 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light"/>
   <title>Chefaleh — Private Chef Shabbat Delivery</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Bespoke, ORB-certified kosher Shabbat and event catering delivered fresh every Friday across South Florida. Order by Wednesday 5PM for this week's delivery."/>
+  <link rel="canonical" href="https://chefaleh.com/"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Chefaleh"/>
+  <meta property="og:title" content="Chefaleh — Private Chef Shabbat Delivery"/>
+  <meta property="og:description" content="Bespoke, ORB-certified kosher Shabbat and event catering delivered fresh every Friday across South Florida."/>
+  <meta property="og:image" content="https://chefaleh.com/images/shabbat_table_hero.jpg"/>
+  <meta property="og:url" content="https://chefaleh.com/"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Chefaleh — Private Chef Shabbat Delivery"/>
+  <meta name="twitter:description" content="Bespoke, ORB-certified kosher Shabbat and event catering delivered fresh every Friday across South Florida."/>
+  <meta name="twitter:image" content="https://chefaleh.com/images/shabbat_table_hero.jpg"/>
+  <link rel="stylesheet" href="css/tailwind.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: { extend: {
-        colors: {
-          cream: '#F9F7F2',
-          charcoal: '#1A1A1A',
-          gold: '#D4AF37',
-          'cream-dark': '#EFEDE6',
-          'charcoal-soft': '#2C2C2C'
-        },
-        fontFamily: {
-          serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-          sans: ['Jost', 'sans-serif']
-        }
-      }}
-    }
-  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; color-scheme: light; }
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid #D4AF37; outline-offset: 2px; }
     body { background: #F9F7F2; color: #1A1A1A; font-family: 'Jost', sans-serif; }
 
     .gold-bar { height: 1px; background: linear-gradient(to right, transparent, #D4AF37, transparent); }
@@ -143,7 +139,7 @@
 <div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl transition-transform duration-350 ease-in-out translate-x-full" style="transform:translateX(100%)">
   <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
     <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
-    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+    <button onclick="closeDrawer()" aria-label="Close cart" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
   </div>
   <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
   <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
@@ -159,7 +155,7 @@
      HERO
 ──────────────────────────────────────────────────────────────── -->
 <section class="relative min-h-screen flex items-center overflow-hidden">
-  <img src="images/shabbat_table_hero.png" alt="Elegant Shabbat Table" class="hero-img"/>
+  <img src="images/shabbat_table_hero.jpg" alt="Elegant Shabbat Table" fetchpriority="high" class="hero-img"/>
   <div class="hero-overlay"></div>
 
   <div class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 py-36 flex flex-col items-center text-center fade-up">
@@ -290,7 +286,7 @@
           </div>
         </div>
         <div class="hover-zoom" style="height:170px">
-          <img src="images/new_meat.png" alt="Premium meat dish" class="w-full h-full object-cover object-center"/>
+          <img src="images/new_meat.jpg" alt="Premium meat dish" loading="lazy" class="w-full h-full object-cover object-center"/>
         </div>
       </div>
     </div>
@@ -303,7 +299,7 @@
 <section class="py-24 md:py-28 bg-charcoal relative overflow-hidden">
   <!-- subtle bg texture -->
   <div class="absolute inset-0 opacity-8 pointer-events-none">
-    <img src="images/food1.jpg" alt="" class="w-full h-full object-cover"/>
+    <img src="images/food1.jpg" alt="" loading="lazy" class="w-full h-full object-cover"/>
     <div class="absolute inset-0 bg-charcoal/75"></div>
   </div>
 
@@ -331,13 +327,13 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
       <div class="hover-zoom" style="height:300px">
-        <img src="images/food3.png" alt="Featured dish" class="w-full h-full object-cover"/>
+        <img src="images/food3.jpg" alt="Featured dish" loading="lazy" class="w-full h-full object-cover"/>
       </div>
       <div class="hover-zoom dish-mid" style="height:300px">
-        <img src="images/food4.png" alt="Featured dish" class="w-full h-full object-cover"/>
+        <img src="images/food4.jpg" alt="Featured dish" loading="lazy" class="w-full h-full object-cover"/>
       </div>
       <div class="hover-zoom" style="height:300px">
-        <img src="images/food5.png" alt="Featured dish" class="w-full h-full object-cover"/>
+        <img src="images/food5.jpg" alt="Featured dish" loading="lazy" class="w-full h-full object-cover"/>
       </div>
     </div>
 
@@ -422,7 +418,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2">
     <!-- Image left -->
     <div class="hover-zoom" style="min-height:340px">
-      <img src="images/food1.jpg" alt="Chefaleh dish" class="w-full h-full object-cover" style="min-height:340px"/>
+      <img src="images/food1.jpg" alt="Chefaleh dish" loading="lazy" class="w-full h-full object-cover" style="min-height:340px"/>
     </div>
     <!-- Text right -->
     <div class="flex flex-col justify-center px-9 md:px-14 py-16 md:py-22 bg-charcoal">

@@ -4,19 +4,20 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About — Chefaleh</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Chefaleh is a private chef–driven culinary studio crafting refined kosher Shabbat and event dining across South Florida — clean ingredients, small-batch production, ORB certified."/>
+  <link rel="canonical" href="https://chefaleh.com/about.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Chefaleh"/>
+  <meta property="og:title" content="About — Chefaleh"/>
+  <meta property="og:description" content="A private chef–driven culinary studio crafting refined kosher Shabbat and event dining across South Florida."/>
+  <meta property="og:image" content="https://chefaleh.com/images/chef.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <link rel="stylesheet" href="css/tailwind.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: { extend: {
-        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
-        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
-      }}
-    }
-  </script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
+    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid #D4AF37;outline-offset:2px}
     body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
     .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
     .gold-bar-left{height:2px;width:50px;background:#D4AF37}
@@ -73,7 +74,7 @@
 <div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl transition-transform duration-350 ease-in-out translate-x-full" style="transform:translateX(100%)">
   <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
     <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
-    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+    <button onclick="closeDrawer()" aria-label="Close cart" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
   </div>
   <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
   <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
@@ -92,7 +93,7 @@
 <!-- HEADER -->
 <section class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
   <div class="absolute inset-0 opacity-20">
-    <img src="images/food3.png" alt="" class="w-full h-full object-cover"/>
+    <img src="images/food3.jpg" alt="" class="w-full h-full object-cover"/>
   </div>
   <div class="relative z-10 px-5">
     <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Our Story</p>
@@ -137,7 +138,7 @@
           </div>
         </div>
         <div class="overflow-hidden" style="height:200px">
-          <img src="images/fresh_meat.png" alt="Fresh juicy meat" class="w-full h-full object-cover object-center"/>
+          <img src="images/fresh_meat.jpg" alt="Fresh juicy meat" loading="lazy" class="w-full h-full object-cover object-center"/>
         </div>
       </div>
     </div>
@@ -178,7 +179,7 @@
   <div class="max-w-7xl mx-auto px-5 md:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
       <div class="overflow-hidden" style="height:300px;max-height:420px">
-        <img src="images/chef.png" alt="Our Chef" class="w-full h-full object-cover object-center"/>
+        <img src="images/chef.png" alt="Our Chef" loading="lazy" class="w-full h-full object-cover object-center"/>
       </div>
       <div>
         <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Behind the Counter</p>

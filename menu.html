@@ -4,19 +4,20 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Menu — Chefaleh</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Browse this week's kosher Shabbat menu — challah, salads, soups, fish, poultry, signature meat, sides, and desserts. Order by Wednesday 5PM for Friday delivery."/>
+  <link rel="canonical" href="https://chefaleh.com/menu.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Chefaleh"/>
+  <meta property="og:title" content="Menu — Chefaleh"/>
+  <meta property="og:description" content="Browse this week's kosher Shabbat menu, delivered fresh every Friday across South Florida."/>
+  <meta property="og:image" content="https://chefaleh.com/images/food3.jpg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <link rel="stylesheet" href="css/tailwind.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: { extend: {
-        colors: { cream:'#F9F7F2', charcoal:'#1A1A1A', gold:'#D4AF37', 'cream-dark':'#EFEDE6', 'charcoal-soft':'#2C2C2C' },
-        fontFamily: { serif:['"Cormorant Garamond"','Georgia','serif'], sans:['Jost','sans-serif'] }
-      }}
-    }
-  </script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
+    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid #D4AF37;outline-offset:2px}
     body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
     .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
     .gold-bar-left{height:2px;width:50px;background:#D4AF37}
@@ -53,7 +54,7 @@
         <h3 class="font-serif text-xl text-charcoal font-light">Special Instructions</h3>
         <p id="modal-item-name" class="text-xs text-charcoal/50 font-light mt-0.5"></p>
       </div>
-      <button onclick="closeModal()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+      <button onclick="closeModal()" aria-label="Close" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
     </div>
     <div class="px-6 py-5">
       <label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Notes for this item</label>
@@ -65,22 +66,6 @@
       <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
       <button onclick="closeModal()" class="px-5 border border-charcoal/15 text-charcoal/50 text-xs tracking-wider uppercase font-light hover:border-charcoal hover:text-charcoal transition-all">Cancel</button>
     </div>
-  </div>
-</div>
-
-<!-- CART DRAWER -->
-<div id="drawer-overlay" class="fixed inset-0 bg-charcoal/40 z-50 hidden" onclick="closeDrawer()"></div>
-<div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl" style="transform:translateX(100%)">
-  <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
-    <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
-    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
-  </div>
-  <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
-  <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
-    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
-    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
-    <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
-    <a href="/checkout.html" class="block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
 
@@ -129,7 +114,7 @@
 <div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl transition-transform duration-350 ease-in-out translate-x-full" style="transform:translateX(100%)">
   <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
     <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
-    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+    <button onclick="closeDrawer()" aria-label="Close cart" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
   </div>
   <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
   <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
@@ -415,6 +400,10 @@ function makeCard(item) {
         <span class="text-[10px] ${badgeColor} px-2 py-1 tracking-wider shrink-0">${item.badge||''}</span>
       </div>
       <p class="${descColor} text-xs font-light mb-4 leading-relaxed">${item.description||item.desc||''}</p>
+      ${(item.allergens && item.allergens.length) ? `
+      <div class="flex flex-wrap gap-1.5 mb-3">
+        ${item.allergens.map(a => `<span class="text-[9px] tracking-wider uppercase px-2 py-0.5 border ${dark ? 'border-gold/25 text-gold/70' : 'border-charcoal/15 text-charcoal/45'}">${a}</span>`).join('')}
+      </div>` : ''}
       ${instrHint}
       <div class="flex items-center justify-between pt-4 border-t ${borderColor}">
         <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
