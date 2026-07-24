@@ -7,7 +7,7 @@ module.exports = {
     './cart-drawer.js',
   ],
   safelist: [
-    { pattern: /^(text|bg|border)-(cream|charcoal|gold|white|black|charcoal-soft|cream-dark|cream-darker|gold-dark)(\/\d{1,3})?$/ },
+    { pattern: /^(text|bg|border)-(cream|charcoal|gold|white|black|charcoal-soft|cream-dark|cream-darker|gold-dark|terracotta)(\/\d{1,3})?$/ },
   ],
   theme: {
     extend: {
@@ -19,6 +19,7 @@ module.exports = {
         'cream-dark': '#EFEDE6',
         'cream-darker': '#E5E2D8',
         'charcoal-soft': '#2C2C2C',
+        terracotta: '#BF6A3D',
       },
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],

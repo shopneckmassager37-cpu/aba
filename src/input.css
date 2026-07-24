@@ -117,7 +117,7 @@ nav.scrolled .nav-link.active { color: #D4AF37 !important; }
 
 .pick-mini { padding: 1rem .5rem; }
 .pick-mini .pick-num { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; line-height: 1; }
-.pick-mini .pick-suf { font-size: .55rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(26,26,26,.45); margin-top: .15rem; display: block; }
+.pick-mini .pick-suf { font-size: .62rem; letter-spacing: .04em; text-transform: none; color: rgba(26,26,26,.45); margin-top: .15rem; display: block; font-family: 'Jost', sans-serif; }
 .pick.active .pick-suf { color: rgba(26,26,26,.65); }
 
 .field {
@@ -149,7 +149,7 @@ nav.scrolled .nav-link.active { color: #D4AF37 !important; }
 
 .cta {
   width: 100%; background: #1A1A1A; color: #F9F7F2; padding: 1.15rem; font-family: 'Jost', sans-serif;
-  font-size: .75rem; font-weight: 500; letter-spacing: .3em; text-transform: uppercase; cursor: pointer;
+  font-size: .8rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; cursor: pointer;
   transition: all .3s; border: none; position: relative; overflow: hidden;
 }
 .cta:hover { background: #D4AF37; color: #1A1A1A; }
@@ -189,7 +189,7 @@ nav.scrolled .nav-link.active { color: #D4AF37 !important; }
 .hero-sub { font-size: .85rem; color: rgba(26,26,26,.5); font-weight: 300; letter-spacing: .05em; margin-top: 1rem; max-width: 520px; margin-left: auto; margin-right: auto; }
 
 .nav-bar { background: rgba(249,247,242,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(26,26,26,.06); }
-.nav-link { font-family: 'Jost', sans-serif; font-size: .7rem; font-weight: 400; letter-spacing: .25em; text-transform: uppercase; color: rgba(26,26,26,.55); transition: color .2s; }
+.nav-link { font-family: 'Jost', sans-serif; font-size: .7rem; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: rgba(26,26,26,.55); transition: color .2s; }
 .nav-link:hover { color: #1A1A1A; }
 .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; letter-spacing: .35em; font-weight: 300; color: #1A1A1A; }
 
@@ -238,6 +238,34 @@ select.input { background: white; }
 .blog-prose ul { list-style: none; padding-left: 0; margin-bottom: 1.25rem; }
 .blog-prose li { padding-left: 1.1rem; position: relative; margin-bottom: .5rem; }
 .blog-prose li::before { content: '—'; color: #D4AF37; position: absolute; left: 0; }
+
+/* Chef byline under a blog post's title/date */
+.blog-byline { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; }
+.blog-byline img { width: 32px; height: 32px; border-radius: 999px; object-fit: cover; border: 1px solid rgba(212,175,55,.4); }
+.blog-byline span { font-size: 11px; letter-spacing: .08em; color: rgba(249,247,242,.55); font-weight: 300; }
+.blog-byline strong { color: #D4AF37; font-weight: 500; }
+
+/* ─────────────────────────────────────────────────────────────
+   MENU CARD CHIPS (badges/allergens/gluten-free — one consistent style)
+──────────────────────────────────────────────────────────────── */
+.chip { display: inline-flex; align-items: center; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; font-weight: 500; line-height: 1.5; white-space: nowrap; }
+.chip-signature { background: #D4AF37; color: #1A1A1A; }
+.chip-peruvian { background: rgba(191,106,61,.14); color: #BF6A3D; border: 1px solid rgba(191,106,61,.3); }
+.chip-gf { background: rgba(75,122,60,.12); color: #4B7A3C; }
+.chip-gf-dark { background: rgba(156,201,138,.14); color: #9CC98A; }
+.chip-outline-light { border: 1px solid rgba(26,26,26,.15); color: rgba(26,26,26,.5); }
+.chip-outline-dark { border: 1px solid rgba(212,175,55,.22); color: rgba(249,247,242,.6); }
+
+.menu-divider { height: 32px; }
+@media (min-width: 768px) { .menu-divider { height: 60px; } }
+
+/* ─────────────────────────────────────────────────────────────
+   FOOTER TRUST BAR
+──────────────────────────────────────────────────────────────── */
+.trust-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 28px; padding-bottom: 2.25rem; margin-bottom: 2.25rem; border-bottom: 1px solid rgba(249,247,242,.08); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgba(249,247,242,.5); font-weight: 300; }
+.trust-bar span { display: inline-flex; align-items: center; gap: 6px; }
+.trust-bar .gold { color: #D4AF37; }
+@media (min-width: 768px) { .trust-bar { justify-content: flex-start; } }
 
 /* ─────────────────────────────────────────────────────────────
    EXPLICIT COLOR-OPACITY OVERRIDES
@@ -298,3 +326,9 @@ select.input { background: white; }
 .border-cream\/8 { border-color: rgba(249,247,242,0.08) !important; }
 .border-gold\/20 { border-color: rgba(212,175,55,0.2) !important; }
 .border-white\/8 { border-color: rgba(255,255,255,0.08) !important; }
+.text-terracotta\/60 { color: rgba(191,106,61,0.6) !important; }
+.text-terracotta\/70 { color: rgba(191,106,61,0.7) !important; }
+.text-terracotta\/80 { color: rgba(191,106,61,0.8) !important; }
+.border-terracotta\/30 { border-color: rgba(191,106,61,0.3) !important; }
+.border-terracotta\/40 { border-color: rgba(191,106,61,0.4) !important; }
+.bg-terracotta\/10 { background-color: rgba(191,106,61,0.1) !important; }

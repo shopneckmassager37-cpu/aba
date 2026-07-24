@@ -42,8 +42,8 @@
       </label>
     </div>
     <div class="px-6 pb-6 flex gap-3">
-      <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
-      <button onclick="closeModal()" class="px-5 border border-charcoal/15 text-charcoal/50 text-xs tracking-wider uppercase font-light hover:border-charcoal hover:text-charcoal transition-all">Cancel</button>
+      <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-[.1em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
+      <button onclick="closeModal()" class="px-5 border border-charcoal/15 text-charcoal/50 text-xs tracking-[.08em] uppercase font-light hover:border-charcoal hover:text-charcoal transition-all">Cancel</button>
     </div>
   </div>
 </div>
@@ -54,7 +54,7 @@
     <a href="index.html" class="font-serif text-xl md:text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
 
     <!-- Desktop links -->
-    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-medium">
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.12em] uppercase font-medium">
       <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
       <a href="about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
       <a href="menu.html"  class="text-gold">Menu</a>
@@ -67,7 +67,7 @@
 
     <!-- Mobile right -->
     <div class="flex md:hidden items-center gap-2">
-      <button onclick="openDrawer()" class="relative flex items-center gap-1.5 bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
+      <button onclick="openDrawer()" class="relative flex items-center gap-1.5 bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.08em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
         Cart
         <span id="cart-badge-m" class="cart-count-badge hidden w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
@@ -81,9 +81,9 @@
 
   <!-- Mobile dropdown -->
   <div id="mobile-menu" class="md:hidden flex-col bg-cream border-t border-charcoal/10 px-5 pb-5 pt-3 gap-0">
-    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
-    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">About</a>
-    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">Menu</a>
+    <a href="index.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
+    <a href="about.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">About</a>
+    <a href="menu.html"  class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-gold border-b border-charcoal/8">Menu</a>
   </div>
 </nav>
 
@@ -99,7 +99,7 @@
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
     <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
-    <a href="/checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
+    <a href="/checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-[.12em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
 
@@ -141,19 +141,19 @@
 <!-- STICKY SUBNAV -->
 <div class="snav sticky top-[65px] md:top-[72px] z-30 bg-cream border-b border-charcoal/8 overflow-x-auto">
   <div class="max-w-7xl mx-auto px-2 md:px-8 flex">
-    <a href="#challah"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Challah</a>
-    <a href="#salads"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Salads</a>
-    <a href="#soups"     class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Soups</a>
-    <a href="#fish"      class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Fish</a>
-    <a href="#poultry"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Poultry</a>
-    <a href="#meat"      class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Meat</a>
-    <a href="#sides"     class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Sides</a>
-    <a href="#desserts"  class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Desserts</a>
+    <a href="#challah"   class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Challah</a>
+    <a href="#salads"    class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Salads</a>
+    <a href="#soups"     class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Soups</a>
+    <a href="#fish"      class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Fish</a>
+    <a href="#poultry"   class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Poultry</a>
+    <a href="#meat"      class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Meat</a>
+    <a href="#sides"     class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Sides</a>
+    <a href="#desserts"  class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Desserts</a>
   </div>
 </div>
 
 <!-- ===== CHALLAH ===== -->
-<section id="challah" class="py-20 bg-cream">
+<section id="challah" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Bakery</p>
@@ -162,22 +162,22 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-challah-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-challah-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-challah-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-challah-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/80 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-challah-peru"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
 
 <!-- ===== SALADS ===== -->
-<section id="salads" class="py-20 bg-cream-dark">
+<section id="salads" class="py-12 md:py-20 bg-cream-dark">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Garden</p>
@@ -186,22 +186,22 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-salads-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-salads-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-salads-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-salads-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/80 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-salads-peru"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
 
 <!-- ===== SOUPS ===== -->
-<section id="soups" class="py-20 bg-cream">
+<section id="soups" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Warm & Nourishing</p>
@@ -210,22 +210,22 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-soups-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-soups-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-soups-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-soups-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/80 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-soups-peru"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
 
 <!-- ===== FISH ===== -->
-<section id="fish" class="py-20 bg-cream-dark">
+<section id="fish" class="py-12 md:py-20 bg-cream-dark">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">From the Sea</p>
@@ -234,22 +234,22 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-fish-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-fish-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-fish-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-fish-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/80 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-fish-peru"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
 
 <!-- ===== POULTRY ===== -->
-<section id="poultry" class="py-20 bg-cream">
+<section id="poultry" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Traditional with a Chef's Twist</p>
@@ -258,22 +258,22 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-poultry-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-poultry-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-poultry-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-poultry-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/80 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-poultry-peru"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
 
 <!-- ===== MEAT ===== -->
-<section id="meat" class="py-20 bg-charcoal">
+<section id="meat" class="py-12 md:py-20 bg-charcoal">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Centerpiece</p>
@@ -283,22 +283,22 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-cream/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-cream/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/5" id="g-meat-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/20" id="g-meat-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/40" id="g-meat-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-meat-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/60 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/5" id="g-meat-peru"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
 
 <!-- ===== SIDES ===== -->
-<section id="sides" class="py-20 bg-cream">
+<section id="sides" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Complete the Table</p>
@@ -307,22 +307,22 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-sides-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-sides-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-sides-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-sides-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/80 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-sides-peru"></div>
       </div>
     </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
 
 <!-- ===== DESSERTS ===== -->
-<section id="desserts" class="py-20 bg-cream-dark">
+<section id="desserts" class="py-12 md:py-20 bg-cream-dark">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Sweet Finish</p>
@@ -331,12 +331,12 @@
     </div>
     <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
       <div class="flex-1 w-full">
-        <p class="text-[10px] tracking-[.25em] uppercase text-charcoal/35 font-light mb-4">Traditional</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 font-light mb-4">Traditional</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-desserts-trad"></div>
       </div>
-      <div class="hidden lg:block w-px self-stretch bg-gold/30" id="g-desserts-divider" style="display:none"></div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-desserts-divider" style="display:none"></div>
       <div class="flex-1 w-full" id="g-desserts-peru-wrap" style="display:none">
-        <p class="text-[10px] tracking-[.25em] uppercase text-gold/70 font-light mb-4">Peruvian &amp; Ecuadorian</p>
+        <p class="text-[10px] tracking-[.15em] uppercase text-terracotta/80 font-light mb-4">Peruvian &amp; Ecuadorian</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-desserts-peru"></div>
       </div>
     </div>
@@ -344,24 +344,31 @@
 </section>
 
 <!-- ORDER CTA -->
-<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
-<section class="py-20 bg-charcoal text-center">
+<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
+<section class="py-12 md:py-20 bg-charcoal text-center">
   <h2 class="font-serif text-cream font-light mb-3" style="font-size:clamp(1.8rem,4vw,3rem)">Always open for orders</h2>
-  <p class="text-cream/30 text-xs font-light tracking-wider mb-10">Orders after Wednesday 5:00 PM are delivered the following Friday</p>
-  <a href="/checkout.html" class="inline-block bg-gold text-charcoal px-12 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">Proceed to Order</a>
+  <p class="text-cream/40 text-xs font-light tracking-wider mb-10">Orders after Wednesday 5:00 PM are delivered the following Friday</p>
+  <a href="/checkout.html" class="inline-block bg-gold text-charcoal px-12 py-4 text-xs tracking-[.15em] uppercase font-medium hover:bg-cream transition-all duration-300">Proceed to Order</a>
 </section>
 
 <!-- FOOTER -->
 <footer class="bg-charcoal border-t border-cream/5 py-10">
-  <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-    <a href="index.html" class="font-serif text-xl tracking-[.2em] text-cream font-light">CHEFALEH</a>
-    <div class="flex gap-6 text-xs font-light text-cream/20">
-      <a href="blogs.html" class="hover:text-gold transition-colors">Journal</a>
-      <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy</a>
-      <a href="terms-of-use.html" class="hover:text-gold transition-colors">Terms</a>
-      <a href="cookie-policy.html" class="hover:text-gold transition-colors">Cookies</a>
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="trust-bar">
+      <span><span class="gold">✦</span> ORB Certified Kosher</span>
+      <span><span class="gold">★★★★★</span> 5.0 Google Reviews</span>
+      <span><span class="gold">✦</span> Fresh Every Friday</span>
     </div>
-    <p class="text-cream/15 text-xs font-light">© 2026 Chefaleh</p>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <a href="index.html" class="font-serif text-xl tracking-[.15em] text-cream font-light">CHEFALEH</a>
+      <div class="flex gap-6 text-xs font-light text-cream/40">
+        <a href="blogs.html" class="hover:text-gold transition-colors">Journal</a>
+        <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy</a>
+        <a href="terms-of-use.html" class="hover:text-gold transition-colors">Terms</a>
+        <a href="cookie-policy.html" class="hover:text-gold transition-colors">Cookies</a>
+      </div>
+      <p class="text-cream/35 text-xs font-light">© 2026 Chefaleh</p>
+    </div>
   </div>
 </footer>
 
@@ -422,17 +429,18 @@ function getItemGlutenFree(name) {
 // ── CARD RENDERER ──
 function makeCard(item) {
   const dark = item.dark;
-  const imgH = item.small ? 'height:180px' : 'height:230px';
+  const imgH = item.small ? 'h-32 md:h-[180px]' : 'h-40 md:h-[230px]';
   const imgEl = item.img
     ? `<img src="${item.img}" alt="${item.name}" class="cimg w-full h-full object-cover object-center" onerror="this.style.display='none'"/>`
     : '';
   const tagEl = item.tag
-    ? `<span class="absolute top-4 left-4 z-10 ${item.tag==='Signature'?'bg-gold text-charcoal':'bg-charcoal text-cream'} text-[10px] px-3 py-1 tracking-wider font-medium">${item.tag}</span>`
+    ? `<span class="absolute top-3 left-3 z-10 ${item.tag==='Signature'?'chip chip-signature':'chip chip-outline-dark'}">${item.tag}</span>`
     : '';
-  const priceColor = dark ? 'text-gold' : 'text-charcoal';
+  // Price always reads as "gold = price" regardless of card theme.
+  const priceColor = dark ? 'text-gold' : 'text-gold-dark';
   const titleColor = dark ? 'text-cream' : 'text-charcoal';
-  const descColor  = dark ? 'text-cream/40' : 'text-charcoal/40';
-  const badgeColor = dark ? 'text-gold/60 bg-gold/10' : 'text-gold/60 bg-gold/8';
+  const sizeColor  = dark ? 'text-cream/40' : 'text-charcoal/40';
+  const descColor  = dark ? 'text-cream/45' : 'text-charcoal/48';
   const borderColor= dark ? 'border-cream/8' : 'border-charcoal/6';
   const btnBase    = dark
     ? 'border-gold/20 text-cream hover:bg-gold hover:text-charcoal'
@@ -441,11 +449,16 @@ function makeCard(item) {
   const qty = getItemQty(item.name);
   const instructions = getItemInstructions(item.name);
   const instrHint = instructions
-    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-1 truncate" title="${instructions.replace(/"/g,'&quot;')}">Note: ${instructions}</p>`
+    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-2 truncate" title="${instructions.replace(/"/g,'&quot;')}">Note: ${instructions}</p>`
     : '';
-  const gfHint = item.gluten_free_option
-    ? `<p class="text-[10px] font-medium mt-1" style="color:${dark?'#9CC98A':'#4B7A3C'}">Gluten-free option available</p>`
-    : '';
+
+  // One consistent chip style for every dish attribute (gluten-free + allergens).
+  const chips = [];
+  if (item.gluten_free_option) chips.push(`<span class="chip ${dark ? 'chip-gf-dark' : 'chip-gf'}">GF Available</span>`);
+  if (item.allergens && item.allergens.length) {
+    item.allergens.forEach(a => chips.push(`<span class="chip ${dark ? 'chip-outline-dark' : 'chip-outline-light'}">${a}</span>`));
+  }
+  const chipsRow = chips.length ? `<div class="flex flex-wrap gap-1.5 mt-2.5">${chips.join('')}</div>` : '';
 
   const itemJson = JSON.stringify(item).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
   const safeName  = item.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -453,22 +466,16 @@ function makeCard(item) {
 
   return `
   <div class="mcard overflow-hidden" style="${cardBg}">
-    <div class="overflow-hidden relative" style="${imgH}">
+    <div class="overflow-hidden relative ${imgH}">
       ${imgEl}${tagEl}
     </div>
-    <div class="${item.small?'p-5':'p-6'}">
-      <div class="flex justify-between items-start mb-1 gap-2">
-        <h3 class="font-serif ${titleColor} ${item.small?'text-lg':'text-xl'} font-light leading-tight">${item.name}</h3>
-        <span class="text-[10px] ${badgeColor} px-2 py-1 tracking-wider shrink-0">${item.badge||''}</span>
-      </div>
-      <p class="${descColor} text-xs font-light mb-4 leading-relaxed">${item.description||item.desc||''}</p>
-      ${gfHint}
-      ${(item.allergens && item.allergens.length) ? `
-      <div class="flex flex-wrap gap-1.5 mb-3">
-        ${item.allergens.map(a => `<span class="text-[9px] tracking-wider uppercase px-2 py-0.5 border ${dark ? 'border-gold/25 text-gold/70' : 'border-charcoal/15 text-charcoal/45'}">${a}</span>`).join('')}
-      </div>` : ''}
+    <div class="${item.small?'p-4 md:p-5':'p-4 md:p-6'}">
+      <h3 class="font-serif ${titleColor} ${item.small?'text-lg':'text-xl'} font-light leading-tight">${item.name}</h3>
+      ${item.badge ? `<p class="text-[10px] ${sizeColor} tracking-[.08em] uppercase font-light mt-1">${item.badge}</p>` : ''}
+      <p class="${descColor} text-xs font-light mt-3 leading-relaxed">${item.description||item.desc||''}</p>
+      ${chipsRow}
       ${instrHint}
-      <div class="flex items-center justify-between pt-4 border-t ${borderColor}">
+      <div class="flex items-center justify-between pt-4 mt-3 border-t ${borderColor}">
         <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
         <div class="cta-row items-center gap-2">
           ${qty > 0 ? `
@@ -477,7 +484,7 @@ function makeCard(item) {
           <button onclick="openModal(${itemJson})" class="w-9 h-9 border ${btnBase} transition-all text-sm leading-none" title="Special instructions">✎</button>
           <button onclick="deck('${safeName}',1,${item.price},'${safeBadge}')"  class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>
           ` : `
-          <button onclick="openModal(${itemJson})" class="px-5 py-2.5 text-[11px] tracking-wider uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
+          <button onclick="openModal(${itemJson})" class="px-5 py-2.5 text-[11px] tracking-[.08em] uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
           `}
         </div>
       </div>
@@ -508,12 +515,12 @@ function deck(name, delta, price, badge, instructions, glutenFree) {
 }
 
 function makePeruPlaceholder(dark) {
-  const textColor = dark ? 'text-cream/40' : 'text-charcoal/40';
-  const subColor = dark ? 'text-cream/25' : 'text-charcoal/28';
-  const borderColor = dark ? 'border-gold/25' : 'border-gold/30';
+  const textColor = dark ? 'text-cream/45' : 'text-charcoal/45';
+  const subColor = dark ? 'text-cream/35' : 'text-charcoal/38';
+  const borderColor = dark ? 'border-terracotta/40' : 'border-terracotta/30';
   return `
   <div class="sm:col-span-2 border border-dashed ${borderColor} flex flex-col items-center justify-center text-center py-12 px-6">
-    <p class="text-gold text-xl mb-3">✦</p>
+    <p class="text-terracotta text-xl mb-3">✦</p>
     <p class="font-serif ${textColor} text-lg font-light mb-1">Coming Soon</p>
     <p class="${subColor} text-xs font-light max-w-[220px]">New Peruvian &amp; Ecuadorian dishes are being added to this section</p>
   </div>`;
