@@ -462,6 +462,7 @@ select.input { background: white; }
 .border-cream\/8 { border-color: rgba(249,247,242,0.08) !important; }
 .border-gold\/20 { border-color: rgba(212,175,55,0.2) !important; }
 .border-white\/8 { border-color: rgba(255,255,255,0.08) !important; }
+.text-terracotta { color: rgba(191,106,61,1) !important; }
 .text-terracotta\/60 { color: rgba(191,106,61,0.6) !important; }
 .text-terracotta\/70 { color: rgba(191,106,61,0.7) !important; }
 .text-terracotta\/80 { color: rgba(191,106,61,0.8) !important; }
