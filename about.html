@@ -18,9 +18,13 @@
   <meta name="twitter:image" content="https://chefaleh.com/images/chef.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
   <link rel="stylesheet" href="/design-polish.css"/>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- NAV -->
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
@@ -44,7 +48,7 @@
         Cart
         <span class="cart-count-badge hidden ml-1.5 w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
-      <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
+      <button id="ham-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
         <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham3" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
@@ -78,7 +82,7 @@
 </div>
 
 <!-- HEADER -->
-<section class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
+<section id="main-content" tabindex="-1" class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
   <div class="absolute inset-0 opacity-20">
     <img src="images/food3.jpg" alt="" class="w-full h-full object-cover" width="1050" height="1400"/>
   </div>
@@ -145,15 +149,19 @@
         <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Built by a team with experience producing high-end culinary programs across the U.S. and Europe, our style is rooted in bold, clean flavors with an Israeli and Mediterranean influence.</p>
       </div>
       <div class="space-y-4">
-        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+        <div class="bg-cream p-7 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <p class="text-gold font-serif text-4xl mb-1 font-light leading-none">&ldquo;</p>
           <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
-          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Best food I've had in South Florida. We ordered for an office party — simply unbelievable!"</p>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-4">We ordered from Chefaleh for an office party and the food was simply unbelievable! Trust me on this. Best food I've had in South Florida. I can't wait to order from here again!</p>
+          <div class="w-8 h-px bg-gold/40 mb-3"></div>
           <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Eli Meyer · Google Review</p>
         </div>
-        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+        <div class="bg-cream p-7 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <p class="text-gold font-serif text-4xl mb-1 font-light leading-none">&ldquo;</p>
           <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
-          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Delicious food! Packaging was nice. You can tell they put a lot of love and thought into their food."</p>
-          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Mordechai Levenberg · Google Review</p>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-4">We recently had a family dinner party and had the pleasure of having Chefaleh cater the event. Every single dish was delicious! Thank you Chefaleh! We look forward to our next dinner party with you!</p>
+          <div class="w-8 h-px bg-gold/40 mb-3"></div>
+          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Ruthi Woonteiler · Google Review</p>
         </div>
         <a href="menu.html" class="inline-block bg-charcoal text-cream px-10 py-4 text-xs tracking-[.14em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">View This Week's Menu</a>
       </div>
@@ -165,7 +173,7 @@
 <section class="py-16 md:py-24 bg-cream">
   <div class="max-w-7xl mx-auto px-5 md:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
-      <div class="overflow-hidden" style="height:300px;max-height:420px">
+      <div class="hover-zoom" style="height:300px;max-height:420px">
         <img src="images/chef.png" alt="Our Chef" class="w-full h-full object-cover object-center" width="500" height="270" loading="lazy"/>
       </div>
       <div>
@@ -255,6 +263,7 @@ function toggleMenu() {
   const h2 = document.getElementById('ham2');
   const h3 = document.getElementById('ham3');
   const open = menu.classList.toggle('open');
+    document.getElementById('ham-btn').setAttribute('aria-expanded', open);
   if (open) {
     h1.style.transform = 'translateY(6.5px) rotate(45deg)';
     h2.style.opacity = '0';

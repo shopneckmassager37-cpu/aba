@@ -18,6 +18,9 @@
   <meta name="twitter:image" content="https://chefaleh.com/images/fresh_meat.jpg"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -38,6 +41,7 @@
   </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- NAV -->
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
@@ -57,7 +61,7 @@
         Cart
         <span class="cart-count-badge hidden ml-1.5 w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
-      <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
+      <button id="ham-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
         <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham3" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
@@ -88,7 +92,7 @@
 </div>
 
 <!-- HEADER -->
-<header class="pt-36 md:pt-40 pb-14 bg-charcoal text-center relative overflow-hidden">
+<header id="main-content" tabindex="-1" class="pt-36 md:pt-40 pb-14 bg-charcoal text-center relative overflow-hidden">
   <div class="absolute inset-0 opacity-25">
     <img src="/images/fresh_meat.jpg" alt="" class="w-full h-full object-cover" width="1200" height="675"/>
   </div>
@@ -204,6 +208,7 @@ function toggleMenu() {
   const h2 = document.getElementById('ham2');
   const h3 = document.getElementById('ham3');
   const open = menu.classList.toggle('open');
+    document.getElementById('ham-btn').setAttribute('aria-expanded', open);
   if (open) {
     h1.style.transform = 'translateY(6.5px) rotate(45deg)';
     h2.style.opacity = '0';

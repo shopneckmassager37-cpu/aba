@@ -18,9 +18,13 @@
   <meta name="twitter:image" content="https://chefaleh.com/images/food3.jpg"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
   <link rel="stylesheet" href="/design-polish.css"/>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- SPECIAL INSTRUCTIONS MODAL -->
 <div id="instr-modal" class="fixed inset-0 z-[60] items-center justify-center bg-charcoal/60 px-4">
@@ -41,6 +45,7 @@
         <input type="checkbox" id="modal-gf-check" class="w-4 h-4 accent-gold"/>
         <span class="text-xs text-charcoal/70 font-light">Make this gluten-free</span>
       </label>
+      <div id="modal-allergen-opts" class="hidden flex-col gap-2 mt-4"></div>
     </div>
     <div class="px-6 pb-6 flex gap-3">
       <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-[.1em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
@@ -72,7 +77,7 @@
         Cart
         <span id="cart-badge-m" class="cart-count-badge hidden w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
-      <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
+      <button id="ham-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
         <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham3" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
@@ -105,7 +110,7 @@
 </div>
 
 <!-- MENU HEADER -->
-<div class="pt-24 pb-12 bg-charcoal text-center">
+<div id="main-content" tabindex="-1" class="pt-24 pb-12 bg-charcoal text-center">
   <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Always Open — Delivery Every Friday</p>
   <h1 class="font-serif text-cream font-light" style="font-size:clamp(2.5rem,6vw,5rem)">The Menu</h1>
   <div class="gold-bar max-w-xs mx-auto my-6"></div>
@@ -399,6 +404,22 @@ function openModal(item) {
     gfRow.classList.remove('flex');
     gfCheck.checked = false;
   }
+  const optRow = document.getElementById('modal-allergen-opts');
+  const optionalAllergens = item.allergens_optional || [];
+  if (optionalAllergens.length) {
+    const current = new Set(getItemAvoidAllergens(item.name));
+    optRow.innerHTML = optionalAllergens.map(a => `
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" class="modal-allergen-cb w-4 h-4 accent-gold" value="${a}" ${current.has(a) ? 'checked' : ''}/>
+        <span class="text-xs text-charcoal/70 font-light">Make this without ${a}</span>
+      </label>`).join('');
+    optRow.classList.remove('hidden');
+    optRow.classList.add('flex');
+  } else {
+    optRow.innerHTML = '';
+    optRow.classList.add('hidden');
+    optRow.classList.remove('flex');
+  }
   document.getElementById('instr-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -413,7 +434,8 @@ function saveModal() {
   if (!modalItem) return;
   const text = document.getElementById('modal-instr-text').value.trim();
   const glutenFree = modalItem.gluten_free_option ? document.getElementById('modal-gf-check').checked : false;
-  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text, glutenFree);
+  const avoidAllergens = Array.from(document.querySelectorAll('.modal-allergen-cb:checked')).map(cb => cb.value);
+  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text, glutenFree, avoidAllergens);
   closeModal();
 }
 
@@ -425,6 +447,11 @@ function getItemInstructions(name) {
 function getItemGlutenFree(name) {
   const found = getCart().find(i => i.name === name);
   return found ? !!found.glutenFree : false;
+}
+
+function getItemAvoidAllergens(name) {
+  const found = getCart().find(i => i.name === name);
+  return found ? (found.avoidAllergens || []) : [];
 }
 
 // ── CARD RENDERER ──
@@ -454,10 +481,15 @@ function makeCard(item) {
     : '';
 
   // One consistent chip style for every dish attribute (gluten-free + allergens).
+  // Allergens the kitchen can leave out on request read like the GF chip; the rest are informational only.
   const chips = [];
   if (item.gluten_free_option) chips.push(`<span class="chip ${dark ? 'chip-gf-dark' : 'chip-gf'}">GF Available</span>`);
   if (item.allergens && item.allergens.length) {
-    item.allergens.forEach(a => chips.push(`<span class="chip ${dark ? 'chip-outline-dark' : 'chip-outline-light'}">${a}</span>`));
+    const optionalSet = new Set(item.allergens_optional || []);
+    item.allergens.forEach(a => {
+      if (optionalSet.has(a)) chips.push(`<span class="chip ${dark ? 'chip-gf-dark' : 'chip-gf'}">${a}-Free Available</span>`);
+      else chips.push(`<span class="chip ${dark ? 'chip-outline-dark' : 'chip-outline-light'}">${a}</span>`);
+    });
   }
   const chipsRow = chips.length ? `<div class="flex flex-wrap gap-1.5 mt-2.5">${chips.join('')}</div>` : '';
 
@@ -498,7 +530,7 @@ function getItemQty(name) {
   return found ? found.qty : 0;
 }
 
-function deck(name, delta, price, badge, instructions, glutenFree) {
+function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   const newQty = found ? found.qty + delta : delta;
@@ -508,9 +540,10 @@ function deck(name, delta, price, badge, instructions, glutenFree) {
     found.qty = newQty;
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
+    if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '', glutenFree);
+    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens);
   }
   renderAll();
 }

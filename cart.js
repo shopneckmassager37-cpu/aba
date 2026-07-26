@@ -11,15 +11,16 @@ function saveCart(cart) {
   refreshCartUI();
 }
 
-function addItem(name, price, badge, instructions, glutenFree) {
+function addItem(name, price, badge, instructions, glutenFree, avoidAllergens) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   if (found) {
     found.qty++;
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
+    if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
   } else {
-    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree });
+    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree, avoidAllergens: avoidAllergens || [] });
   }
   saveCart(cart);
   if (typeof openDrawer === 'function') openDrawer();
@@ -33,7 +34,7 @@ function setQty(name, qty) {
   saveCart(cart);
 }
 
-function deck(name, delta, price, badge, instructions, glutenFree) {
+function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   const newQty = found ? found.qty + delta : delta;
@@ -43,9 +44,10 @@ function deck(name, delta, price, badge, instructions, glutenFree) {
     found.qty = newQty;
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
+    if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '', glutenFree);
+    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens);
   }
   if (typeof renderAll === 'function') renderAll();
 }
@@ -118,6 +120,7 @@ function renderDrawer() {
           <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
           ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
           ${i.glutenFree ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Gluten-free</p>` : ''}
+          ${i.avoidAllergens && i.avoidAllergens.length ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Without: ${i.avoidAllergens.join(', ')}</p>` : ''}
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <button onclick="deck('${n}',-1,${i.price},'${b}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
@@ -142,6 +145,8 @@ function toggleMenu() {
   const h3 = document.getElementById('ham3');
   if (!menu) return;
   const open = menu.classList.toggle('open');
+  const hamBtn = document.getElementById('ham-btn');
+  if (hamBtn) hamBtn.setAttribute('aria-expanded', open);
   if (open) {
     if(h1) h1.style.transform = 'translateY(6.5px) rotate(45deg)';
     if(h2) h2.style.opacity = '0';

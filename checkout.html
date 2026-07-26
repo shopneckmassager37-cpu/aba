@@ -11,9 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
   <link rel="stylesheet" href="/design-polish.css"/>
 </head>
 <body class="text-charcoal font-sans">
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- DEADLINE BANNER -->
 <div id="deadline-banner" class="deadline-banner"></div>
@@ -30,7 +34,7 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero max-w-7xl mx-auto px-6">
+<section id="main-content" tabindex="-1" class="hero max-w-7xl mx-auto px-6">
   <p class="hero-eyebrow"><span class="gold-line"></span> &nbsp; Final Step &nbsp; <span class="gold-line"></span></p>
   <h1 class="hero-title">Complete Your Order</h1>
   <p class="hero-sub">Review your selection and enter your delivery details below.</p>
@@ -344,6 +348,7 @@
           ${i.badge ? `<div class="item-badge">${escapeHtml(i.badge)}</div>` : ''}
           ${i.instructions ? `<div class="item-instr">"${escapeHtml(i.instructions)}"</div>` : ''}
           ${i.glutenFree ? `<div class="item-gf">Gluten-free</div>` : ''}
+          ${i.avoidAllergens && i.avoidAllergens.length ? `<div class="item-gf">Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}
         </div>
         <div class="text-right shrink-0">
           <div class="item-price">$${(i.price * i.qty).toFixed(2)}</div>

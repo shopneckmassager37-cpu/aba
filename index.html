@@ -19,6 +19,9 @@
   <meta name="twitter:image" content="https://i.postimg.cc/0QHmj4Lp/abh.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
   <link rel="stylesheet" href="/design-polish.css"/>
   <script type="application/ld+json">
   {
@@ -81,11 +84,12 @@
   </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- COOKIE BANNER -->
 <div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
   <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="cookie-policy.html" class="underline hover:text-gold transition-colors">Learn more</a></p>
-  <button onclick="document.getElementById('cookie').remove()" class="text-xs tracking-[.12em] uppercase border border-gold text-gold px-6 py-2 hover:bg-gold hover:text-charcoal transition-all shrink-0">Accept</button>
+  <button onclick="dismissCookieBanner()" class="text-xs tracking-[.12em] uppercase border border-gold text-gold px-6 py-2 hover:bg-gold hover:text-charcoal transition-all shrink-0">Accept</button>
 </div>
 
 <!-- NAV -->
@@ -110,7 +114,7 @@
         Cart
         <span class="cart-count-badge hidden ml-1.5 w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
-      <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
+      <button id="ham-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
         <span id="ham1" class="block w-5 h-[1.5px] bg-white transition-all duration-300"></span>
         <span id="ham2" class="block w-5 h-[1.5px] bg-white transition-all duration-300"></span>
         <span id="ham3" class="block w-5 h-[1.5px] bg-white transition-all duration-300"></span>
@@ -146,7 +150,7 @@
 <!-- ─────────────────────────────────────────────────────────────
      HERO
 ──────────────────────────────────────────────────────────────── -->
-<section class="relative min-h-screen flex items-center overflow-hidden">
+<section id="main-content" tabindex="-1" class="relative min-h-screen flex items-center overflow-hidden">
   <img src="https://i.postimg.cc/0QHmj4Lp/abh.png" alt="Chefaleh table" class="hero-img" fetchpriority="high"/>
   <div class="hero-overlay"></div>
 
@@ -535,10 +539,30 @@
 </script>
 <script>
   /* ── Cookie banner ── */
+  // Keeps the "Want a site like this?" widget clear of the cookie banner —
+  // both sit fixed at the bottom-left, so the banner's real height (which
+  // varies as its text wraps) has to push the widget up above it.
+  function positionDevWidget() {
+    const widget = document.getElementById('dev-widget');
+    const c = document.getElementById('cookie');
+    if (!widget) return;
+    if (c && !c.classList.contains('translate-y-full')) {
+      widget.style.bottom = (c.offsetHeight + 16) + 'px';
+    } else {
+      widget.style.bottom = '24px';
+    }
+  }
+  function dismissCookieBanner() {
+    const c = document.getElementById('cookie');
+    if (c) c.remove();
+    positionDevWidget();
+  }
   setTimeout(() => {
     const c = document.getElementById('cookie');
     if (c) c.classList.remove('translate-y-full');
+    setTimeout(positionDevWidget, 550); // after the banner's slide-up transition settles
   }, 1500);
+  window.addEventListener('resize', positionDevWidget);
 
   /* ── Nav scroll effect ── */
   const nav = document.getElementById('main-nav');
@@ -557,6 +581,7 @@
     const h2 = document.getElementById('ham2');
     const h3 = document.getElementById('ham3');
     const open = menu.classList.toggle('open');
+    document.getElementById('ham-btn').setAttribute('aria-expanded', open);
     if (open) {
       h1.style.transform = 'translateY(6.5px) rotate(45deg)';
       h2.style.opacity   = '0';

@@ -6,6 +6,9 @@
   <title>Chefaleh Admin</title>
   <meta name="robots" content="noindex, nofollow"/>
   <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
 </head>
 <body class="admin-body">
 
@@ -143,8 +146,8 @@
         </div>
         <div class="col-span-2">
           <label class="label">Allergens</label>
-          <div id="pm-allergens" class="flex flex-wrap gap-3 border border-gray-200 rounded px-3 py-2.5"></div>
-          <p class="text-[11px] text-gray-400 mt-1">Manage the available list in the Allergens tab.</p>
+          <div id="pm-allergens" class="flex flex-col gap-1 border border-gray-200 rounded px-3 py-2.5"></div>
+          <p class="text-[11px] text-gray-400 mt-1">Manage the available list in the Allergens tab. Check "Customer can request without" to let shoppers optionally ask for that allergen to be left out — it's never forced.</p>
         </div>
       </div>
     </div>
@@ -362,7 +365,10 @@ function productRow(p, cat) {
         ${p.gluten_free_option ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GF option</span>` : ''}
         ${p.is_peruvian ? `<span class="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Peruvian &amp; Ecuadorian</span>` : ''}
         ${!p.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Hidden</span>` : ''}
-        ${(p.allergens||[]).map(a => `<span class="text-[10px] bg-red-50 text-red-500 px-2 py-0.5 rounded-full">${a}</span>`).join('')}
+        ${(p.allergens||[]).map(a => {
+          const opt = (p.allergens_optional||[]).includes(a);
+          return `<span class="text-[10px] ${opt ? 'bg-amber-50 text-amber-600 border border-amber-200' : 'bg-red-50 text-red-500'} px-2 py-0.5 rounded-full" ${opt ? 'title="Customer can request without this"' : ''}>${a}${opt ? ' ⚙' : ''}</span>`;
+        }).join('')}
       </div>
       <div class="text-xs text-gray-400 mt-0.5">$${p.price} · ${p.badge||''} · ${catName}</div>
     </div>
@@ -446,22 +452,44 @@ async function deleteProductConfirm(id, name, catId) {
 }
 
 // ── PRODUCT MODAL ──
-function renderAllergenCheckboxes(selected) {
+function renderAllergenCheckboxes(selected, optional) {
   const el = document.getElementById('pm-allergens');
   if (!allergens.length) {
     el.innerHTML = `<span class="text-xs text-gray-400">No allergens defined yet — add some in the Allergens tab.</span>`;
     return;
   }
   const sel = new Set(selected || []);
+  const opt = new Set(optional || []);
   el.innerHTML = allergens.map(a => `
-    <label class="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
-      <input type="checkbox" class="pm-allergen-cb w-3.5 h-3.5" value="${a.name}" ${sel.has(a.name) ? 'checked' : ''}/> ${a.name}
-    </label>`).join('');
+    <div class="flex items-center gap-4 text-xs text-gray-600 py-1 border-b border-gray-50 last:border-0">
+      <label class="flex items-center gap-1.5 w-32 shrink-0 cursor-pointer">
+        <input type="checkbox" class="pm-allergen-cb w-3.5 h-3.5" value="${a.name}" ${sel.has(a.name) ? 'checked' : ''}/> ${a.name}
+      </label>
+      <label class="flex items-center gap-1.5 cursor-pointer ${sel.has(a.name) ? 'text-gray-500' : 'text-gray-300'}">
+        <input type="checkbox" class="pm-allergen-opt-cb w-3.5 h-3.5" value="${a.name}" ${opt.has(a.name) ? 'checked' : ''} ${sel.has(a.name) ? '' : 'disabled'}/> Customer can request without
+      </label>
+    </div>`).join('');
 }
 
 function getSelectedAllergens() {
   return Array.from(document.querySelectorAll('.pm-allergen-cb:checked')).map(cb => cb.value);
 }
+
+function getOptionalAllergens() {
+  return Array.from(document.querySelectorAll('.pm-allergen-opt-cb:checked')).map(cb => cb.value);
+}
+
+// Toggling "contains allergen X" off also clears + disables its "request without" checkbox.
+document.getElementById('pm-allergens').addEventListener('change', e => {
+  if (!e.target.classList.contains('pm-allergen-cb')) return;
+  const row = e.target.closest('div');
+  const optCb = row.querySelector('.pm-allergen-opt-cb');
+  const optLabel = optCb.closest('label');
+  optCb.disabled = !e.target.checked;
+  if (!e.target.checked) optCb.checked = false;
+  optLabel.classList.toggle('text-gray-500', e.target.checked);
+  optLabel.classList.toggle('text-gray-300', !e.target.checked);
+});
 
 function openProductModal(id) {
   const modal = document.getElementById('product-modal');
@@ -484,7 +512,7 @@ function openProductModal(id) {
     document.getElementById('pm-visible').checked = p.visible !== false;
     document.getElementById('pm-gf').checked = !!p.gluten_free_option;
     document.getElementById('pm-peruvian').checked = !!p.is_peruvian;
-    renderAllergenCheckboxes(p.allergens);
+    renderAllergenCheckboxes(p.allergens, p.allergens_optional);
     updateImgPreview(p.img);
   } else {
     document.getElementById('product-modal-title').textContent = 'Add Product';
@@ -500,7 +528,7 @@ function openProductModal(id) {
     document.getElementById('pm-visible').checked = true;
     document.getElementById('pm-gf').checked = false;
     document.getElementById('pm-peruvian').checked = false;
-    renderAllergenCheckboxes([]);
+    renderAllergenCheckboxes([], []);
     updateImgPreview('');
   }
   modal.classList.remove('hidden');
@@ -559,6 +587,7 @@ async function saveProduct() {
     gluten_free_option: document.getElementById('pm-gf').checked,
     is_peruvian: document.getElementById('pm-peruvian').checked,
     allergens: getSelectedAllergens(),
+    allergens_optional: getOptionalAllergens(),
   };
   try {
     if (id) {
