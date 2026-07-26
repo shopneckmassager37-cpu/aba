@@ -18,6 +18,7 @@
   <meta name="twitter:image" content="https://chefaleh.com/images/food3.jpg"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/styles.css"/>
+  <link rel="stylesheet" href="/design-polish.css"/>
 </head>
 <body>
 
@@ -59,7 +60,7 @@
       <a href="about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
       <a href="menu.html"  class="text-gold">Menu</a>
 
-      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
+      <button onclick="openDrawer()" class="luxury-link relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Cart
         <span id="cart-badge" class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
       </button>
@@ -67,7 +68,7 @@
 
     <!-- Mobile right -->
     <div class="flex md:hidden items-center gap-2">
-      <button onclick="openDrawer()" class="relative flex items-center gap-1.5 bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.08em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
+      <button onclick="openDrawer()" class="luxury-link relative flex items-center gap-1.5 bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.08em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
         Cart
         <span id="cart-badge-m" class="cart-count-badge hidden w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
@@ -99,7 +100,7 @@
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
     <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
-    <a href="/checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-[.12em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
+    <a href="/checkout.html" class="luxury-link w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-[.12em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
 
@@ -465,17 +466,17 @@ function makeCard(item) {
   const safeBadge = (item.badge || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
   return `
-  <div class="mcard overflow-hidden" style="${cardBg}">
-    <div class="overflow-hidden relative ${imgH}">
+  <div class="mcard overflow-hidden h-full" style="${cardBg}">
+    <div class="overflow-hidden relative ${imgH} bg-cream-dark">
       ${imgEl}${tagEl}
     </div>
-    <div class="${item.small?'p-4 md:p-5':'p-4 md:p-6'}">
+    <div class="${item.small?'p-4 md:p-5':'p-4 md:p-6'} flex flex-col">
       <h3 class="font-serif ${titleColor} ${item.small?'text-lg':'text-xl'} font-light leading-tight">${item.name}</h3>
       ${item.badge ? `<p class="text-[10px] ${sizeColor} tracking-[.08em] uppercase font-light mt-1">${item.badge}</p>` : ''}
       <p class="${descColor} text-xs font-light mt-3 leading-relaxed">${item.description||item.desc||''}</p>
       ${chipsRow}
       ${instrHint}
-      <div class="flex items-center justify-between pt-4 mt-3 border-t ${borderColor}">
+      <div class="flex items-center justify-between pt-4 mt-auto border-t ${borderColor}">
         <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
         <div class="cta-row items-center gap-2">
           ${qty > 0 ? `
@@ -484,7 +485,7 @@ function makeCard(item) {
           <button onclick="openModal(${itemJson})" class="w-9 h-9 border ${btnBase} transition-all text-sm leading-none" title="Special instructions">✎</button>
           <button onclick="deck('${safeName}',1,${item.price},'${safeBadge}')"  class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>
           ` : `
-          <button onclick="openModal(${itemJson})" class="px-5 py-2.5 text-[11px] tracking-[.08em] uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
+          <button onclick="openModal(${itemJson})" class="luxury-link px-5 py-2.5 text-[11px] tracking-[.08em] uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
           `}
         </div>
       </div>
