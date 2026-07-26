@@ -4,304 +4,20 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Checkout — Chefaleh</title>
+  <meta name="description" content="Complete your Chefaleh Shabbat order — review your selection, choose delivery zone and tip, and confirm your delivery details."/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="canonical" href="https://chefaleh.com/checkout.html"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/tailwind.css"/>
-  <style>
-    * { -webkit-font-smoothing: antialiased; }
-    body { background: #F9F7F2; }
-    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid #D4AF37; outline-offset: 2px; }
-
-    /* Decorative gold accent line */
-    .gold-line { display: inline-block; width: 60px; height: 1px; background: #D4AF37; vertical-align: middle; }
-
-    /* Cards */
-    .panel {
-      background: #FFFFFF;
-      border: 1px solid rgba(26,26,26,.06);
-      box-shadow: 0 1px 2px rgba(26,26,26,.02), 0 8px 32px rgba(26,26,26,.04);
-    }
-
-    /* Section header */
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.625rem;
-      font-weight: 300;
-      letter-spacing: .02em;
-      color: #1A1A1A;
-    }
-    .section-eyebrow {
-      font-family: 'Jost', sans-serif;
-      font-size: .65rem;
-      letter-spacing: .3em;
-      text-transform: uppercase;
-      color: #D4AF37;
-      font-weight: 500;
-      margin-bottom: .5rem;
-    }
-
-    /* Selection buttons (Zone & Tip) */
-    .pick {
-      position: relative;
-      cursor: pointer;
-      background: #FFFFFF;
-      border: 1px solid rgba(26,26,26,.12);
-      transition: all .25s cubic-bezier(.4,0,.2,1);
-      user-select: none;
-      overflow: hidden;
-    }
-    .pick::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
-      opacity: 0;
-      transition: opacity .25s;
-      z-index: 0;
-    }
-    .pick > * { position: relative; z-index: 1; }
-    .pick:hover { border-color: #D4AF37; transform: translateY(-1px); }
-    .pick.active { border-color: #D4AF37; color: #1A1A1A; }
-    .pick.active::before { opacity: 1; }
-    .pick.active .pick-label,
-    .pick.active .pick-price,
-    .pick.active .pick-sub { color: #1A1A1A; }
-
-    .pick-label { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; line-height: 1; }
-    .pick-price { font-size: .8rem; font-weight: 400; color: rgba(26,26,26,.55); margin-top: .35rem; letter-spacing: .05em; }
-    .pick-sub   { font-size: .65rem; color: rgba(26,26,26,.4); margin-top: .25rem; letter-spacing: .15em; text-transform: uppercase; }
-
-    .pick-mini { padding: 1rem .5rem; }
-    .pick-mini .pick-num { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; line-height: 1; }
-    .pick-mini .pick-suf { font-size: .55rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(26,26,26,.45); margin-top: .15rem; display: block; }
-    .pick.active .pick-suf { color: rgba(26,26,26,.65); }
-
-    /* Inputs */
-    .field {
-      width: 100%;
-      background: #F9F7F2;
-      border: 1px solid rgba(26,26,26,.1);
-      padding: .9rem 1rem;
-      font-family: 'Jost', sans-serif;
-      font-size: .875rem;
-      font-weight: 300;
-      color: #1A1A1A;
-      letter-spacing: .02em;
-      transition: all .2s;
-      outline: none;
-    }
-    .field:focus { border-color: #D4AF37; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(212,175,55,.08); }
-    .field::placeholder { color: rgba(26,26,26,.35); font-weight: 300; }
-    .field.invalid { border-color: #C0392B; }
-    .field-err { display: none; color: #C0392B; font-size: .7rem; font-weight: 400; margin-top: .35rem; }
-    .field-err.show { display: block; }
-
-    /* Item list */
-    .item-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      padding: 1.25rem 0;
-      border-bottom: 1px solid rgba(26,26,26,.06);
-    }
-    .item-row:last-child { border-bottom: none; }
-    .item-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: #1A1A1A; line-height: 1.3; }
-    .item-badge { font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: rgba(26,26,26,.4); margin-top: .35rem; }
-    .item-instr { font-size: .75rem; color: #B8941F; font-style: italic; margin-top: .35rem; font-weight: 300; }
-    .item-qty { font-size: .75rem; color: rgba(26,26,26,.45); letter-spacing: .1em; }
-    .item-price { font-family: 'Jost', sans-serif; font-size: .95rem; font-weight: 400; color: #1A1A1A; margin-left: 1.25rem; }
-
-    /* Summary rows */
-    .sum-row { display: flex; justify-content: space-between; align-items: baseline; padding: .65rem 0; }
-    .sum-label { font-size: .8rem; font-weight: 300; color: rgba(26,26,26,.6); letter-spacing: .03em; }
-    .sum-val { font-family: 'Jost', sans-serif; font-size: .9rem; font-weight: 400; color: #1A1A1A; }
-    .sum-divider { height: 1px; background: linear-gradient(to right, transparent, rgba(26,26,26,.15), transparent); margin: .75rem 0; }
-    .sum-total-label { font-family: 'Cormorant Garamond', serif; font-size: 1.75rem; font-weight: 300; color: #1A1A1A; }
-    .sum-total-val { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 500; color: #D4AF37; letter-spacing: -.01em; }
-
-    /* CTA */
-    .cta {
-      width: 100%;
-      background: #1A1A1A;
-      color: #F9F7F2;
-      padding: 1.15rem;
-      font-family: 'Jost', sans-serif;
-      font-size: .75rem;
-      font-weight: 500;
-      letter-spacing: .3em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .3s;
-      border: none;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta:hover { background: #D4AF37; color: #1A1A1A; }
-    .cta:disabled { opacity: .6; cursor: wait; }
-
-    /* Notice */
-    .notice {
-      background: #FAF7EC;
-      border-left: 2px solid #D4AF37;
-      padding: 1rem 1.25rem;
-      font-size: .75rem;
-      color: rgba(26,26,26,.65);
-      font-weight: 300;
-      line-height: 1.55;
-    }
-
-    /* Sticky summary on desktop */
-    @media (min-width: 1024px) {
-      .summary-sticky { position: sticky; top: 100px; }
-    }
-
-    /* Empty state */
-    .empty { text-align: center; padding: 3rem 1rem; }
-    .empty p { color: rgba(26,26,26,.4); font-weight: 300; }
-    .empty a { display: inline-block; margin-top: 1rem; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: #D4AF37; border-bottom: 1px solid #D4AF37; padding-bottom: 2px; }
-
-    /* Deadline banner */
-    .deadline-banner {
-      background: #1A1A1A;
-      color: #D4AF37;
-      text-align: center;
-      padding: .6rem 1rem;
-      font-size: .7rem;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-    .deadline-banner.closed { background: #7f1d1d; color: #fca5a5; }
-
-    /* Inline custom tip */
-    .custom-tip-row { display:none; align-items:center; gap:8px; margin-top:10px; }
-    .custom-tip-row.show { display:flex; }
-    .custom-tip-input {
-      width: 100px;
-      border: 1px solid rgba(26,26,26,.15);
-      padding: .45rem .7rem;
-      font-family: 'Jost', sans-serif;
-      font-size: .85rem;
-      outline: none;
-      background: #F9F7F2;
-    }
-    .custom-tip-input:focus { border-color: #D4AF37; }
-
-    /* Mobile improvements */
-    @media (max-width: 640px) {
-      .panel { padding: 1.5rem !important; }
-      .hero { padding: 1.5rem 0 2rem; }
-      .hero-title { font-size: 2rem; }
-      main { padding-left: 1rem; padding-right: 1rem; }
-      .pick-mini { padding: .75rem .35rem; }
-      .pick-mini .pick-num { font-size: 1.1rem; }
-      .sum-total-label { font-size: 1.3rem; }
-      .sum-total-val { font-size: 1.5rem; }
-      .item-name { font-size: 1rem; }
-    }
-
-    /* Page header */
-    .hero {
-      text-align: center;
-      padding: 3rem 0 4rem;
-    }
-    .hero-eyebrow {
-      font-size: .7rem;
-      letter-spacing: .4em;
-      text-transform: uppercase;
-      color: #D4AF37;
-      font-weight: 500;
-      margin-bottom: 1.25rem;
-    }
-    .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 5vw, 3.75rem);
-      font-weight: 300;
-      color: #1A1A1A;
-      letter-spacing: .01em;
-      line-height: 1.1;
-    }
-    .hero-sub {
-      font-size: .85rem;
-      color: rgba(26,26,26,.5);
-      font-weight: 300;
-      letter-spacing: .05em;
-      margin-top: 1rem;
-      max-width: 520px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Nav */
-    .nav-bar {
-      background: rgba(249,247,242,.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(26,26,26,.06);
-    }
-    .nav-link {
-      font-family: 'Jost', sans-serif;
-      font-size: .7rem;
-      font-weight: 400;
-      letter-spacing: .25em;
-      text-transform: uppercase;
-      color: rgba(26,26,26,.55);
-      transition: color .2s;
-    }
-    .nav-link:hover { color: #1A1A1A; }
-    .brand {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      letter-spacing: .35em;
-      font-weight: 300;
-      color: #1A1A1A;
-    }
-    
-    /* Google Places Autocomplete dropdown styling */
-    .pac-container {
-      background-color: #F9F7F2;
-      border: 1px solid rgba(26,26,26,.1);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      font-family: 'Jost', sans-serif;
-      margin-top: 4px;
-      border-radius: 4px;
-    }
-    .pac-item {
-      padding: 8px 12px;
-      border-top: 1px solid rgba(26,26,26,.05);
-      cursor: pointer;
-    }
-    .pac-matched { color: #D4AF37; }
-    /* Nominatim Autocomplete dropdown styling */
-    .address-results {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: #FFFFFF;
-      border: 1px solid rgba(26,26,26,.12);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      z-index: 1000;
-      margin-top: 4px;
-      max-height: 240px;
-      overflow-y: auto;
-      display: none;
-    }
-    .address-item {
-      padding: 12px 16px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      border-bottom: 1px solid rgba(26,26,26,0.04);
-      transition: background 0.2s;
-    }
-    .address-item:last-child { border-bottom: none; }
-    .address-item:hover { background: #F9F7F2; }
-    .address-item strong { color: #D4AF37; display: block; font-weight: 500; }
-    .address-item span { color: rgba(26,26,26,0.5); font-size: 0.75rem; }
-  </style>
+  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
+  <link rel="stylesheet" href="/design-polish.css"/>
 </head>
 <body class="text-charcoal font-sans">
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- DEADLINE BANNER -->
 <div id="deadline-banner" class="deadline-banner"></div>
@@ -318,7 +34,7 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero max-w-7xl mx-auto px-6">
+<section id="main-content" tabindex="-1" class="hero max-w-7xl mx-auto px-6">
   <p class="hero-eyebrow"><span class="gold-line"></span> &nbsp; Final Step &nbsp; <span class="gold-line"></span></p>
   <h1 class="hero-title">Complete Your Order</h1>
   <p class="hero-sub">Review your selection and enter your delivery details below.</p>
@@ -348,11 +64,11 @@
         <p class="text-sm text-charcoal/45 font-light mb-6">Optional — supports our chef and driver directly.</p>
 
         <div class="mb-7">
-          <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Chef</p>
+          <p class="text-xs tracking-[.12em] uppercase text-charcoal/55 mb-3 font-medium">For the Chef</p>
           <div id="chef-tip-grid" class="grid grid-cols-4 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-chef" data-val="10" onclick="selectTip('chef',this)"><div class="pick-num">10<span class="text-base">%</span></div></div>
-            <div class="pick pick-mini text-center tip-chef active" data-val="15" onclick="selectTip('chef',this)"><div class="pick-num">15<span class="text-base">%</span></div></div>
-            <div class="pick pick-mini text-center tip-chef" data-val="20" onclick="selectTip('chef',this)"><div class="pick-num">20<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="10" onclick="selectTip('chef',this)"><div class="pick-num">10<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="chef" data-pct="10">$0.00</div></div>
+            <div class="pick pick-mini text-center tip-chef active" data-val="15" onclick="selectTip('chef',this)"><div class="pick-num">15<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="chef" data-pct="15">$0.00</div></div>
+            <div class="pick pick-mini text-center tip-chef" data-val="20" onclick="selectTip('chef',this)"><div class="pick-num">20<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="chef" data-pct="20">$0.00</div></div>
             <div class="pick pick-mini text-center tip-chef" data-val="custom" onclick="selectTip('chef',this)"><div class="pick-num" style="font-size:.85rem">Custom</div></div>
           </div>
           <div id="chef-custom-row" class="custom-tip-row">
@@ -363,11 +79,11 @@
         </div>
 
         <div>
-          <p class="text-xs tracking-[.2em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
+          <p class="text-xs tracking-[.12em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
           <div id="driver-tip-grid" class="grid grid-cols-4 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-driver" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num">5<span class="text-base">%</span></div></div>
-            <div class="pick pick-mini text-center tip-driver active" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num">8<span class="text-base">%</span></div></div>
-            <div class="pick pick-mini text-center tip-driver" data-val="12" onclick="selectTip('driver',this)"><div class="pick-num">12<span class="text-base">%</span></div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num">5<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="5">$0.00</div></div>
+            <div class="pick pick-mini text-center tip-driver active" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num">8<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="8">$0.00</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="12" onclick="selectTip('driver',this)"><div class="pick-num">12<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="12">$0.00</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="custom" onclick="selectTip('driver',this)"><div class="pick-num" style="font-size:.85rem">Custom</div></div>
           </div>
           <div id="driver-custom-row" class="custom-tip-row">
@@ -432,9 +148,9 @@
             Orders are confirmed only upon payment receipt. You will receive a confirmation email shortly with payment instructions.
           </div>
 
-          <button id="submit-btn" class="cta" onclick="submitOrder()">Place Order</button>
+          <button id="submit-btn" class="cta luxury-link" onclick="submitOrder()">Place Order</button>
 
-          <p class="text-center text-[.65rem] tracking-[.2em] uppercase text-charcoal/35 mt-4 font-light">
+          <p class="text-center text-[.65rem] tracking-[.15em] uppercase text-charcoal/40 mt-4 font-light">
             Secure · No payment taken now
           </p>
         </div>
@@ -607,6 +323,10 @@
     if (chefLbl) chefLbl.textContent = chefTipFixed !== null ? '$' + chefTip.toFixed(2) : chefTipPct + '%';
     const driverLbl = document.getElementById('co-driver-label');
     if (driverLbl) driverLbl.textContent = driverTipFixed !== null ? '$' + driverTipAmt.toFixed(2) : driverTipPct + '%';
+
+    document.querySelectorAll('.tip-amt').forEach(el => {
+      el.textContent = fmt(sub * parseFloat(el.dataset.pct) / 100);
+    });
   }
 
   function renderItems() {
@@ -627,6 +347,8 @@
           <div class="item-name">${escapeHtml(i.name)}</div>
           ${i.badge ? `<div class="item-badge">${escapeHtml(i.badge)}</div>` : ''}
           ${i.instructions ? `<div class="item-instr">"${escapeHtml(i.instructions)}"</div>` : ''}
+          ${i.glutenFree ? `<div class="item-gf">Gluten-free</div>` : ''}
+          ${i.avoidAllergens && i.avoidAllergens.length ? `<div class="item-gf">Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}
         </div>
         <div class="text-right shrink-0">
           <div class="item-price">$${(i.price * i.qty).toFixed(2)}</div>

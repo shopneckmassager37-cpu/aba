@@ -3,32 +3,28 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About — Chefaleh</title>
-  <meta name="description" content="Chefaleh is a private chef–driven culinary studio crafting refined kosher Shabbat and event dining across South Florida — clean ingredients, small-batch production, ORB certified."/>
+  <title>About Chefaleh — Private Chef Shabbat Catering in Miami</title>
+  <meta name="description" content="Chefaleh is a private chef–driven culinary studio bringing bold, clean Israeli, Mediterranean, Peruvian and Ecuadorian flavors to your Shabbat table across South Florida."/>
   <link rel="canonical" href="https://chefaleh.com/about.html"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="Chefaleh"/>
-  <meta property="og:title" content="About — Chefaleh"/>
-  <meta property="og:description" content="A private chef–driven culinary studio crafting refined kosher Shabbat and event dining across South Florida."/>
+  <meta property="og:title" content="About Chefaleh — Private Chef Shabbat Catering in Miami"/>
+  <meta property="og:description" content="A private chef–driven culinary studio focused on refined, high-quality Shabbat and event dining across South Florida."/>
+  <meta property="og:url" content="https://chefaleh.com/about.html"/>
   <meta property="og:image" content="https://chefaleh.com/images/chef.png"/>
   <meta name="twitter:card" content="summary_large_image"/>
-  <link rel="stylesheet" href="css/tailwind.css"/>
+  <meta name="twitter:title" content="About Chefaleh — Private Chef Shabbat Catering in Miami"/>
+  <meta name="twitter:description" content="Elevated traditions, curated for your table. Meet the team behind Chefaleh."/>
+  <meta name="twitter:image" content="https://chefaleh.com/images/chef.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid #D4AF37;outline-offset:2px}
-    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
-    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
-    .gold-bar-left{height:2px;width:50px;background:#D4AF37}
-    #mobile-menu{display:none}
-    #mobile-menu.open{display:flex}
-    ::-webkit-scrollbar{width:5px}
-    ::-webkit-scrollbar-track{background:#F9F7F2}
-    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
-  </style>
+  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
+  <link rel="stylesheet" href="/design-polish.css"/>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- NAV -->
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
@@ -36,11 +32,11 @@
     <a href="index.html" class="font-serif text-xl md:text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
 
     <!-- Desktop -->
-    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-medium">
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.12em] uppercase font-medium">
       <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
       <a href="about.html" class="text-gold">About</a>
       <a href="menu.html"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
-      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
+      <button onclick="openDrawer()" class="luxury-link relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Cart
         <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
       </button>
@@ -48,11 +44,11 @@
 
     <!-- Mobile -->
     <div class="flex md:hidden items-center gap-2">
-      <button onclick="openDrawer()" class="relative flex items-center bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
+      <button onclick="openDrawer()" class="luxury-link relative flex items-center bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.08em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
         Cart
         <span class="cart-count-badge hidden ml-1.5 w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
-      <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
+      <button id="ham-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
         <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham3" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
@@ -62,10 +58,10 @@
 
   <!-- Mobile dropdown -->
   <div id="mobile-menu" class="md:hidden flex-col bg-cream border-t border-charcoal/10 px-5 pb-5 pt-3 gap-0">
-    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
-    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">About</a>
-    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Menu</a>
-    <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors">Cart</button>
+    <a href="index.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
+    <a href="about.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-gold border-b border-charcoal/8">About</a>
+    <a href="menu.html"  class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Menu</a>
+    <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors">Cart</button>
   </div>
 </nav>
 
@@ -81,19 +77,14 @@
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
     <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
-    <button onclick="alert('Checkout form coming soon!')" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</button>
+    <a href="/checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-[.12em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
 
-<style>
-  #drawer.open { transform: translateX(0) !important; }
-</style>
-
-
 <!-- HEADER -->
-<section class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
+<section id="main-content" tabindex="-1" class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
   <div class="absolute inset-0 opacity-20">
-    <img src="images/food3.jpg" alt="" class="w-full h-full object-cover"/>
+    <img src="images/food3.jpg" alt="" class="w-full h-full object-cover" width="1050" height="1400"/>
   </div>
   <div class="relative z-10 px-5">
     <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Our Story</p>
@@ -116,29 +107,29 @@
       </div>
       <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+          <div class="section-card-light bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
             <p class="text-gold text-lg mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Clean Oils Only</h4>
             <p class="text-charcoal/40 text-xs font-light leading-relaxed">EVOO &amp; avocado oil. Never seed oils.</p>
           </div>
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+          <div class="section-card-light bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
             <p class="text-gold text-lg mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Organic Flour</h4>
             <p class="text-charcoal/40 text-xs font-light leading-relaxed">Unbleached, organic. No shortcuts.</p>
           </div>
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+          <div class="section-card-light bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
             <p class="text-gold text-lg mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Zero Fillers</h4>
             <p class="text-charcoal/40 text-xs font-light leading-relaxed">No soy fillers or additives.</p>
           </div>
-          <div class="bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
+          <div class="section-card-light bg-cream-dark p-6 md:p-7 border-l-2 border-gold hover:bg-gold/5 transition-colors">
             <p class="text-gold text-lg mb-3">✦</p>
             <h4 class="font-serif text-charcoal text-lg font-light mb-1">Small Batch Only</h4>
             <p class="text-charcoal/40 text-xs font-light leading-relaxed">Limited weekly production. Every dish made to order.</p>
           </div>
         </div>
         <div class="overflow-hidden" style="height:200px">
-          <img src="images/fresh_meat.jpg" alt="Fresh juicy meat" loading="lazy" class="w-full h-full object-cover object-center"/>
+          <img src="images/fresh_meat.jpg" alt="Fresh juicy meat" class="w-full h-full object-cover object-center" width="1200" height="675" loading="lazy"/>
         </div>
       </div>
     </div>
@@ -158,17 +149,21 @@
         <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">Built by a team with experience producing high-end culinary programs across the U.S. and Europe, our style is rooted in bold, clean flavors with an Israeli and Mediterranean influence.</p>
       </div>
       <div class="space-y-4">
-        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+        <div class="bg-cream p-7 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <p class="text-gold font-serif text-4xl mb-1 font-light leading-none">&ldquo;</p>
           <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
-          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Best food I've had in South Florida. We ordered for an office party — simply unbelievable!"</p>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-4">We ordered from Chefaleh for an office party and the food was simply unbelievable! Trust me on this. Best food I've had in South Florida. I can't wait to order from here again!</p>
+          <div class="w-8 h-px bg-gold/40 mb-3"></div>
           <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Eli Meyer · Google Review</p>
         </div>
-        <div class="bg-cream p-6 border border-charcoal/8 hover:shadow-md transition-shadow">
+        <div class="bg-cream p-7 border border-charcoal/8 hover:shadow-md transition-shadow">
+          <p class="text-gold font-serif text-4xl mb-1 font-light leading-none">&ldquo;</p>
           <div class="flex gap-1 mb-3"><span class="text-gold text-xs">★★★★★</span></div>
-          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Delicious food! Packaging was nice. You can tell they put a lot of love and thought into their food."</p>
-          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Mordechai Levenberg · Google Review</p>
+          <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-4">We recently had a family dinner party and had the pleasure of having Chefaleh cater the event. Every single dish was delicious! Thank you Chefaleh! We look forward to our next dinner party with you!</p>
+          <div class="w-8 h-px bg-gold/40 mb-3"></div>
+          <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Ruthi Woonteiler · Google Review</p>
         </div>
-        <a href="menu.html" class="inline-block bg-charcoal text-cream px-10 py-4 text-xs tracking-[.25em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">View This Week's Menu</a>
+        <a href="menu.html" class="inline-block bg-charcoal text-cream px-10 py-4 text-xs tracking-[.14em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">View This Week's Menu</a>
       </div>
     </div>
   </div>
@@ -178,8 +173,8 @@
 <section class="py-16 md:py-24 bg-cream">
   <div class="max-w-7xl mx-auto px-5 md:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
-      <div class="overflow-hidden" style="height:300px;max-height:420px">
-        <img src="images/chef.png" alt="Our Chef" loading="lazy" class="w-full h-full object-cover object-center"/>
+      <div class="hover-zoom" style="height:300px;max-height:420px">
+        <img src="images/chef.png" alt="Our Chef" class="w-full h-full object-cover object-center" width="500" height="270" loading="lazy"/>
       </div>
       <div>
         <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Behind the Counter</p>
@@ -193,35 +188,63 @@
   </div>
 </section>
 
+<!-- PERUVIAN & ECUADORIAN CHEF -->
+<section class="py-16 md:py-24 bg-cream-dark">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
+      <div class="order-2 lg:order-1">
+        <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">A New Chapter</p>
+        <h2 class="font-serif text-charcoal font-light leading-tight mb-8" style="font-size:clamp(1.8rem,4vw,3.2rem)">Peruvian &amp; Ecuadorian<br/><em>Flavor, Kosher-Made</em></h2>
+        <div class="gold-bar-left mb-8"></div>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">Chef <strong class="text-charcoal font-medium">John Jones Angulio</strong> joins Chefaleh bringing years of experience in Peruvian and Ecuadorian kitchens — the bright acidity of ceviche, the deep char of anticuchos, the slow-built layers of a proper lomo saltado.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed mb-5 text-[15px]">John reworks these traditions within our kosher standards and clean-ingredient philosophy, translating bold South American technique into dishes that belong on a Shabbat table.</p>
+        <p class="text-charcoal/60 font-light leading-relaxed text-[15px]">His Peruvian &amp; Ecuadorian selections now anchor their own section of our weekly menu — a new chapter for Chefaleh, cooked with the same intention as everything else we serve.</p>
+      </div>
+      <div class="order-1 lg:order-2 flex items-center justify-center">
+        <div class="hover-zoom relative rounded-full" style="width:260px;height:260px;max-width:65vw;max-height:65vw;box-shadow:0 20px 50px rgba(26,26,26,.18)">
+          <img src="https://i.postimg.cc/B4pVWXng/sp.jpg" alt="Chef John Jones Angulio" class="w-full h-full object-cover object-center" loading="lazy"/>
+          <div class="absolute inset-0 rounded-full pointer-events-none" style="border:2px solid rgba(212,175,55,.5)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="bg-charcoal border-t border-cream/5 py-14 md:py-16">
   <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="trust-bar">
+      <span><span class="gold">✦</span> ORB Certified Kosher</span>
+      <span><span class="gold">★★★★★</span> 5.0 Google Reviews</span>
+      <span><span class="gold">✦</span> Fresh Every Friday</span>
+    </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-12">
       <div class="col-span-2 md:col-span-2">
-        <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
-        <p class="text-cream/30 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
-        <p class="text-cream/20 text-xs mt-4 font-light">(305) 985-0770</p>
+        <a href="index.html" class="font-serif text-2xl tracking-[.15em] text-cream font-light block mb-4">CHEFALEH</a>
+        <p class="text-cream/45 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
+        <p class="text-cream/50 text-xs mt-4 font-light">(305) 985-0770</p>
       </div>
       <div>
-        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-4 md:mb-5 font-light">Navigate</p>
-        <div class="flex flex-col gap-3 text-sm font-light text-cream/30">
+        <p class="text-cream/45 text-xs tracking-[.2em] uppercase mb-4 md:mb-5 font-light">Navigate</p>
+        <div class="flex flex-col gap-3 text-sm font-light text-cream/40">
           <a href="index.html" class="hover:text-gold transition-colors">Home</a>
           <a href="about.html" class="hover:text-gold transition-colors">About</a>
           <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="blogs.html" class="hover:text-gold transition-colors">Journal</a>
           <button onclick="openDrawer()" class="text-left hover:text-gold transition-colors">Cart</button>
         </div>
       </div>
       <div>
-        <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-4 md:mb-5 font-light">Order Info</p>
-        <div class="text-xs font-light text-cream/30 space-y-2">
+        <p class="text-cream/45 text-xs tracking-[.2em] uppercase mb-4 md:mb-5 font-light">Order Info</p>
+        <div class="text-xs font-light text-cream/40 space-y-2">
           <p>Deadline: <span class="text-gold">Wednesday 5:00 PM Miami</span></p>
-          <p>Delivery: <span class="text-cream/50">Friday 3–5 PM</span></p>
-          <p class="mt-3 text-cream/20">1622 NE 205th Terrace<br/>Miami, FL 33179</p>
+          <p>Delivery: <span class="text-cream/55">Friday 3–5 PM</span></p>
+          <p class="mt-3 text-cream/40">1622 NE 205th Terrace<br/>Miami, FL 33179</p>
         </div>
       </div>
     </div>
     <div class="gold-bar mb-6 md:mb-8"></div>
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/20">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/35">
       <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
       <div class="flex gap-4 md:gap-6">
         <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy Policy</a>
@@ -239,6 +262,7 @@ function toggleMenu() {
   const h2 = document.getElementById('ham2');
   const h3 = document.getElementById('ham3');
   const open = menu.classList.toggle('open');
+    document.getElementById('ham-btn').setAttribute('aria-expanded', open);
   if (open) {
     h1.style.transform = 'translateY(6.5px) rotate(45deg)';
     h2.style.opacity = '0';

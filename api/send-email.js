@@ -23,6 +23,11 @@ function isReasonableAmount(n, max) {
   return typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= max;
 }
 
+function clampAllergenList(list) {
+  if (!Array.isArray(list)) return [];
+  return list.filter(a => typeof a === 'string' && a.trim()).slice(0, 10).map(a => clampText(a, 40));
+}
+
 function getConfirmSecret() {
   return process.env.ORDER_CONFIRM_SECRET || process.env.CONFIRM_SECRET || process.env.RESEND_API_KEY;
 }
@@ -98,6 +103,8 @@ export default async function handler(req, res) {
       price,
       badge: clampText(item.badge, 60),
       instructions: clampText(item.instructions, 300),
+      glutenFree: !!item.glutenFree,
+      avoidAllergens: clampAllergenList(item.avoidAllergens),
     });
   }
 
@@ -111,6 +118,8 @@ export default async function handler(req, res) {
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px">
           ${escapeHtml(i.name)}
           ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${escapeHtml(i.instructions)}</div>` : ''}
+          ${i.glutenFree ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">🌾 Gluten-Free</div>` : ''}
+          ${i.avoidAllergens && i.avoidAllergens.length ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">⚠️ Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}
         </td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;color:#888;font-size:14px;text-align:center">×${i.qty}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;text-align:right;font-size:14px">$${(i.price * i.qty).toFixed(2)}</td>
@@ -138,7 +147,9 @@ export default async function handler(req, res) {
       qty: i.qty,
       price: i.price,
       badge: i.badge || '',
-      instructions: i.instructions || ''
+      instructions: i.instructions || '',
+      glutenFree: !!i.glutenFree,
+      avoidAllergens: i.avoidAllergens || []
     })))
   };
   const confirmParams = new URLSearchParams({

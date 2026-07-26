@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Chefaleh Journal — Meat Cooking Notes</title>
+  <meta name="description" content="Notes from the Chefaleh kitchen on cooking meat the right way: slow-cooked brisket, reverse-seared prime rib, and why resting matters more than you think."/>
+  <link rel="canonical" href="https://chefaleh.com/blogs.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Chefaleh"/>
+  <meta property="og:title" content="The Chefaleh Journal — Meat Cooking Notes"/>
+  <meta property="og:description" content="Notes from the Chefaleh kitchen on cooking meat the right way: brisket, prime rib, and resting technique."/>
+  <meta property="og:url" content="https://chefaleh.com/blogs.html"/>
+  <meta property="og:image" content="https://chefaleh.com/images/food1.jpg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="The Chefaleh Journal — Meat Cooking Notes"/>
+  <meta name="twitter:description" content="Notes from the Chefaleh kitchen on cooking meat the right way: brisket, prime rib, and resting technique."/>
+  <meta name="twitter:image" content="https://chefaleh.com/images/food1.jpg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+    <a href="/index.html" class="font-serif text-xl md:text-2xl tracking-[.12em] text-charcoal font-light">CHEFALEH</a>
+
+    <!-- Desktop -->
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.12em] uppercase font-medium">
+      <a href="/index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
+      <a href="/about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
+      <a href="/menu.html"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
+      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
+        Cart
+        <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
+      </button>
+    </div>
+
+    <!-- Mobile -->
+    <div class="flex md:hidden items-center gap-2">
+      <button onclick="openDrawer()" class="relative flex items-center bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
+        Cart
+        <span class="cart-count-badge hidden ml-1.5 w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
+      </button>
+      <button id="ham-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
+        <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
+        <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
+        <span id="ham3" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="mobile-menu" class="md:hidden flex-col bg-cream border-t border-charcoal/10 px-5 pb-5 pt-3 gap-0">
+    <a href="/index.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
+    <a href="/about.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">About</a>
+    <a href="/menu.html"  class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Menu</a>
+  </div>
+</nav>
+
+<!-- CART DRAWER -->
+<div id="drawer-overlay" class="fixed inset-0 bg-charcoal/40 z-50 hidden" onclick="closeDrawer()"></div>
+<div id="drawer" class="fixed top-0 right-0 bottom-0 w-96 max-w-full bg-cream z-50 flex flex-col shadow-2xl transition-transform duration-350 ease-in-out translate-x-full" style="transform:translateX(100%)">
+  <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
+    <h3 class="font-serif text-xl text-charcoal font-light">Your Cart</h3>
+    <button onclick="closeDrawer()" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
+  </div>
+  <div id="drawer-items" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
+  <div class="border-t border-charcoal/10 px-6 py-5 space-y-2 bg-cream-dark">
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
+    <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
+    <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
+    <a href="/checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-[.12em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<section id="main-content" tabindex="-1" class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
+  <div class="absolute inset-0 opacity-20">
+    <img src="/images/food1.jpg" alt="A carved roast resting on a wooden board, part of a Chefaleh Shabbat spread" class="w-full h-full object-cover" width="1600" height="889" loading="lazy"/>
+  </div>
+  <div class="relative z-10 px-5">
+    <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">The Journal</p>
+    <h1 class="font-serif text-cream font-light" style="font-size:clamp(2.2rem,6vw,5rem)">Notes on Cooking Meat</h1>
+    <div class="gold-bar max-w-xs mx-auto my-6"></div>
+    <p class="text-cream/50 text-sm font-light max-w-xl mx-auto leading-relaxed">Technique from our kitchen — how we get brisket, prime rib and every roast in between right, every week.</p>
+  </div>
+</section>
+
+<!-- POSTS -->
+<section class="py-16 md:py-24 bg-cream">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+
+      <a href="/blog/slow-cooked-brisket-shabbat.html" class="mcard block overflow-hidden" style="background:white">
+        <div class="overflow-hidden relative" style="height:230px">
+          <img src="/images/fresh_meat.jpg" alt="Sliced slow-cooked beef brisket with herbs" class="cimg w-full h-full object-cover object-center" width="1200" height="675" loading="lazy"/>
+        </div>
+        <div class="p-6">
+          <p class="text-gold text-[10px] tracking-[.25em] uppercase mb-2 font-light">Meat Technique</p>
+          <h2 class="font-serif text-charcoal text-xl font-light leading-tight mb-2">The Secret to Slow-Cooked Brisket</h2>
+          <p class="text-charcoal/50 text-xs font-light leading-relaxed mb-4">Why low and slow beats hot and fast, and the three decisions that separate a good brisket from a great one.</p>
+          <span class="text-[11px] tracking-[.12em] uppercase text-gold font-medium">Read More →</span>
+        </div>
+      </a>
+
+      <a href="/blog/prime-rib-reverse-sear.html" class="mcard block overflow-hidden" style="background:white">
+        <div class="overflow-hidden relative" style="height:230px">
+          <img src="/images/new_meat.jpg" alt="Sliced prime rib roast with a pink center and seared crust" class="cimg w-full h-full object-cover object-center" width="1200" height="900" loading="lazy"/>
+        </div>
+        <div class="p-6">
+          <p class="text-gold text-[10px] tracking-[.25em] uppercase mb-2 font-light">Meat Technique</p>
+          <h2 class="font-serif text-charcoal text-xl font-light leading-tight mb-2">Prime Rib, Done Right: The Reverse Sear</h2>
+          <p class="text-charcoal/50 text-xs font-light leading-relaxed mb-4">The low-oven-then-hot-sear method that gets an edge-to-edge pink center with a deep, crackling crust.</p>
+          <span class="text-[11px] tracking-[.12em] uppercase text-gold font-medium">Read More →</span>
+        </div>
+      </a>
+
+      <a href="/blog/resting-and-carving-meat.html" class="mcard block overflow-hidden" style="background:white">
+        <div class="overflow-hidden relative" style="height:230px">
+          <img src="/images/food1.jpg" alt="A carved roast resting on a wooden board, part of a Chefaleh Shabbat spread" class="cimg w-full h-full object-cover object-center" width="1600" height="889" loading="lazy"/>
+        </div>
+        <div class="p-6">
+          <p class="text-gold text-[10px] tracking-[.25em] uppercase mb-2 font-light">Meat Technique</p>
+          <h2 class="font-serif text-charcoal text-xl font-light leading-tight mb-2">Why Resting Your Meat Matters</h2>
+          <p class="text-charcoal/50 text-xs font-light leading-relaxed mb-4">The most skipped step in home cooking — and the one most likely to ruin an otherwise perfect roast.</p>
+          <span class="text-[11px] tracking-[.12em] uppercase text-gold font-medium">Read More →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="bg-charcoal py-16 md:py-20 text-center">
+  <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-4 font-light">Hungry Yet?</p>
+  <h2 class="font-serif text-cream font-light mb-8" style="font-size:clamp(1.8rem,4vw,3rem)">Taste It This Friday</h2>
+  <a href="/menu.html#meat" class="inline-block bg-gold text-charcoal px-11 md:px-14 py-4 text-[11px] tracking-[.14em] uppercase font-medium hover:bg-cream transition-all duration-300">See This Week's Meat</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-charcoal border-t border-cream/5 py-14 md:py-18">
+  <div class="max-w-7xl mx-auto px-5 md:px-10">
+    <div class="trust-bar">
+      <span><span class="gold">✦</span> ORB Certified Kosher</span>
+      <span><span class="gold">★★★★★</span> 5.0 Google Reviews</span>
+      <span><span class="gold">✦</span> Fresh Every Friday</span>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-12">
+      <div class="col-span-2 md:col-span-2">
+        <a href="/index.html" class="font-serif text-2xl tracking-[.15em] text-cream font-light block mb-5">CHEFALEH</a>
+        <p class="text-cream/45 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
+        <p class="text-cream/50 text-xs mt-5 font-light">(305) 985-0770</p>
+      </div>
+      <div>
+        <p class="text-cream/45 text-[10px] tracking-[.18em] uppercase mb-5 font-light">Navigate</p>
+        <div class="flex flex-col gap-3 text-sm font-light text-cream/40">
+          <a href="/index.html" class="hover:text-gold transition-colors">Home</a>
+          <a href="/about.html" class="hover:text-gold transition-colors">About</a>
+          <a href="/menu.html"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="/blogs.html" class="hover:text-gold transition-colors">Journal</a>
+        </div>
+      </div>
+      <div>
+        <p class="text-cream/45 text-[10px] tracking-[.18em] uppercase mb-5 font-light">Order Info</p>
+        <div class="text-xs font-light text-cream/40 space-y-2">
+          <p>Deadline: <span class="text-gold">Wednesday 5:00 PM Miami</span></p>
+          <p>Delivery: <span class="text-cream/55">Friday 3–5 PM</span></p>
+          <p class="mt-4 text-cream/40 leading-relaxed">1622 NE 205th Terrace<br/>Miami, FL 33179</p>
+        </div>
+      </div>
+    </div>
+    <div class="gold-bar mb-7"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/35">
+      <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
+      <div class="flex gap-5 md:gap-7">
+        <a href="/privacy-policy.html" class="hover:text-gold transition-colors">Privacy Policy</a>
+        <a href="/terms-of-use.html"   class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="/cookie-policy.html"  class="hover:text-gold transition-colors">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/cart.js"></script>
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const h1 = document.getElementById('ham1');
+  const h2 = document.getElementById('ham2');
+  const h3 = document.getElementById('ham3');
+  const open = menu.classList.toggle('open');
+    document.getElementById('ham-btn').setAttribute('aria-expanded', open);
+  if (open) {
+    h1.style.transform = 'translateY(6.5px) rotate(45deg)';
+    h2.style.opacity = '0';
+    h3.style.transform = 'translateY(-6.5px) rotate(-45deg)';
+  } else {
+    h1.style.transform = '';
+    h2.style.opacity = '';
+    h3.style.transform = '';
+  }
+}
+</script>
+</body>
+</html>

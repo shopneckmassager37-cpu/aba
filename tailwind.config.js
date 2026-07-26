@@ -1,6 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./*.html'],
+  content: [
+    './*.html',
+    './blog/**/*.html',
+    './cart.js',
+    './cart-drawer.js',
+  ],
+  safelist: [
+    { pattern: /^(text|bg|border)-(cream|charcoal|gold|white|black|charcoal-soft|cream-dark|cream-darker|gold-dark|terracotta)(\/\d{1,3})?$/ },
+  ],
   theme: {
     extend: {
       colors: {
@@ -11,6 +19,7 @@ module.exports = {
         'cream-dark': '#EFEDE6',
         'cream-darker': '#E5E2D8',
         'charcoal-soft': '#2C2C2C',
+        terracotta: '#BF6A3D',
       },
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],

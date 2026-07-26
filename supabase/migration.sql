@@ -21,6 +21,11 @@ create policy "Public read allergens" on allergens
 -- 2. Attach allergen tags to products (array of allergen names, e.g. '{"Gluten","Dairy"}')
 alter table products add column if not exists allergens text[] not null default '{}';
 
+-- 2b. Of a product's allergens, which ones can a customer optionally ask to have left out
+--     (e.g. a dish tagged Dairy + Nuts might only be able to accommodate a dairy-free request).
+--     This never forces anything — the shopper still has to check a box on the menu to request it.
+alter table products add column if not exists allergens_optional text[] not null default '{}';
+
 
 -- ────────────────────────────────────────────────────────────
 -- 3. Lock down direct writes from the browser

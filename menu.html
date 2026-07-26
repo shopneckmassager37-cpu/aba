@@ -3,48 +3,28 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Menu — Chefaleh</title>
-  <meta name="description" content="Browse this week's kosher Shabbat menu — challah, salads, soups, fish, poultry, signature meat, sides, and desserts. Order by Wednesday 5PM for Friday delivery."/>
+  <title>Menu — Chefaleh Kosher Shabbat Delivery</title>
+  <meta name="description" content="Browse Chefaleh's weekly Shabbat menu: challah, salads, soups, fish, poultry, signature meats, Peruvian &amp; Ecuadorian dishes, sides and desserts. Order by Wednesday 5PM for Friday delivery."/>
   <link rel="canonical" href="https://chefaleh.com/menu.html"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="Chefaleh"/>
-  <meta property="og:title" content="Menu — Chefaleh"/>
-  <meta property="og:description" content="Browse this week's kosher Shabbat menu, delivered fresh every Friday across South Florida."/>
+  <meta property="og:title" content="Menu — Chefaleh Kosher Shabbat Delivery"/>
+  <meta property="og:description" content="A curated weekly Shabbat menu — challah, salads, soups, fish, poultry, signature meats, Peruvian &amp; Ecuadorian dishes, sides and desserts."/>
+  <meta property="og:url" content="https://chefaleh.com/menu.html"/>
   <meta property="og:image" content="https://chefaleh.com/images/food3.jpg"/>
   <meta name="twitter:card" content="summary_large_image"/>
-  <link rel="stylesheet" href="css/tailwind.css"/>
+  <meta name="twitter:title" content="Menu — Chefaleh Kosher Shabbat Delivery"/>
+  <meta name="twitter:description" content="A curated weekly Shabbat menu, hand-delivered fresh every Friday across South Florida."/>
+  <meta name="twitter:image" content="https://chefaleh.com/images/food3.jpg"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid #D4AF37;outline-offset:2px}
-    body{background:#F9F7F2;color:#1A1A1A;font-family:'Jost',sans-serif}
-    .gold-bar{height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent)}
-    .gold-bar-left{height:2px;width:50px;background:#D4AF37}
-    .mcard{transition:transform .3s ease,box-shadow .3s ease}
-    .mcard:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(26,26,26,.12)}
-    .mcard .cimg{transition:transform .6s ease}
-    .mcard:hover .cimg{transform:scale(1.07)}
-    /* cta-row always visible on mobile, hover-only on desktop */
-    .mcard .cta-row{display:flex;align-items:center;gap:8px}
-    @media(min-width:768px){
-      .mcard .cta-row.hide-desktop{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s ease,opacity .3s ease;display:block}
-      .mcard:hover .cta-row.hide-desktop{max-height:60px;opacity:1;display:flex}
-    }
-    .snav a{border-bottom:2px solid transparent;transition:all .2s}
-    .snav a:hover,.snav a.act{color:#D4AF37;border-bottom-color:#D4AF37}
-    #drawer{transition:transform .35s ease}
-    #drawer.open{transform:translateX(0)!important}
-    #instr-modal{display:none}
-    #instr-modal.open{display:flex}
-    #mobile-menu{display:none}
-    #mobile-menu.open{display:flex}
-    ::-webkit-scrollbar{width:5px}
-    ::-webkit-scrollbar-track{background:#F9F7F2}
-    ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
-  </style>
+  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="icon" href="/images/logo.png" type="image/jpeg"/>
+  <link rel="apple-touch-icon" href="/images/logo.png"/>
+  <meta name="theme-color" content="#1A1A1A"/>
+  <link rel="stylesheet" href="/design-polish.css"/>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- SPECIAL INSTRUCTIONS MODAL -->
 <div id="instr-modal" class="fixed inset-0 z-[60] items-center justify-center bg-charcoal/60 px-4">
@@ -61,10 +41,15 @@
       <textarea id="modal-instr-text" rows="4" placeholder="Allergies, preparation preferences, customizations…"
         class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light resize-none focus:border-gold outline-none"></textarea>
       <p class="text-[10px] text-charcoal/30 font-light mt-2">These notes apply to this item only.</p>
+      <label id="modal-gf-row" class="hidden items-center gap-2 mt-4 cursor-pointer">
+        <input type="checkbox" id="modal-gf-check" class="w-4 h-4 accent-gold"/>
+        <span class="text-xs text-charcoal/70 font-light">Make this gluten-free</span>
+      </label>
+      <div id="modal-allergen-opts" class="hidden flex-col gap-2 mt-4"></div>
     </div>
     <div class="px-6 pb-6 flex gap-3">
-      <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
-      <button onclick="closeModal()" class="px-5 border border-charcoal/15 text-charcoal/50 text-xs tracking-wider uppercase font-light hover:border-charcoal hover:text-charcoal transition-all">Cancel</button>
+      <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-[.1em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
+      <button onclick="closeModal()" class="px-5 border border-charcoal/15 text-charcoal/50 text-xs tracking-[.08em] uppercase font-light hover:border-charcoal hover:text-charcoal transition-all">Cancel</button>
     </div>
   </div>
 </div>
@@ -75,12 +60,12 @@
     <a href="index.html" class="font-serif text-xl md:text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
 
     <!-- Desktop links -->
-    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-medium">
+    <div class="hidden md:flex items-center gap-8 text-xs tracking-[.12em] uppercase font-medium">
       <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
       <a href="about.html" class="text-charcoal hover:text-gold transition-colors">About</a>
       <a href="menu.html"  class="text-gold">Menu</a>
 
-      <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
+      <button onclick="openDrawer()" class="luxury-link relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Cart
         <span id="cart-badge" class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
       </button>
@@ -88,11 +73,11 @@
 
     <!-- Mobile right -->
     <div class="flex md:hidden items-center gap-2">
-      <button onclick="openDrawer()" class="relative flex items-center gap-1.5 bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.15em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
+      <button onclick="openDrawer()" class="luxury-link relative flex items-center gap-1.5 bg-gold text-charcoal px-3 py-2 text-[10px] tracking-[.08em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">
         Cart
         <span id="cart-badge-m" class="cart-count-badge hidden w-4 h-4 rounded-full bg-charcoal text-cream text-[9px] items-center justify-center font-medium">0</span>
       </button>
-      <button id="ham-btn" aria-label="Menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
+      <button id="ham-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="flex flex-col justify-center items-center gap-[5px] w-8 h-8" onclick="toggleMenu()">
         <span id="ham1" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham2" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
         <span id="ham3" class="block w-5 h-[1.5px] bg-charcoal transition-all duration-300"></span>
@@ -102,10 +87,9 @@
 
   <!-- Mobile dropdown -->
   <div id="mobile-menu" class="md:hidden flex-col bg-cream border-t border-charcoal/10 px-5 pb-5 pt-3 gap-0">
-    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
-    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">About</a>
-    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">Menu</a>
-
+    <a href="index.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
+    <a href="about.html" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">About</a>
+    <a href="menu.html"  class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-gold border-b border-charcoal/8">Menu</a>
   </div>
 </nav>
 
@@ -121,17 +105,12 @@
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
     <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
-    <a href="/checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
+    <a href="/checkout.html" class="luxury-link w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-[.12em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
 
-<style>
-  #drawer.open { transform: translateX(0) !important; }
-</style>
-
-
 <!-- MENU HEADER -->
-<div class="pt-24 pb-12 bg-charcoal text-center">
+<div id="main-content" tabindex="-1" class="pt-24 pb-12 bg-charcoal text-center">
   <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Always Open — Delivery Every Friday</p>
   <h1 class="font-serif text-cream font-light" style="font-size:clamp(2.5rem,6vw,5rem)">The Menu</h1>
   <div class="gold-bar max-w-xs mx-auto my-6"></div>
@@ -149,18 +128,6 @@
 
   <p id="summer-sub" style="color:rgba(249,247,242,.45);font-family:'Jost',sans-serif;font-size:.82rem;font-weight:300;letter-spacing:.1em;opacity:0;animation:summerFade .8s ease 1.5s forwards">We will be back with a full menu for chagim 2026</p>
 </div>
-
-<style>
-@keyframes summerLetterIn {
-  0%   { opacity:0; transform:translateY(55px) scale(.9); filter:blur(6px); }
-  60%  { filter:blur(0); }
-  100% { opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
-}
-@keyframes summerFade {
-  0%   { opacity:0; transform:translateY(18px); }
-  100% { opacity:1; transform:translateY(0); }
-}
-</style>
 
 <script>
 (function(){
@@ -180,89 +147,139 @@
 <!-- STICKY SUBNAV -->
 <div class="snav sticky top-[65px] md:top-[72px] z-30 bg-cream border-b border-charcoal/8 overflow-x-auto">
   <div class="max-w-7xl mx-auto px-2 md:px-8 flex">
-    <a href="#challah"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Challah</a>
-    <a href="#salads"    class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Salads</a>
-    <a href="#soups"     class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Soups</a>
-    <a href="#fish"      class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Fish</a>
-    <a href="#poultry"   class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Poultry</a>
-    <a href="#meat"      class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Meat</a>
-    <a href="#sides"     class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Sides</a>
-    <a href="#desserts"  class="px-5 py-4 text-xs tracking-[.2em] uppercase text-charcoal/40 font-light whitespace-nowrap">Desserts</a>
+    <a href="#challah"   class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Challah</a>
+    <a href="#salads"    class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Salads</a>
+    <a href="#soups"     class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Soups</a>
+    <a href="#fish"      class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Fish</a>
+    <a href="#poultry"   class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Poultry</a>
+    <a href="#meat"      class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Meat</a>
+    <a href="#sides"     class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Sides</a>
+    <a href="#desserts"  class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Desserts</a>
   </div>
 </div>
 
 <!-- ===== CHALLAH ===== -->
-<section id="challah" class="py-20 bg-cream">
+<section id="challah" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Bakery</p>
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Challah & Bread</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" id="g-challah"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-charcoal/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-challah-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-challah-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-challah-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-challah-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
 
 <!-- ===== SALADS ===== -->
-<section id="salads" class="py-20 bg-cream-dark">
+<section id="salads" class="py-12 md:py-20 bg-cream-dark">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Garden</p>
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Salads & Dips</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" id="g-salads"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-charcoal/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-salads-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-salads-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-salads-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-salads-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
 
 <!-- ===== SOUPS ===== -->
-<section id="soups" class="py-20 bg-cream">
+<section id="soups" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Warm & Nourishing</p>
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Soups</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" id="g-soups"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-charcoal/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-soups-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-soups-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-soups-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-soups-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
 
 <!-- ===== FISH ===== -->
-<section id="fish" class="py-20 bg-cream-dark">
+<section id="fish" class="py-12 md:py-20 bg-cream-dark">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">From the Sea</p>
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Fish</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" id="g-fish"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-charcoal/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-fish-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-fish-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-fish-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-fish-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
 
 <!-- ===== POULTRY ===== -->
-<section id="poultry" class="py-20 bg-cream">
+<section id="poultry" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Traditional with a Chef's Twist</p>
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Poultry</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" id="g-poultry"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-charcoal/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-poultry-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-poultry-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-poultry-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-poultry-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
 
 <!-- ===== MEAT ===== -->
-<section id="meat" class="py-20 bg-charcoal">
+<section id="meat" class="py-12 md:py-20 bg-charcoal">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Centerpiece</p>
@@ -270,56 +287,94 @@
       <p class="text-cream/30 text-xs font-light mt-2">Premium beef — the crown of your Shabbat table</p>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5" id="g-meat"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-cream/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/5" id="g-meat-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/40" id="g-meat-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-meat-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/5" id="g-meat-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#1A1A1A,#F9F7F2)"></div>
 
 <!-- ===== SIDES ===== -->
-<section id="sides" class="py-20 bg-cream">
+<section id="sides" class="py-12 md:py-20 bg-cream">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Complete the Table</p>
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Sides</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="g-sides"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-charcoal/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-sides-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-sides-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-sides-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-sides-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div style="height:60px;background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#EFEDE6)"></div>
 
 <!-- ===== DESSERTS ===== -->
-<section id="desserts" class="py-20 bg-cream-dark">
+<section id="desserts" class="py-12 md:py-20 bg-cream-dark">
   <div class="max-w-7xl mx-auto px-4 md:px-8">
     <div class="mb-10 md:mb-14">
       <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">The Sweet Finish</p>
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Desserts</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="g-desserts"></div>
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-8 items-start">
+      <div class="flex-1 w-full">
+        <p class="text-sm tracking-widest uppercase text-charcoal/55 font-medium mb-4">Traditional</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-desserts-trad"></div>
+      </div>
+      <div class="hidden lg:block w-px self-stretch bg-terracotta/30" id="g-desserts-divider" style="display:none"></div>
+      <div class="flex-1 w-full" id="g-desserts-peru-wrap" style="display:none">
+        <p class="text-sm tracking-widest uppercase text-terracotta font-medium mb-4">Peruvian &amp; Ecuadorian</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-desserts-peru"></div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ORDER CTA -->
-<div style="height:60px;background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
-<section class="py-20 bg-charcoal text-center">
+<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
+<section class="py-12 md:py-20 bg-charcoal text-center">
   <h2 class="font-serif text-cream font-light mb-3" style="font-size:clamp(1.8rem,4vw,3rem)">Always open for orders</h2>
-  <p class="text-cream/30 text-xs font-light tracking-wider mb-10">Orders after Wednesday 5:00 PM are delivered the following Friday</p>
-  <a href="/checkout.html" class="inline-block bg-gold text-charcoal px-12 py-4 text-xs tracking-[.25em] uppercase font-medium hover:bg-cream transition-all duration-300">Proceed to Order</a>
+  <p class="text-cream/40 text-xs font-light tracking-wider mb-10">Orders after Wednesday 5:00 PM are delivered the following Friday</p>
+  <a href="/checkout.html" class="inline-block bg-gold text-charcoal px-12 py-4 text-xs tracking-[.15em] uppercase font-medium hover:bg-cream transition-all duration-300">Proceed to Order</a>
 </section>
 
 <!-- FOOTER -->
 <footer class="bg-charcoal border-t border-cream/5 py-10">
-  <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-    <a href="index.html" class="font-serif text-xl tracking-[.2em] text-cream font-light">CHEFALEH</a>
-    <div class="flex gap-6 text-xs font-light text-cream/20">
-      <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy</a>
-      <a href="terms-of-use.html" class="hover:text-gold transition-colors">Terms</a>
-      <a href="cookie-policy.html" class="hover:text-gold transition-colors">Cookies</a>
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="trust-bar">
+      <span><span class="gold">✦</span> ORB Certified Kosher</span>
+      <span><span class="gold">★★★★★</span> 5.0 Google Reviews</span>
+      <span><span class="gold">✦</span> Fresh Every Friday</span>
     </div>
-    <p class="text-cream/15 text-xs font-light">© 2026 Chefaleh</p>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <a href="index.html" class="font-serif text-xl tracking-[.15em] text-cream font-light">CHEFALEH</a>
+      <div class="flex gap-6 text-xs font-light text-cream/40">
+        <a href="blogs.html" class="hover:text-gold transition-colors">Journal</a>
+        <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy</a>
+        <a href="terms-of-use.html" class="hover:text-gold transition-colors">Terms</a>
+        <a href="cookie-policy.html" class="hover:text-gold transition-colors">Cookies</a>
+      </div>
+      <p class="text-cream/35 text-xs font-light">© 2026 Chefaleh</p>
+    </div>
   </div>
 </footer>
 
@@ -338,6 +393,33 @@ function openModal(item) {
   document.getElementById('modal-item-name').textContent = item.name;
   const existing = getItemInstructions(item.name);
   document.getElementById('modal-instr-text').value = existing || '';
+  const gfRow = document.getElementById('modal-gf-row');
+  const gfCheck = document.getElementById('modal-gf-check');
+  if (item.gluten_free_option) {
+    gfRow.classList.remove('hidden');
+    gfRow.classList.add('flex');
+    gfCheck.checked = getItemGlutenFree(item.name);
+  } else {
+    gfRow.classList.add('hidden');
+    gfRow.classList.remove('flex');
+    gfCheck.checked = false;
+  }
+  const optRow = document.getElementById('modal-allergen-opts');
+  const optionalAllergens = item.allergens_optional || [];
+  if (optionalAllergens.length) {
+    const current = new Set(getItemAvoidAllergens(item.name));
+    optRow.innerHTML = optionalAllergens.map(a => `
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" class="modal-allergen-cb w-4 h-4 accent-gold" value="${a}" ${current.has(a) ? 'checked' : ''}/>
+        <span class="text-xs text-charcoal/70 font-light">Make this without ${a}</span>
+      </label>`).join('');
+    optRow.classList.remove('hidden');
+    optRow.classList.add('flex');
+  } else {
+    optRow.innerHTML = '';
+    optRow.classList.add('hidden');
+    optRow.classList.remove('flex');
+  }
   document.getElementById('instr-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -351,7 +433,9 @@ function closeModal() {
 function saveModal() {
   if (!modalItem) return;
   const text = document.getElementById('modal-instr-text').value.trim();
-  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text);
+  const glutenFree = modalItem.gluten_free_option ? document.getElementById('modal-gf-check').checked : false;
+  const avoidAllergens = Array.from(document.querySelectorAll('.modal-allergen-cb:checked')).map(cb => cb.value);
+  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text, glutenFree, avoidAllergens);
   closeModal();
 }
 
@@ -360,20 +444,31 @@ function getItemInstructions(name) {
   return found ? found.instructions || '' : '';
 }
 
+function getItemGlutenFree(name) {
+  const found = getCart().find(i => i.name === name);
+  return found ? !!found.glutenFree : false;
+}
+
+function getItemAvoidAllergens(name) {
+  const found = getCart().find(i => i.name === name);
+  return found ? (found.avoidAllergens || []) : [];
+}
+
 // ── CARD RENDERER ──
 function makeCard(item) {
   const dark = item.dark;
-  const imgH = item.small ? 'height:180px' : 'height:230px';
+  const imgH = item.small ? 'h-32 md:h-[180px]' : 'h-40 md:h-[230px]';
   const imgEl = item.img
     ? `<img src="${item.img}" alt="${item.name}" class="cimg w-full h-full object-cover object-center" onerror="this.style.display='none'"/>`
     : '';
   const tagEl = item.tag
-    ? `<span class="absolute top-4 left-4 z-10 ${item.tag==='Signature'?'bg-gold text-charcoal':'bg-charcoal text-cream'} text-[10px] px-3 py-1 tracking-wider font-medium">${item.tag}</span>`
+    ? `<span class="absolute top-3 left-3 z-10 ${item.tag==='Signature'?'chip chip-signature':'chip chip-outline-dark'}">${item.tag}</span>`
     : '';
-  const priceColor = dark ? 'text-gold' : 'text-charcoal';
+  // Price always reads as "gold = price" regardless of card theme.
+  const priceColor = dark ? 'text-gold' : 'text-gold-dark';
   const titleColor = dark ? 'text-cream' : 'text-charcoal';
-  const descColor  = dark ? 'text-cream/40' : 'text-charcoal/40';
-  const badgeColor = dark ? 'text-gold/60 bg-gold/10' : 'text-gold/60 bg-gold/8';
+  const sizeColor  = dark ? 'text-cream/40' : 'text-charcoal/40';
+  const descColor  = dark ? 'text-cream/45' : 'text-charcoal/48';
   const borderColor= dark ? 'border-cream/8' : 'border-charcoal/6';
   const btnBase    = dark
     ? 'border-gold/20 text-cream hover:bg-gold hover:text-charcoal'
@@ -382,30 +477,38 @@ function makeCard(item) {
   const qty = getItemQty(item.name);
   const instructions = getItemInstructions(item.name);
   const instrHint = instructions
-    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-1 truncate" title="${instructions.replace(/"/g,'&quot;')}">Note: ${instructions}</p>`
+    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-2 truncate" title="${instructions.replace(/"/g,'&quot;')}">Note: ${instructions}</p>`
     : '';
+
+  // One consistent chip style for every dish attribute (gluten-free + allergens).
+  // Allergens the kitchen can leave out on request read like the GF chip; the rest are informational only.
+  const chips = [];
+  if (item.gluten_free_option) chips.push(`<span class="chip ${dark ? 'chip-gf-dark' : 'chip-gf'}">GF Available</span>`);
+  if (item.allergens && item.allergens.length) {
+    const optionalSet = new Set(item.allergens_optional || []);
+    item.allergens.forEach(a => {
+      if (optionalSet.has(a)) chips.push(`<span class="chip ${dark ? 'chip-gf-dark' : 'chip-gf'}">${a}-Free Available</span>`);
+      else chips.push(`<span class="chip ${dark ? 'chip-outline-dark' : 'chip-outline-light'}">${a}</span>`);
+    });
+  }
+  const chipsRow = chips.length ? `<div class="flex flex-wrap gap-1.5 mt-2.5">${chips.join('')}</div>` : '';
 
   const itemJson = JSON.stringify(item).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
   const safeName  = item.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   const safeBadge = (item.badge || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
   return `
-  <div class="mcard overflow-hidden" style="${cardBg}">
-    <div class="overflow-hidden relative" style="${imgH}">
+  <div class="mcard overflow-hidden h-full" style="${cardBg}">
+    <div class="overflow-hidden relative ${imgH} bg-cream-dark">
       ${imgEl}${tagEl}
     </div>
-    <div class="${item.small?'p-5':'p-6'}">
-      <div class="flex justify-between items-start mb-1 gap-2">
-        <h3 class="font-serif ${titleColor} ${item.small?'text-lg':'text-xl'} font-light leading-tight">${item.name}</h3>
-        <span class="text-[10px] ${badgeColor} px-2 py-1 tracking-wider shrink-0">${item.badge||''}</span>
-      </div>
-      <p class="${descColor} text-xs font-light mb-4 leading-relaxed">${item.description||item.desc||''}</p>
-      ${(item.allergens && item.allergens.length) ? `
-      <div class="flex flex-wrap gap-1.5 mb-3">
-        ${item.allergens.map(a => `<span class="text-[9px] tracking-wider uppercase px-2 py-0.5 border ${dark ? 'border-gold/25 text-gold/70' : 'border-charcoal/15 text-charcoal/45'}">${a}</span>`).join('')}
-      </div>` : ''}
+    <div class="${item.small?'p-4 md:p-5':'p-4 md:p-6'} flex flex-col">
+      <h3 class="font-serif ${titleColor} ${item.small?'text-lg':'text-xl'} font-light leading-tight">${item.name}</h3>
+      ${item.badge ? `<p class="text-[10px] ${sizeColor} tracking-[.08em] uppercase font-light mt-1">${item.badge}</p>` : ''}
+      <p class="${descColor} text-xs font-light mt-3 leading-relaxed">${item.description||item.desc||''}</p>
+      ${chipsRow}
       ${instrHint}
-      <div class="flex items-center justify-between pt-4 border-t ${borderColor}">
+      <div class="flex items-center justify-between pt-4 mt-auto border-t ${borderColor}">
         <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
         <div class="cta-row items-center gap-2">
           ${qty > 0 ? `
@@ -414,7 +517,7 @@ function makeCard(item) {
           <button onclick="openModal(${itemJson})" class="w-9 h-9 border ${btnBase} transition-all text-sm leading-none" title="Special instructions">✎</button>
           <button onclick="deck('${safeName}',1,${item.price},'${safeBadge}')"  class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>
           ` : `
-          <button onclick="openModal(${itemJson})" class="px-5 py-2.5 text-[11px] tracking-wider uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
+          <button onclick="openModal(${itemJson})" class="luxury-link px-5 py-2.5 text-[11px] tracking-[.08em] uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
           `}
         </div>
       </div>
@@ -427,7 +530,7 @@ function getItemQty(name) {
   return found ? found.qty : 0;
 }
 
-function deck(name, delta, price, badge, instructions) {
+function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   const newQty = found ? found.qty + delta : delta;
@@ -436,19 +539,49 @@ function deck(name, delta, price, badge, instructions) {
   } else if (found) {
     found.qty = newQty;
     if (instructions !== undefined) found.instructions = instructions;
+    if (glutenFree !== undefined) found.glutenFree = glutenFree;
+    if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '');
+    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens);
   }
   renderAll();
 }
 
+function makePeruPlaceholder(dark) {
+  const textColor = dark ? 'text-cream/45' : 'text-charcoal/45';
+  const subColor = dark ? 'text-cream/35' : 'text-charcoal/38';
+  const borderColor = dark ? 'border-terracotta/40' : 'border-terracotta/30';
+  return `
+  <div class="sm:col-span-2 border border-dashed ${borderColor} flex flex-col items-center justify-center text-center py-12 px-6">
+    <p class="text-terracotta text-xl mb-3">✦</p>
+    <p class="font-serif ${textColor} text-lg font-light mb-1">Coming Soon</p>
+    <p class="${subColor} text-xs font-light max-w-[220px]">New Peruvian &amp; Ecuadorian dishes are being added to this section</p>
+  </div>`;
+}
+
 function renderAll() {
   categoriesData.forEach(cat => {
-    const el = document.getElementById('g-' + cat.slug);
-    if (!el) return;
+    const tradEl = document.getElementById('g-' + cat.slug + '-trad');
+    if (!tradEl) return;
+    const peruEl = document.getElementById('g-' + cat.slug + '-peru');
+    const peruWrap = document.getElementById('g-' + cat.slug + '-peru-wrap');
+    const divider = document.getElementById('g-' + cat.slug + '-divider');
+
     const items = (menu[cat.slug] || []).filter(p => p.visible !== false);
-    el.innerHTML = items.map(item => makeCard(item)).join('');
+    const trad = items.filter(p => !p.is_peruvian);
+    const peru = items.filter(p => p.is_peruvian);
+    const dark = cat.slug === 'meat';
+
+    tradEl.innerHTML = trad.map(item => makeCard(item)).join('');
+    if (peruEl) {
+      peruEl.innerHTML = peru.length
+        ? peru.map(item => makeCard(item)).join('')
+        : makePeruPlaceholder(dark);
+    }
+
+    if (peruWrap) peruWrap.style.display = '';
+    if (divider) divider.style.display = '';
   });
   refreshCartUI();
 }
