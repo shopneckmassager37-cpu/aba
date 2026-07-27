@@ -164,6 +164,40 @@ nav.scrolled { box-shadow: 0 10px 36px rgba(0, 0, 0, .18); }
   .mcard { border-radius: 6px; }
 }
 
+/* ── FAQ accordion ── */
+.faq-list {
+  border-top: 1px solid rgba(26, 26, 26, .10);
+  border-bottom: 1px solid rgba(26, 26, 26, .10);
+}
+.faq-item + .faq-item { border-top: 1px solid rgba(26, 26, 26, .10); }
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  cursor: pointer;
+  list-style: none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-q { font-size: 1.125rem; line-height: 1.35; }
+@media (min-width: 768px) {
+  .faq-item summary { padding: 1.75rem 0; }
+  .faq-q { font-size: 1.25rem; }
+}
+.faq-plus {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  font-weight: 300;
+  transition: transform .3s ease;
+}
+.faq-item[open] .faq-plus { transform: rotate(45deg); }
+.faq-a { margin: 0 0 1.5rem; padding-right: 2.5rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-plus { transition: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *,

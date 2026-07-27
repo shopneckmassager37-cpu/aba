@@ -1,8 +1,10 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
-Disallow: /checkout.html
-Disallow: /confirmation.html
+
+# Transactional and internal pages (cleanUrls is enabled, so these are the real paths)
+Disallow: /admin
+Disallow: /checkout
+Disallow: /confirmation
 Disallow: /api/
 
 Sitemap: https://chefaleh.com/sitemap.xml
