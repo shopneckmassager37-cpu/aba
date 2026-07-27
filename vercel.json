@@ -5,8 +5,20 @@
   "trailingSlash": false,
   "headers": [
     {
+      "source": "/images/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, s-maxage=31536000" }]
+    },
+    {
+      "source": "/(favicon.ico|apple-touch-icon.png)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }]
+    },
+    {
+      "source": "/(.*).(css|js)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, s-maxage=31536000, must-revalidate" }]
+    },
+    {
       "source": "/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, s-maxage=86400, must-revalidate" }]
     }
   ]
 }

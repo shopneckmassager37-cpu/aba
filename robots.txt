@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Transactional pages — crawlable so the noindex meta tag is seen, but not useful in search
+Disallow: /api/
+Disallow: /admin
+Disallow: /admin.html
+
+Sitemap: https://chefaleh.com/sitemap.xml

@@ -5,13 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About — Chefaleh</title>
   <meta name="description" content="Chefaleh is a private chef–driven culinary studio crafting refined kosher Shabbat and event dining across South Florida — clean ingredients, small-batch production, ORB certified."/>
-  <link rel="canonical" href="https://chefaleh.com/about.html"/>
+  <link rel="canonical" href="https://chefaleh.com/about"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="Chefaleh"/>
   <meta property="og:title" content="About — Chefaleh"/>
   <meta property="og:description" content="A private chef–driven culinary studio crafting refined kosher Shabbat and event dining across South Florida."/>
   <meta property="og:image" content="https://chefaleh.com/images/chef.png"/>
   <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="About — Chefaleh"/>
+  <meta name="twitter:description" content="A private chef–driven culinary studio crafting refined kosher Shabbat and event dining across South Florida."/>
+  <meta name="twitter:image" content="https://chefaleh.com/images/chef.png"/>
+  <meta property="og:url" content="https://chefaleh.com/about"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"/>
+  <meta name="geo.region" content="US-FL"/>
+  <meta name="geo.placename" content="Miami, Florida"/>
+  <meta name="theme-color" content="#1A1A1A"/>
+  <link rel="icon" href="favicon.ico" sizes="any"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preload" as="image" href="images/food3.webp" type="image/webp" fetchpriority="high"/>
   <link rel="stylesheet" href="css/tailwind.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <style>
@@ -27,19 +41,47 @@
     ::-webkit-scrollbar-track{background:#F9F7F2}
     ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:2px}
   </style>
+
+  <!-- ── STRUCTURED DATA ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "@id": "https://chefaleh.com/about#webpage",
+        "url": "https://chefaleh.com/about",
+        "name": "About — Chefaleh",
+        "description": "Chefaleh is a private chef-driven culinary studio crafting refined kosher Shabbat and event dining across South Florida.",
+        "inLanguage": "en-US",
+        "isPartOf": { "@id": "https://chefaleh.com/#website" },
+        "about": { "@id": "https://chefaleh.com/#business" },
+        "primaryImageOfPage": "https://chefaleh.com/images/chef.png"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://chefaleh.com/about#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://chefaleh.com/" },
+          { "@type": "ListItem", "position": 2, "name": "About", "item": "https://chefaleh.com/about" }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
 <!-- NAV -->
 <nav class="fixed top-0 left-0 right-0 z-40 bg-cream border-b border-charcoal/10">
   <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
-    <a href="index.html" class="font-serif text-xl md:text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
+    <a href="/" class="font-serif text-xl md:text-2xl tracking-[.2em] text-charcoal font-light">CHEFALEH</a>
 
     <!-- Desktop -->
     <div class="hidden md:flex items-center gap-8 text-xs tracking-[.2em] uppercase font-medium">
-      <a href="index.html" class="text-charcoal hover:text-gold transition-colors">Home</a>
-      <a href="about.html" class="text-gold">About</a>
-      <a href="menu.html"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
+      <a href="/" class="text-charcoal hover:text-gold transition-colors">Home</a>
+      <a href="/about" class="text-gold">About</a>
+      <a href="/menu"  class="text-charcoal hover:text-gold transition-colors">Menu</a>
       <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2 hover:bg-charcoal hover:text-cream transition-all font-medium">
         Cart
         <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
@@ -62,9 +104,9 @@
 
   <!-- Mobile dropdown -->
   <div id="mobile-menu" class="md:hidden flex-col bg-cream border-t border-charcoal/10 px-5 pb-5 pt-3 gap-0">
-    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
-    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">About</a>
-    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Menu</a>
+    <a href="/" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Home</a>
+    <a href="/about" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-charcoal/8">About</a>
+    <a href="/menu"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors border-b border-charcoal/8">Menu</a>
     <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.2em] uppercase font-medium text-charcoal hover:text-gold transition-colors">Cart</button>
   </div>
 </nav>
@@ -93,7 +135,7 @@
 <!-- HEADER -->
 <section class="pt-36 md:pt-40 pb-16 md:pb-20 bg-charcoal text-center relative overflow-hidden">
   <div class="absolute inset-0 opacity-20">
-    <img src="images/food3.jpg" alt="" class="w-full h-full object-cover"/>
+    <img src="images/food3.webp" alt="" width="900" height="1200" fetchpriority="high" decoding="async" class="w-full h-full object-cover"/>
   </div>
   <div class="relative z-10 px-5">
     <p class="text-gold text-xs tracking-[.4em] uppercase mb-4 font-light">Our Story</p>
@@ -138,7 +180,7 @@
           </div>
         </div>
         <div class="overflow-hidden" style="height:200px">
-          <img src="images/fresh_meat.jpg" alt="Fresh juicy meat" loading="lazy" class="w-full h-full object-cover object-center"/>
+          <img src="images/fresh_meat.webp" alt="Fresh cut of kosher meat sourced for Chefaleh's small-batch kitchen" width="1400" height="787" loading="lazy" decoding="async" class="w-full h-full object-cover object-center"/>
         </div>
       </div>
     </div>
@@ -168,7 +210,7 @@
           <p class="text-charcoal/60 text-sm font-light leading-relaxed mb-3">"Delicious food! Packaging was nice. You can tell they put a lot of love and thought into their food."</p>
           <p class="text-xs tracking-wider text-charcoal/30 uppercase font-light">— Mordechai Levenberg · Google Review</p>
         </div>
-        <a href="menu.html" class="inline-block bg-charcoal text-cream px-10 py-4 text-xs tracking-[.25em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">View This Week's Menu</a>
+        <a href="/menu" class="inline-block bg-charcoal text-cream px-10 py-4 text-xs tracking-[.25em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">View This Week's Menu</a>
       </div>
     </div>
   </div>
@@ -179,7 +221,7 @@
   <div class="max-w-7xl mx-auto px-5 md:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
       <div class="overflow-hidden" style="height:300px;max-height:420px">
-        <img src="images/chef.png" alt="Our Chef" loading="lazy" class="w-full h-full object-cover object-center"/>
+        <img src="images/chef.webp" alt="The Chefaleh chef team preparing kosher Shabbat dishes" width="500" height="270" loading="lazy" decoding="async" class="w-full h-full object-cover object-center"/>
       </div>
       <div>
         <p class="text-gold text-xs tracking-[.4em] uppercase mb-5 font-light">Behind the Counter</p>
@@ -198,16 +240,17 @@
   <div class="max-w-7xl mx-auto px-5 md:px-8">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-12">
       <div class="col-span-2 md:col-span-2">
-        <a href="index.html" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
+        <a href="/" class="font-serif text-2xl tracking-[.2em] text-cream font-light block mb-4">CHEFALEH</a>
         <p class="text-cream/30 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
         <p class="text-cream/20 text-xs mt-4 font-light">(305) 985-0770</p>
       </div>
       <div>
         <p class="text-cream/40 text-xs tracking-[.2em] uppercase mb-4 md:mb-5 font-light">Navigate</p>
         <div class="flex flex-col gap-3 text-sm font-light text-cream/30">
-          <a href="index.html" class="hover:text-gold transition-colors">Home</a>
-          <a href="about.html" class="hover:text-gold transition-colors">About</a>
-          <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="/" class="hover:text-gold transition-colors">Home</a>
+          <a href="/about" class="hover:text-gold transition-colors">About</a>
+          <a href="/menu"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="/#faq"  class="hover:text-gold transition-colors">FAQ</a>
           <button onclick="openDrawer()" class="text-left hover:text-gold transition-colors">Cart</button>
         </div>
       </div>
@@ -224,9 +267,9 @@
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/20">
       <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
       <div class="flex gap-4 md:gap-6">
-        <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy Policy</a>
-        <a href="terms-of-use.html" class="hover:text-gold transition-colors">Terms of Use</a>
-        <a href="cookie-policy.html" class="hover:text-gold transition-colors">Cookie Policy</a>
+        <a href="/privacy-policy" class="hover:text-gold transition-colors">Privacy Policy</a>
+        <a href="/terms-of-use" class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="/cookie-policy" class="hover:text-gold transition-colors">Cookie Policy</a>
       </div>
     </div>
   </div>

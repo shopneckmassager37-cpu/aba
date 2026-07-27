@@ -17,6 +17,16 @@
   <meta name="twitter:title" content="Chefaleh — Private Chef Shabbat Delivery"/>
   <meta name="twitter:description" content="Bespoke, ORB-certified kosher Shabbat and event catering delivered fresh every Friday across South Florida."/>
   <meta name="twitter:image" content="https://chefaleh.com/images/shabbat_table_hero.jpg"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"/>
+  <meta name="geo.region" content="US-FL"/>
+  <meta name="geo.placename" content="Miami, Florida"/>
+  <meta name="theme-color" content="#1A1A1A"/>
+  <link rel="icon" href="favicon.ico" sizes="any"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preload" as="image" href="images/shabbat_table_hero.webp" type="image/webp" fetchpriority="high"/>
   <link rel="stylesheet" href="css/tailwind.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
   <style>
@@ -73,6 +83,14 @@
     .dish-mid { margin-top: 3rem; }
     @media (max-width: 767px) { .dish-mid { margin-top: 0; } }
 
+    /* FAQ accordion */
+    .faq-list { border-top: 1px solid rgba(26,26,26,.10); border-bottom: 1px solid rgba(26,26,26,.10); }
+    .faq-item + .faq-item { border-top: 1px solid rgba(26,26,26,.10); }
+    .faq-item summary { list-style: none; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-plus { transition: transform .3s ease; }
+    .faq-item[open] .faq-plus { transform: rotate(45deg); }
+
     /* Explicit color overrides — Tailwind CDN opacity modifiers (text-cream/38 etc.)
        can fail on some mobile browsers. These rules hardcode the exact rgba values. */
     .text-cream\/38  { color: rgba(249,247,242,.38) !important; }
@@ -98,25 +116,230 @@
     .bg-charcoal\/75 { background-color: rgba(26,26,26,.75) !important; }
     .bg-charcoal\/40 { background-color: rgba(26,26,26,.40) !important; }
   </style>
+
+  <!-- ── STRUCTURED DATA ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://chefaleh.com/#organization",
+        "name": "Chefaleh",
+        "legalName": "Chefaleh Kosher Catering",
+        "url": "https://chefaleh.com/",
+        "telephone": "+1-305-985-0770",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://chefaleh.com/images/icon-512.png",
+          "width": 512,
+          "height": 512
+        },
+        "image": "https://chefaleh.com/images/shabbat_table_hero.jpg",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "1622 NE 205th Terrace",
+          "addressLocality": "Miami",
+          "addressRegion": "FL",
+          "postalCode": "33179",
+          "addressCountry": "US"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://chefaleh.com/#website",
+        "url": "https://chefaleh.com/",
+        "name": "Chefaleh",
+        "inLanguage": "en-US",
+        "publisher": { "@id": "https://chefaleh.com/#organization" }
+      },
+      {
+        "@type": ["Restaurant", "FoodEstablishment"],
+        "@id": "https://chefaleh.com/#business",
+        "name": "Chefaleh",
+        "description": "Private chef-driven kosher catering studio serving refined Shabbat and event dining across South Florida. ORB certified, small-batch production, cooked exclusively with extra virgin olive oil and avocado oil.",
+        "url": "https://chefaleh.com/",
+        "telephone": "+1-305-985-0770",
+        "priceRange": "$$$",
+        "currenciesAccepted": "USD",
+        "servesCuisine": ["Kosher", "Israeli", "Mediterranean"],
+        "hasMenu": "https://chefaleh.com/menu",
+        "acceptsReservations": "False",
+        "image": [
+          "https://chefaleh.com/images/shabbat_table_hero.jpg",
+          "https://chefaleh.com/images/new_meat.jpg",
+          "https://chefaleh.com/images/food3.jpg"
+        ],
+        "parentOrganization": { "@id": "https://chefaleh.com/#organization" },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "1622 NE 205th Terrace",
+          "addressLocality": "Miami",
+          "addressRegion": "FL",
+          "postalCode": "33179",
+          "addressCountry": "US"
+        },
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Kosher certification",
+            "value": "ORB (Orthodox Rabbinical Board)"
+          },
+          {
+            "@type": "PropertyValue",
+            "name": "Order deadline",
+            "value": "Wednesday 5:00 PM Miami time for Friday delivery"
+          }
+        ],
+        "areaServed": [
+          { "@type": "City", "name": "Miami Beach" },
+          { "@type": "City", "name": "Surfside" },
+          { "@type": "City", "name": "Bal Harbour" },
+          { "@type": "City", "name": "North Bay Village" },
+          { "@type": "City", "name": "Aventura" },
+          { "@type": "City", "name": "Sunny Isles Beach" },
+          { "@type": "City", "name": "North Miami Beach" },
+          { "@type": "City", "name": "Hollywood" },
+          { "@type": "City", "name": "Hallandale Beach" },
+          { "@type": "City", "name": "Fort Lauderdale" },
+          { "@type": "City", "name": "Pompano Beach" },
+          { "@type": "City", "name": "Boca Raton" }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Delivery Zones",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "name": "Zone 1 · Core Area",
+              "description": "Miami Beach, Surfside, Bal Harbour, North Bay Village",
+              "priceSpecification": {
+                "@type": "DeliveryChargeSpecification",
+                "price": "15.00",
+                "priceCurrency": "USD"
+              }
+            },
+            {
+              "@type": "Offer",
+              "name": "Zone 2 · Extended Area",
+              "description": "Aventura, Sunny Isles Beach, North Miami Beach, Hollywood, Hallandale Beach",
+              "priceSpecification": {
+                "@type": "DeliveryChargeSpecification",
+                "price": "30.00",
+                "priceCurrency": "USD"
+              }
+            },
+            {
+              "@type": "Offer",
+              "name": "Zone 3 · Long Range",
+              "description": "Fort Lauderdale, Pompano Beach, Boca Raton",
+              "priceSpecification": {
+                "@type": "DeliveryChargeSpecification",
+                "price": "60.00",
+                "priceCurrency": "USD"
+              }
+            }
+          ]
+        },
+        "potentialAction": {
+          "@type": "OrderAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://chefaleh.com/menu",
+            "actionPlatform": [
+              "http://schema.org/DesktopWebPlatform",
+              "http://schema.org/MobileWebPlatform"
+            ]
+          },
+          "deliveryMethod": "http://purl.org/goodrelations/v1#DeliveryModeOwnFleet"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://chefaleh.com/#webpage",
+        "url": "https://chefaleh.com/",
+        "name": "Chefaleh — Private Chef Shabbat Delivery",
+        "isPartOf": { "@id": "https://chefaleh.com/#website" },
+        "about": { "@id": "https://chefaleh.com/#business" },
+        "primaryImageOfPage": "https://chefaleh.com/images/shabbat_table_hero.jpg",
+        "inLanguage": "en-US"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://chefaleh.com/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is Chefaleh kosher certified?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Chefaleh is ORB certified (Orthodox Rabbinical Board). Every dish is prepared in our certified kitchen under full supervision."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "When do I need to place my Shabbat order?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Orders for this Friday close Wednesday at 5:00 PM Miami time. Orders placed after the deadline are scheduled for the following Friday."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "When is delivery?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Deliveries run every Friday between 3:00 and 5:00 PM, ahead of candle lighting."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which areas do you deliver to in South Florida?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We deliver across three zones. Zone 1 ($15): Miami Beach, Surfside, Bal Harbour and North Bay Village. Zone 2 ($30): Aventura, Sunny Isles Beach, North Miami Beach, Hollywood and Hallandale Beach. Zone 3 ($60): Fort Lauderdale, Pompano Beach and Boca Raton."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What oils and flours do you cook with?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We cook exclusively with extra virgin olive oil and avocado oil — never seed oils. Our baking uses unbleached organic flour, and we use no soy-based fillers or unnecessary additives."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you cater events as well as Shabbat?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Alongside our weekly Shabbat menu we cater private events, office gatherings and simchas across South Florida. Call (305) 985-0770 to discuss an event menu."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
 <!-- COOKIE BANNER -->
 <div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
-  <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="cookie-policy.html" class="underline hover:text-gold transition-colors">Learn more</a></p>
+  <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="/cookie-policy" class="underline hover:text-gold transition-colors">Learn more</a></p>
   <button onclick="document.getElementById('cookie').remove()" class="text-xs tracking-widest uppercase border border-gold text-gold px-6 py-2 hover:bg-gold hover:text-charcoal transition-all shrink-0">Accept</button>
 </div>
 
 <!-- NAV -->
 <nav id="main-nav" class="fixed top-0 left-0 right-0 z-40 transition-all duration-400" style="background:rgba(10,8,5,.45);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.08)">
   <div class="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between">
-    <a href="index.html" class="nav-logo font-serif text-xl md:text-2xl tracking-[.22em] text-white font-light transition-colors duration-300">CHEFALEH</a>
+    <a href="/" class="nav-logo font-serif text-xl md:text-2xl tracking-[.22em] text-white font-light transition-colors duration-300">CHEFALEH</a>
 
     <!-- Desktop links -->
     <div class="hidden md:flex items-center gap-8 text-[11px] tracking-[.22em] uppercase font-medium">
-      <a href="index.html" class="nav-link active text-gold transition-colors duration-200">Home</a>
-      <a href="about.html" class="nav-link text-white/60 hover:text-gold transition-colors duration-200">About</a>
-      <a href="menu.html"  class="nav-link text-white/60 hover:text-gold transition-colors duration-200">Menu</a>
+      <a href="/" class="nav-link active text-gold transition-colors duration-200">Home</a>
+      <a href="/about" class="nav-link text-white/60 hover:text-gold transition-colors duration-200">About</a>
+      <a href="/menu"  class="nav-link text-white/60 hover:text-gold transition-colors duration-200">Menu</a>
       <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 text-[11px] tracking-[.2em] uppercase font-medium hover:bg-white transition-all duration-300">
         Cart
         <span class="cart-count-badge hidden w-5 h-5 rounded-full bg-charcoal text-cream text-[10px] items-center justify-center font-medium">0</span>
@@ -139,9 +362,9 @@
 
   <!-- Mobile dropdown -->
   <div id="mobile-menu" class="md:hidden flex-col px-5 pb-5 pt-3 gap-0" style="background:rgba(10,8,5,.95);border-top:1px solid rgba(255,255,255,.08)">
-    <a href="index.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-white/8">Home</a>
-    <a href="about.html" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">About</a>
-    <a href="menu.html"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">Menu</a>
+    <a href="/" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-gold border-b border-white/8">Home</a>
+    <a href="/about" class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">About</a>
+    <a href="/menu"  class="block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">Menu</a>
     <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.2em] uppercase font-medium text-white/55 hover:text-gold transition-colors">Cart</button>
   </div>
 </nav>
@@ -158,7 +381,7 @@
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Subtotal</span><span id="d-sub">$0.00</span></div>
     <div class="flex justify-between text-xs text-charcoal/50 font-light"><span>Tax (7%)</span><span id="d-tax">$0.00</span></div>
     <div class="flex justify-between text-sm text-charcoal font-medium pt-2 border-t border-charcoal/10"><span>Estimated Total</span><span id="d-tot">$0.00</span></div>
-    <a href="checkout.html" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
+    <a href="/checkout" class="w-full block mt-4 bg-gold text-charcoal text-center py-3 text-xs tracking-widest uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Proceed to Checkout</a>
   </div>
 </div>
 <style>#drawer.open { transform: translateX(0) !important; }</style>
@@ -167,7 +390,7 @@
      HERO
 ──────────────────────────────────────────────────────────────── -->
 <section class="relative min-h-screen flex items-center overflow-hidden">
-  <img src="images/shabbat_table_hero.jpg" alt="Elegant Shabbat Table" fetchpriority="high" class="hero-img"/>
+  <img src="images/shabbat_table_hero.webp" alt="Elegant Shabbat table set with kosher catering from Chefaleh in South Florida" width="2000" height="1125" fetchpriority="high" decoding="async" class="hero-img"/>
   <div class="hero-overlay"></div>
 
   <div class="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 py-36 flex flex-col items-center text-center fade-up">
@@ -181,10 +404,10 @@
       Bespoke Shabbat cuisine crafted with hand-selected ingredients<br class="hidden sm:block"/> and small-batch precision.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
-      <a href="menu.html" class="bg-gold text-charcoal px-10 py-4 text-[11px] tracking-[.32em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">
+      <a href="/menu" class="bg-gold text-charcoal px-10 py-4 text-[11px] tracking-[.32em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">
         View Menu &rarr;
       </a>
-      <a href="about.html" class="text-white/80 text-[11px] tracking-[.32em] uppercase font-light py-4 hover:text-gold transition-colors duration-300" style="text-shadow:0 1px 8px rgba(0,0,0,.6)">
+      <a href="/about" class="text-white/80 text-[11px] tracking-[.32em] uppercase font-light py-4 hover:text-gold transition-colors duration-300" style="text-shadow:0 1px 8px rgba(0,0,0,.6)">
         Our Story
       </a>
     </div>
@@ -298,7 +521,7 @@
           </div>
         </div>
         <div class="hover-zoom" style="height:170px">
-          <img src="images/new_meat.jpg" alt="Premium meat dish" loading="lazy" class="w-full h-full object-cover object-center"/>
+          <img src="images/new_meat.webp" alt="Signature kosher braised meat dish plated by the Chefaleh kitchen" width="1400" height="1050" loading="lazy" decoding="async" class="w-full h-full object-cover object-center"/>
         </div>
       </div>
     </div>
@@ -311,7 +534,7 @@
 <section class="py-24 md:py-28 bg-charcoal relative overflow-hidden">
   <!-- subtle bg texture -->
   <div class="absolute inset-0 opacity-8 pointer-events-none">
-    <img src="images/food1.jpg" alt="" loading="lazy" class="w-full h-full object-cover"/>
+    <img src="images/food1.webp" alt="" width="1600" height="889" loading="lazy" decoding="async" class="w-full h-full object-cover"/>
     <div class="absolute inset-0 bg-charcoal/75"></div>
   </div>
 
@@ -342,27 +565,27 @@
         <span class="corner corner-tl"></span><span class="corner corner-tr"></span>
         <span class="corner corner-bl"></span><span class="corner corner-br"></span>
         <div class="hover-zoom" style="height:300px">
-          <img src="images/food3.jpg" alt="Featured dish" loading="lazy" class="w-full h-full object-cover"/>
+          <img src="images/food3.webp" alt="Featured kosher Shabbat dish of the week" width="900" height="1200" loading="lazy" decoding="async" class="w-full h-full object-cover"/>
         </div>
       </div>
       <div class="dish-frame dish-mid">
         <span class="corner corner-tl"></span><span class="corner corner-tr"></span>
         <span class="corner corner-bl"></span><span class="corner corner-br"></span>
         <div class="hover-zoom" style="height:300px">
-          <img src="images/food4.jpg" alt="Featured dish" loading="lazy" class="w-full h-full object-cover"/>
+          <img src="images/food4.webp" alt="Seasonal side dish from the weekly Chefaleh Shabbat menu" width="900" height="1200" loading="lazy" decoding="async" class="w-full h-full object-cover"/>
         </div>
       </div>
       <div class="dish-frame">
         <span class="corner corner-tl"></span><span class="corner corner-tr"></span>
         <span class="corner corner-bl"></span><span class="corner corner-br"></span>
         <div class="hover-zoom" style="height:300px">
-          <img src="images/food5.jpg" alt="Featured dish" loading="lazy" class="w-full h-full object-cover"/>
+          <img src="images/food5.webp" alt="Small-batch kosher dish prepared to order by Chefaleh" width="900" height="1200" loading="lazy" decoding="async" class="w-full h-full object-cover"/>
         </div>
       </div>
     </div>
 
     <div class="text-center">
-      <a href="menu.html" class="inline-block bg-charcoal text-cream px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">See Full Menu</a>
+      <a href="/menu" class="inline-block bg-charcoal text-cream px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-light hover:bg-gold hover:text-charcoal transition-all duration-300">See Full Menu</a>
     </div>
   </div>
 </section>
@@ -436,13 +659,75 @@
 </section>
 
 <!-- ─────────────────────────────────────────────────────────────
+     FAQ
+──────────────────────────────────────────────────────────────── -->
+<section id="faq" class="py-24 md:py-28 bg-cream">
+  <div class="max-w-4xl mx-auto px-5 md:px-10">
+    <div class="text-center mb-14 md:mb-16">
+      <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-4 font-light">Good to Know</p>
+      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2.2rem,4.5vw,3.2rem)">Frequently Asked</h2>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item py-6 md:py-7">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-serif text-charcoal text-lg md:text-xl font-light pr-6">Is Chefaleh kosher certified?</h3>
+          <span class="faq-plus text-gold text-xl font-light shrink-0" aria-hidden="true">+</span>
+        </summary>
+        <p class="text-charcoal/55 text-sm font-light leading-relaxed mt-4 pr-10">Yes. Chefaleh is ORB certified (Orthodox Rabbinical Board). Every dish is prepared in our certified kitchen under full supervision.</p>
+      </details>
+
+      <details class="faq-item py-6 md:py-7">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-serif text-charcoal text-lg md:text-xl font-light pr-6">When do I need to place my Shabbat order?</h3>
+          <span class="faq-plus text-gold text-xl font-light shrink-0" aria-hidden="true">+</span>
+        </summary>
+        <p class="text-charcoal/55 text-sm font-light leading-relaxed mt-4 pr-10">Orders for this Friday close Wednesday at 5:00 PM Miami time. Orders placed after the deadline are scheduled for the following Friday.</p>
+      </details>
+
+      <details class="faq-item py-6 md:py-7">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-serif text-charcoal text-lg md:text-xl font-light pr-6">When is delivery?</h3>
+          <span class="faq-plus text-gold text-xl font-light shrink-0" aria-hidden="true">+</span>
+        </summary>
+        <p class="text-charcoal/55 text-sm font-light leading-relaxed mt-4 pr-10">Deliveries run every Friday between 3:00 and 5:00 PM, ahead of candle lighting.</p>
+      </details>
+
+      <details class="faq-item py-6 md:py-7">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-serif text-charcoal text-lg md:text-xl font-light pr-6">Which areas do you deliver to in South Florida?</h3>
+          <span class="faq-plus text-gold text-xl font-light shrink-0" aria-hidden="true">+</span>
+        </summary>
+        <p class="text-charcoal/55 text-sm font-light leading-relaxed mt-4 pr-10">We deliver across three zones. Zone 1 ($15): Miami Beach, Surfside, Bal Harbour and North Bay Village. Zone 2 ($30): Aventura, Sunny Isles Beach, North Miami Beach, Hollywood and Hallandale Beach. Zone 3 ($60): Fort Lauderdale, Pompano Beach and Boca Raton.</p>
+      </details>
+
+      <details class="faq-item py-6 md:py-7">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-serif text-charcoal text-lg md:text-xl font-light pr-6">What oils and flours do you cook with?</h3>
+          <span class="faq-plus text-gold text-xl font-light shrink-0" aria-hidden="true">+</span>
+        </summary>
+        <p class="text-charcoal/55 text-sm font-light leading-relaxed mt-4 pr-10">We cook exclusively with extra virgin olive oil and avocado oil — never seed oils. Our baking uses unbleached organic flour, and we use no soy-based fillers or unnecessary additives.</p>
+      </details>
+
+      <details class="faq-item py-6 md:py-7">
+        <summary class="flex items-center justify-between cursor-pointer list-none">
+          <h3 class="font-serif text-charcoal text-lg md:text-xl font-light pr-6">Do you cater events as well as Shabbat?</h3>
+          <span class="faq-plus text-gold text-xl font-light shrink-0" aria-hidden="true">+</span>
+        </summary>
+        <p class="text-charcoal/55 text-sm font-light leading-relaxed mt-4 pr-10">Yes. Alongside our weekly <a href="menu" class="text-gold hover:underline">Shabbat menu</a> we cater private events, office gatherings and simchas across South Florida. Call <a href="tel:+13059850770" class="text-gold hover:underline">(305) 985-0770</a> to discuss an event menu.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────────
      CTA — READY TO ELEVATE
 ──────────────────────────────────────────────────────────────── -->
 <section class="bg-cream py-0">
   <div class="grid grid-cols-1 lg:grid-cols-2">
     <!-- Image left -->
     <div class="hover-zoom" style="min-height:340px">
-      <img src="images/food1.jpg" alt="Chefaleh dish" loading="lazy" class="w-full h-full object-cover" style="min-height:340px"/>
+      <img src="images/food1.webp" alt="Kosher catering spread prepared by Chefaleh for a South Florida Shabbat table" width="1600" height="889" loading="lazy" decoding="async" class="w-full h-full object-cover" style="min-height:340px"/>
     </div>
     <!-- Text right -->
     <div class="flex flex-col justify-center px-9 md:px-14 py-16 md:py-22 bg-charcoal">
@@ -451,7 +736,7 @@
       <div class="gold-bar-left mb-8"></div>
       <p class="text-cream/48 text-sm font-light mb-2">Orders for this Friday close Wednesday at 5:00 PM Miami time</p>
       <p class="text-cream/28 text-xs font-light mb-11 tracking-wide">Orders placed after Wednesday arrive the following Friday</p>
-      <a href="menu.html" class="self-start bg-gold text-charcoal px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-medium hover:bg-cream transition-all duration-300">Place Your Order</a>
+      <a href="/menu" class="self-start bg-gold text-charcoal px-11 md:px-14 py-4 text-[11px] tracking-[.28em] uppercase font-medium hover:bg-cream transition-all duration-300">Place Your Order</a>
     </div>
   </div>
 </section>
@@ -463,17 +748,18 @@
   <div class="max-w-7xl mx-auto px-5 md:px-10">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-12">
       <div class="col-span-2 md:col-span-2">
-        <a href="index.html" class="font-serif text-2xl tracking-[.22em] text-cream font-light block mb-5">CHEFALEH</a>
+        <a href="/" class="font-serif text-2xl tracking-[.22em] text-cream font-light block mb-5">CHEFALEH</a>
         <p class="text-cream/28 text-xs font-light leading-relaxed max-w-xs">Private chef–driven Shabbat &amp; event catering. South Florida's finest kosher culinary experience.</p>
         <p class="text-cream/20 text-xs mt-5 font-light">(305) 985-0770</p>
       </div>
       <div>
         <p class="text-cream/38 text-[10px] tracking-[.25em] uppercase mb-5 font-light">Navigate</p>
         <div class="flex flex-col gap-3 text-sm font-light text-cream/28">
-          <a href="index.html" class="hover:text-gold transition-colors">Home</a>
-          <a href="about.html" class="hover:text-gold transition-colors">About</a>
-          <a href="menu.html"  class="hover:text-gold transition-colors">Menu</a>
-          <a href="checkout.html" class="hover:text-gold transition-colors">Order</a>
+          <a href="/" class="hover:text-gold transition-colors">Home</a>
+          <a href="/about" class="hover:text-gold transition-colors">About</a>
+          <a href="/menu"  class="hover:text-gold transition-colors">Menu</a>
+          <a href="/#faq"  class="hover:text-gold transition-colors">FAQ</a>
+          <a href="/checkout" class="hover:text-gold transition-colors">Order</a>
         </div>
       </div>
       <div>
@@ -489,9 +775,9 @@
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-cream/18">
       <p>© 2026 Chefaleh Kosher Catering. All rights reserved.</p>
       <div class="flex gap-5 md:gap-7">
-        <a href="privacy-policy.html" class="hover:text-gold transition-colors">Privacy Policy</a>
-        <a href="terms-of-use.html"   class="hover:text-gold transition-colors">Terms of Use</a>
-        <a href="cookie-policy.html"  class="hover:text-gold transition-colors">Cookie Policy</a>
+        <a href="/privacy-policy" class="hover:text-gold transition-colors">Privacy Policy</a>
+        <a href="/terms-of-use"   class="hover:text-gold transition-colors">Terms of Use</a>
+        <a href="/cookie-policy"  class="hover:text-gold transition-colors">Cookie Policy</a>
       </div>
     </div>
   </div>
