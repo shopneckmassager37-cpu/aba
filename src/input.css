@@ -89,8 +89,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 ──────────────────────────────────────────────────────────────── */
 #mobile-menu { display: none; }
 #mobile-menu.open { display: flex; }
+.site-nav-initial {
+  background: rgba(10,8,5,.45);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.mobile-menu-panel {
+  background: rgba(10,8,5,.95);
+  border-top: 1px solid rgba(255,255,255,.08);
+}
 
-#drawer { transition: transform .35s ease; box-shadow: -28px 0 80px rgba(26,26,26,.18); }
+#drawer { transition: transform .35s ease; transform: translateX(100%); box-shadow: -28px 0 80px rgba(26,26,26,.18); }
 #drawer.open { transform: translateX(0) !important; }
 
 nav {
@@ -129,6 +138,7 @@ nav.scrolled .nav-link.active { color: var(--chef-gold) !important; }
    ANIMATIONS
 ──────────────────────────────────────────────────────────────── */
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee 22s linear infinite; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 .fade-up { animation: fadeUp .9s ease forwards; }
 
@@ -150,6 +160,12 @@ nav.scrolled .nav-link.active { color: var(--chef-gold) !important; }
 .hero-copy {
   max-width: 980px;
 }
+.hero-title-display {
+  font-size: clamp(2.8rem, 7.5vw, 5.8rem);
+}
+.hero-shadow-soft { text-shadow: 0 1px 8px rgba(0,0,0,.8); }
+.hero-shadow-strong { text-shadow: 0 4px 20px rgba(0,0,0,.7); }
+.hero-shadow-body { text-shadow: 0 1px 10px rgba(0,0,0,.7); }
 .hero-kicker {
   display: inline-flex;
   align-items: center;
@@ -166,6 +182,17 @@ nav.scrolled .nav-link.active { color: var(--chef-gold) !important; }
 .hover-zoom { overflow: hidden; }
 .hover-zoom img { transition: transform .75s cubic-bezier(.25,.46,.45,.94), filter .75s ease; }
 .hover-zoom:hover img { transform: scale(1.06); }
+.scroll-label { writing-mode: vertical-rl; }
+.heading-xxl { font-size: clamp(2.4rem, 5.5vw, 4.2rem); }
+.heading-xl { font-size: clamp(2.2rem, 4.5vw, 3.8rem); }
+.heading-lg { font-size: clamp(2.2rem, 4.5vw, 3.4rem); }
+.heading-md { font-size: clamp(2rem, 4.5vw, 3.2rem); }
+.heading-content { font-size: clamp(2rem, 4vw, 3.25rem); }
+.quote-text { font-size: clamp(1.5rem, 3.2vw, 2.4rem); }
+.media-h-170 { height: 170px; }
+.media-h-300 { height: 300px; }
+.media-h-340 { height: 340px; }
+.media-min-340 { min-height: 340px; }
 
 .zone-featured { background: linear-gradient(180deg, #303030 0%, #232323 100%); border-top: 2px solid var(--chef-gold); box-shadow: inset 0 1px 0 rgba(212,175,55,.14); }
 
