@@ -4,12 +4,12 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Menu — Chefaleh Kosher Shabbat Delivery</title>
-  <meta name="description" content="Browse Chefaleh's weekly Shabbat menu: challah, salads, soups, fish, poultry, signature meats, sides and desserts. Order by Wednesday 5PM for Friday delivery."/>
+  <meta name="description" content="Browse Chefaleh's weekly Shabbat menu: challah, salads, soups, fish, signature meats, sides and desserts. Order by Wednesday 5PM for Friday delivery."/>
   <link rel="canonical" href="https://chefaleh.com/menu"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="Chefaleh"/>
   <meta property="og:title" content="Menu — Chefaleh Kosher Shabbat Delivery"/>
-  <meta property="og:description" content="A curated weekly Shabbat menu — challah, salads, soups, fish, poultry, signature meats, sides and desserts."/>
+  <meta property="og:description" content="A curated weekly Shabbat menu — challah, salads, soups, fish, signature meats, sides and desserts."/>
   <meta property="og:url" content="https://chefaleh.com/menu"/>
   <meta property="og:image" content="https://chefaleh.com/images/food3.jpg"/>
   <meta name="twitter:card" content="summary_large_image"/>
@@ -71,11 +71,6 @@
             "@type": "MenuSection",
             "name": "Fish",
             "description": "Fresh fish courses for the Shabbat table."
-          },
-          {
-            "@type": "MenuSection",
-            "name": "Poultry",
-            "description": "Roasted and braised poultry mains."
           },
           {
             "@type": "MenuSection",
@@ -210,33 +205,6 @@
   <p class="text-cream/30 text-xs tracking-wider font-light">Orders placed by <strong class="text-gold/70 font-normal">Wednesday 5:00 PM</strong> arrive this Friday. Later orders arrive the following Friday.</p>
 </div>
 
-<!-- ── SUMMER MENU ANNOUNCEMENT ── -->
-<div style="background:#111;padding:72px 20px 68px;text-align:center;overflow:hidden;border-bottom:1px solid rgba(212,175,55,.15)">
-
-  <p id="summer-label" style="color:#D4AF37;font-family:'Jost',sans-serif;font-size:.6rem;letter-spacing:.55em;text-transform:uppercase;font-weight:300;margin-bottom:28px;opacity:0;animation:summerFade .7s ease .1s forwards">Now Serving</p>
-
-  <div id="summer-title" style="font-family:'Cormorant Garamond',Georgia,serif;color:#F9F7F2;font-weight:300;line-height:1.05;margin-bottom:28px;font-size:clamp(3.4rem,9vw,7rem);display:flex;justify-content:center;flex-wrap:wrap"></div>
-
-  <div style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);max-width:180px;margin:0 auto 28px;opacity:0;animation:summerFade .7s ease 1.3s forwards"></div>
-
-  <p id="summer-sub" style="color:rgba(249,247,242,.45);font-family:'Jost',sans-serif;font-size:.82rem;font-weight:300;letter-spacing:.1em;opacity:0;animation:summerFade .8s ease 1.5s forwards">We will be back with a full menu for chagim 2026</p>
-</div>
-
-<script>
-(function(){
-  const words = ['Summer', ' ', 'Menu'];
-  const container = document.getElementById('summer-title');
-  let delay = 0.28;
-  words.join('').split('').forEach(ch => {
-    const s = document.createElement('span');
-    s.style.cssText = 'display:inline-block;opacity:0;animation:summerLetterIn .65s cubic-bezier(.22,1,.36,1) ' + delay.toFixed(2) + 's forwards';
-    s.textContent = ch;
-    container.appendChild(s);
-    delay += ch === ' ' ? 0.12 : 0.075;
-  });
-})();
-</script>
-
 <!-- STICKY SUBNAV -->
 <div class="snav sticky top-[65px] md:top-[72px] z-30 bg-cream border-b border-charcoal/8 overflow-x-auto">
   <div class="max-w-7xl mx-auto px-2 md:px-8 flex">
@@ -244,8 +212,7 @@
     <a href="#salads"    class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Salads</a>
     <a href="#soups"     class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Soups</a>
     <a href="#fish"      class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Fish</a>
-    <a href="#poultry"   class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Poultry</a>
-    <a href="#meat"      class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Meat</a>
+    <a href="#meat"      class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Signature Meat</a>
     <a href="#sides"     class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Sides</a>
     <a href="#desserts"  class="px-3.5 py-2.5 md:px-5 md:py-4 text-[11px] md:text-xs tracking-[.08em] md:tracking-[.15em] uppercase text-charcoal/45 font-light whitespace-nowrap">Desserts</a>
   </div>
@@ -259,7 +226,7 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Challah & Bread</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-challah"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6" id="g-challah"></div>
   </div>
 </section>
 
@@ -273,7 +240,7 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Salads & Dips</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-salads"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6" id="g-salads"></div>
   </div>
 </section>
 
@@ -287,7 +254,7 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Soups</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-soups"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6" id="g-soups"></div>
   </div>
 </section>
 
@@ -301,25 +268,11 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Fish</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-fish"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6" id="g-fish"></div>
   </div>
 </section>
 
-<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#F9F7F2)"></div>
-
-<!-- ===== POULTRY ===== -->
-<section id="poultry" class="py-12 md:py-20 bg-cream">
-  <div class="max-w-7xl mx-auto px-4 md:px-8">
-    <div class="mb-10 md:mb-14">
-      <p class="text-gold text-xs tracking-[.3em] uppercase mb-2 font-light">Traditional with a Chef's Twist</p>
-      <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Poultry</h2>
-      <div class="gold-bar-left mt-4"></div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6" id="g-poultry"></div>
-  </div>
-</section>
-
-<div class="menu-divider" style="background:linear-gradient(to bottom,#F9F7F2,#1A1A1A)"></div>
+<div class="menu-divider" style="background:linear-gradient(to bottom,#EFEDE6,#1A1A1A)"></div>
 
 <!-- ===== MEAT ===== -->
 <section id="meat" class="py-12 md:py-20 bg-charcoal">
@@ -330,7 +283,7 @@
       <p class="text-cream/30 text-xs font-light mt-2">Premium beef — the crown of your Shabbat table</p>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-white/5" id="g-meat"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5" id="g-meat"></div>
   </div>
 </section>
 
@@ -344,7 +297,7 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Sides</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-sides"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6" id="g-sides"></div>
   </div>
 </section>
 
@@ -358,7 +311,7 @@
       <h2 class="font-serif text-charcoal font-light" style="font-size:clamp(2rem,4vw,3rem)">Desserts</h2>
       <div class="gold-bar-left mt-4"></div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="g-desserts"></div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6" id="g-desserts"></div>
   </div>
 </section>
 
