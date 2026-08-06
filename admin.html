@@ -140,9 +140,6 @@
           <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
             <input type="checkbox" id="pm-gf" class="w-4 h-4"/> Offer gluten-free option
           </label>
-          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-            <input type="checkbox" id="pm-peruvian" class="w-4 h-4"/> Peruvian &amp; Ecuadorian dish
-          </label>
         </div>
         <div class="col-span-2">
           <label class="label">Allergens</label>
@@ -322,33 +319,14 @@ function renderProductsList() {
       const catProds = list.filter(p => p.category_id === cat.id);
       if (!catProds.length) return;
       html += `<div class="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-4 mb-1 px-1">${cat.name}</div>`;
-      html += renderCuisineGroups(catProds, cat);
+      html += catProds.map(p => productRow(p, cat)).join('');
     });
     el.innerHTML = html;
   } else {
     const cat = categories.find(c => c.id === activeCatFilter);
-    el.innerHTML = renderCuisineGroups(list, cat);
+    el.innerHTML = list.map(p => productRow(p, cat)).join('');
   }
   attachProductDrag();
-}
-
-// Sub-groups a category's products into Traditional / Peruvian & Ecuadorian,
-// mirroring the same split shown on the live menu page.
-function renderCuisineGroups(catProds, cat) {
-  const trad = catProds.filter(p => !p.is_peruvian);
-  const peru = catProds.filter(p => p.is_peruvian);
-  let html = '';
-  if (trad.length) {
-    html += `<div class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mt-3 mb-1.5 px-1 flex items-center gap-1.5">
-      <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>Traditional</div>`;
-    html += trad.map(p => productRow(p, cat)).join('');
-  }
-  if (peru.length) {
-    html += `<div class="text-[10px] font-semibold text-orange-500 uppercase tracking-wider mt-3 mb-1.5 px-1 flex items-center gap-1.5">
-      <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Peruvian &amp; Ecuadorian</div>`;
-    html += peru.map(p => productRow(p, cat)).join('');
-  }
-  return html;
 }
 
 function productRow(p, cat) {
@@ -363,7 +341,6 @@ function productRow(p, cat) {
         <span class="font-medium text-sm text-gray-800 truncate">${p.name}</span>
         ${p.tag ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${p.tag}</span>` : ''}
         ${p.gluten_free_option ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GF option</span>` : ''}
-        ${p.is_peruvian ? `<span class="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Peruvian &amp; Ecuadorian</span>` : ''}
         ${!p.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Hidden</span>` : ''}
         ${(p.allergens||[]).map(a => {
           const opt = (p.allergens_optional||[]).includes(a);
@@ -511,7 +488,6 @@ function openProductModal(id) {
     document.getElementById('pm-small').checked = !!p.small;
     document.getElementById('pm-visible').checked = p.visible !== false;
     document.getElementById('pm-gf').checked = !!p.gluten_free_option;
-    document.getElementById('pm-peruvian').checked = !!p.is_peruvian;
     renderAllergenCheckboxes(p.allergens, p.allergens_optional);
     updateImgPreview(p.img);
   } else {
@@ -527,7 +503,6 @@ function openProductModal(id) {
     document.getElementById('pm-small').checked = false;
     document.getElementById('pm-visible').checked = true;
     document.getElementById('pm-gf').checked = false;
-    document.getElementById('pm-peruvian').checked = false;
     renderAllergenCheckboxes([], []);
     updateImgPreview('');
   }
@@ -585,7 +560,6 @@ async function saveProduct() {
     small: document.getElementById('pm-small').checked,
     visible: document.getElementById('pm-visible').checked,
     gluten_free_option: document.getElementById('pm-gf').checked,
-    is_peruvian: document.getElementById('pm-peruvian').checked,
     allergens: getSelectedAllergens(),
     allergens_optional: getOptionalAllergens(),
   };
