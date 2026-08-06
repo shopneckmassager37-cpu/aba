@@ -271,9 +271,9 @@ function renderFormStep() {
       <!-- Delivery Zone -->
       <p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1rem;font-weight:300;
                 color:#1A1A1A;margin-bottom:14px">Delivery Zone</p>
-      ${zoneBtn(15,'Zone 1 — Local','Miami Beach · Surfside · Bal Harbour · North Bay Village')}
-      ${zoneBtn(30,'Zone 2 — Extended','Aventura · Sunny Isles · North Miami Beach · Hollywood · Hallandale')}
-      ${zoneBtn(60,'Zone 3 — Long Range','Fort Lauderdale · Pompano Beach · Boca Raton')}
+      ${zoneBtn(20,'Zone 1 — Local','Miami Beach · Surfside · Bal Harbour · North Bay Village')}
+      ${zoneBtn(40,'Zone 2 — Extended','Aventura · Sunny Isles · North Miami Beach · Hollywood · Hallandale')}
+      ${zoneBtn(75,'Zone 3 — Long Range','Fort Lauderdale · Pompano Beach · Boca Raton')}
 
       <div style="height:1px;background:linear-gradient(to right,transparent,#D4AF37,transparent);margin:20px 0"></div>
 

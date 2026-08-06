@@ -131,7 +131,7 @@
           <div>
             <div class="sum-row"><span class="sum-label">Subtotal</span><span class="sum-val" id="co-sub">$0.00</span></div>
             <div class="sum-row"><span class="sum-label">Tax (7%)</span><span class="sum-val" id="co-tax">$0.00</span></div>
-            <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">Zone 2</span></span><span class="sum-val" id="co-delivery">$30.00</span></div>
+            <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">Zone 2</span></span><span class="sum-val" id="co-delivery">$40.00</span></div>
             <div class="sum-row"><span class="sum-label">Chef Tip <span id="co-chef-label" class="text-charcoal/35 ml-1">15%</span></span><span class="sum-val" id="co-chef-tip">$0.00</span></div>
             <div class="sum-row"><span class="sum-label">Driver Tip <span id="co-driver-label" class="text-charcoal/35 ml-1">8%</span></span><span class="sum-val" id="co-driver-tip">$0.00</span></div>
           </div>
@@ -161,7 +161,7 @@
 
 <script>
   const CART_KEY = 'chefaleh_cart';
-  let deliveryZone = 30;
+  let deliveryZone = 40;
   let deliveryZoneNum = 2;
   let chefTipPct = 15;
   let chefTipFixed = null;    // dollar amount when chef Custom is used
@@ -209,17 +209,17 @@
 
   // Zone detection: keyword → fee
   const ZONE_RULES = [
-    { 
-      fee: 15, num: 1, label: 'Zone 1', 
-      keywords: ['miami beach', 'bal harbour', 'surfside', 'aventura', 'hallandale', 'hollywood', 'sunny isles', 'bay harbor', 'north bay village', 'golden beach'] 
+    {
+      fee: 20, num: 1, label: 'Zone 1',
+      keywords: ['miami beach', 'bal harbour', 'surfside', 'aventura', 'hallandale', 'hollywood', 'sunny isles', 'bay harbor', 'north bay village', 'golden beach']
     },
-    { 
-      fee: 30, num: 2, label: 'Zone 2', 
-      keywords: ['miami', 'coral gables', 'coconut grove', 'brickell', 'downtown', 'wynwood', 'doral', 'hialeah', 'pembroke pines', 'miramar', 'north miami', 'miami springs', 'edgewater', 'midtown'] 
+    {
+      fee: 40, num: 2, label: 'Zone 2',
+      keywords: ['miami', 'coral gables', 'coconut grove', 'brickell', 'downtown', 'wynwood', 'doral', 'hialeah', 'pembroke pines', 'miramar', 'north miami', 'miami springs', 'edgewater', 'midtown']
     },
-    { 
-      fee: 60, num: 3, label: 'Zone 3', 
-      keywords: ['fort lauderdale', 'boca raton', 'delray', 'pompano', 'weston', 'plantation', 'davie', 'sunrise', 'tamarac', 'coral springs', 'deerfield beach'] 
+    {
+      fee: 75, num: 3, label: 'Zone 3',
+      keywords: ['fort lauderdale', 'boca raton', 'delray', 'pompano', 'weston', 'plantation', 'davie', 'sunrise', 'tamarac', 'coral springs', 'deerfield beach']
     },
   ];
 
@@ -242,7 +242,7 @@
     
     // Fallback if no specific match found
     console.log("No match found, defaulting to Zone 2");
-    return { fee: 30, num: 2, label: 'Zone 2' };
+    return { fee: 40, num: 2, label: 'Zone 2' };
   }
 
   function readCart() {
