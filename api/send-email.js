@@ -145,9 +145,10 @@ export default async function handler(req, res) {
     ...confirmPayload,
     token: signConfirmPayload(confirmPayload)
   });
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000';
+  const baseUrl = process.env.SITE_URL
+    || (process.env.VERCEL_ENV === 'production' ? 'https://chefaleh.com' : null)
+    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
+    || 'http://localhost:3000';
   const confirmUrl = `${baseUrl}/api/confirm-order?${confirmParams.toString()}`;
 
   try {
