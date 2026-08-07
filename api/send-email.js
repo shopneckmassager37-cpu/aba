@@ -28,6 +28,18 @@ function clampAllergenList(list) {
   return list.filter(a => typeof a === 'string' && a.trim()).slice(0, 10).map(a => clampText(a, 40));
 }
 
+function clampFlavorList(list) {
+  if (!Array.isArray(list)) return [];
+  return list.filter(f => typeof f === 'string' && f.trim()).slice(0, 100).map(f => clampText(f, 80));
+}
+
+function summarizeFlavors(flavors) {
+  if (!flavors || !flavors.length) return '';
+  const counts = {};
+  flavors.forEach(f => { counts[f] = (counts[f] || 0) + 1; });
+  return Object.entries(counts).map(([f, c]) => c > 1 ? `${f} ×${c}` : f).join(', ');
+}
+
 function getConfirmSecret() {
   return process.env.ORDER_CONFIRM_SECRET || process.env.CONFIRM_SECRET || process.env.RESEND_API_KEY;
 }
@@ -105,7 +117,7 @@ export default async function handler(req, res) {
       instructions: clampText(item.instructions, 300),
       glutenFree: !!item.glutenFree,
       avoidAllergens: clampAllergenList(item.avoidAllergens),
-      flavor: clampText(item.flavor, 80),
+      flavors: clampFlavorList(item.flavors).slice(0, qty),
     });
   }
 
@@ -118,7 +130,7 @@ export default async function handler(req, res) {
       <tr>
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px">
           ${escapeHtml(i.name)}
-          ${i.flavor ? `<div style="font-size:12px;color:#D4AF37;font-weight:600;margin-top:2px">Flavor: ${escapeHtml(i.flavor)}</div>` : ''}
+          ${i.flavors && i.flavors.length ? `<div style="font-size:12px;color:#D4AF37;font-weight:600;margin-top:2px">Flavor: ${escapeHtml(summarizeFlavors(i.flavors))}</div>` : ''}
           ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${escapeHtml(i.instructions)}</div>` : ''}
           ${i.glutenFree ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">🌾 Gluten-Free</div>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">⚠️ Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}
@@ -152,7 +164,7 @@ export default async function handler(req, res) {
       instructions: i.instructions || '',
       glutenFree: !!i.glutenFree,
       avoidAllergens: i.avoidAllergens || [],
-      flavor: i.flavor || ''
+      flavors: i.flavors || []
     })))
   };
   const confirmParams = new URLSearchParams({

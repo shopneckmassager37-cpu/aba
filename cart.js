@@ -11,7 +11,14 @@ function saveCart(cart) {
   refreshCartUI();
 }
 
-function addItem(name, price, badge, instructions, glutenFree, avoidAllergens, flavor) {
+function summarizeFlavorsList(flavors) {
+  if (!flavors || !flavors.length) return '';
+  const counts = {};
+  flavors.forEach(f => { counts[f] = (counts[f] || 0) + 1; });
+  return Object.entries(counts).map(([f, c]) => c > 1 ? `${f} ×${c}` : f).join(', ');
+}
+
+function addItem(name, price, badge, instructions, glutenFree, avoidAllergens, flavors) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   if (found) {
@@ -19,9 +26,9 @@ function addItem(name, price, badge, instructions, glutenFree, avoidAllergens, f
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
     if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
-    if (flavor !== undefined) found.flavor = flavor;
+    if (flavors !== undefined) found.flavors = (found.flavors || []).concat(flavors);
   } else {
-    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree, avoidAllergens: avoidAllergens || [], flavor: flavor || '' });
+    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree, avoidAllergens: avoidAllergens || [], flavors: flavors || [] });
   }
   saveCart(cart);
   if (typeof openDrawer === 'function') openDrawer();
@@ -46,10 +53,12 @@ function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergen
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
     if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
-    if (flavor !== undefined) found.flavor = flavor;
+    found.flavors = found.flavors || [];
+    if (delta > 0 && flavor) found.flavors.push(flavor);
+    else if (delta < 0) found.flavors = found.flavors.slice(0, newQty);
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens, flavor);
+    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens, flavor ? [flavor] : []);
   }
   if (typeof renderAll === 'function') renderAll();
 }
@@ -120,7 +129,7 @@ function renderDrawer() {
         <div class="flex-1 min-w-0">
           <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
           <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
-          ${i.flavor ? `<p class="text-[10px] text-gold/70 font-light mt-0.5">Flavor: <strong class="font-medium">${i.flavor}</strong></p>` : ''}
+          ${i.flavors && i.flavors.length ? `<p class="text-[10px] text-gold/70 font-light mt-0.5">Flavor: <strong class="font-medium">${summarizeFlavorsList(i.flavors)}</strong></p>` : ''}
           ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
           ${i.glutenFree ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Gluten-free</p>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Without: ${i.avoidAllergens.join(', ')}</p>` : ''}
@@ -128,7 +137,9 @@ function renderDrawer() {
         <div class="flex items-center gap-2 shrink-0">
           <button onclick="deck('${n}',-1,${i.price},'${b}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
           <span class="text-xs font-light w-4 text-center">${i.qty}</span>
-          <button onclick="deck('${n}',1,${i.price},'${b}')"  class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal transition-all text-xs leading-none">+</button>
+          ${i.flavors && i.flavors.length
+            ? `<a href="/menu" title="Add another on the Menu page to choose its flavor" class="w-6 h-6 border border-charcoal/15 text-charcoal/40 flex items-center justify-center text-xs leading-none">+</a>`
+            : `<button onclick="deck('${n}',1,${i.price},'${b}')"  class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-gold hover:text-charcoal transition-all text-xs leading-none">+</button>`}
         </div>
         <span class="text-sm font-light text-charcoal w-14 text-right shrink-0">$${(i.price*i.qty).toFixed(2)}</span>
       </div>`;

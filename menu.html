@@ -119,7 +119,7 @@
   <div class="bg-cream w-full max-w-md shadow-2xl">
     <div class="flex items-center justify-between px-6 py-5 border-b border-charcoal/10">
       <div>
-        <h3 class="font-serif text-xl text-charcoal font-light">Special Instructions</h3>
+        <h3 id="modal-title-text" class="font-serif text-xl text-charcoal font-light">Special Instructions</h3>
         <p id="modal-item-name" class="text-xs text-charcoal/50 font-light mt-0.5"></p>
       </div>
       <button onclick="closeModal()" aria-label="Close" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
@@ -130,18 +130,20 @@
         <div id="modal-flavor-opts" class="flex flex-col gap-2"></div>
         <p id="modal-flavor-err" class="hidden text-[11px] text-red-500 font-light mt-2">Please choose a flavor before adding to cart.</p>
       </div>
-      <label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Notes for this item</label>
-      <textarea id="modal-instr-text" rows="4" placeholder="Allergies, preparation preferences, customizations…"
-        class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light resize-none focus:border-gold outline-none"></textarea>
-      <p class="text-[10px] text-charcoal/30 font-light mt-2">These notes apply to this item only.</p>
-      <label id="modal-gf-row" class="hidden items-center gap-2 mt-4 cursor-pointer">
-        <input type="checkbox" id="modal-gf-check" class="w-4 h-4 accent-gold"/>
-        <span class="text-xs text-charcoal/70 font-light">Make this gluten-free</span>
-      </label>
-      <div id="modal-allergen-opts" class="hidden flex-col gap-2 mt-4"></div>
+      <div id="modal-notes-section">
+        <label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Notes for this item</label>
+        <textarea id="modal-instr-text" rows="4" placeholder="Allergies, preparation preferences, customizations…"
+          class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light resize-none focus:border-gold outline-none"></textarea>
+        <p class="text-[10px] text-charcoal/30 font-light mt-2">These notes apply to this item only.</p>
+        <label id="modal-gf-row" class="hidden items-center gap-2 mt-4 cursor-pointer">
+          <input type="checkbox" id="modal-gf-check" class="w-4 h-4 accent-gold"/>
+          <span class="text-xs text-charcoal/70 font-light">Make this gluten-free</span>
+        </label>
+        <div id="modal-allergen-opts" class="hidden flex-col gap-2 mt-4"></div>
+      </div>
     </div>
     <div class="px-6 pb-6 flex gap-3">
-      <button onclick="saveModal()" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-[.1em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
+      <button onclick="saveModal()" id="modal-save-btn" class="flex-1 bg-gold text-charcoal py-3 text-xs tracking-[.1em] uppercase font-medium hover:bg-charcoal hover:text-cream transition-all">Save & Add to Cart</button>
       <button onclick="closeModal()" class="px-5 border border-charcoal/15 text-charcoal/50 text-xs tracking-[.08em] uppercase font-light hover:border-charcoal hover:text-charcoal transition-all">Cancel</button>
     </div>
   </div>
@@ -367,27 +369,23 @@ let menu = {};
 let categoriesData = [];
 
 // ── MODAL STATE ──
+// modalMode: 'add' = first unit of a new line item (full form)
+//            'addUnit' = one more unit of a line item that requires a flavor
+//                        (flavor picker only — every extra chicken gets its own ask)
+//            'edit' = editing the shared notes/GF/allergen fields on an existing
+//                     line item via the pencil button (never changes quantity)
 let modalItem = null;
+let modalMode = 'add';
 let modalSelectedFlavor = null;
 
 function renderFlavorOptions(item) {
-  const section = document.getElementById('modal-flavor-section');
   const wrap = document.getElementById('modal-flavor-opts');
   document.getElementById('modal-flavor-err').classList.add('hidden');
-  if (!item.flavor_options || !item.flavor_options.length) {
-    section.classList.add('hidden');
-    wrap.innerHTML = '';
-    modalSelectedFlavor = null;
-    return;
-  }
-  const current = getItemFlavor(item.name);
-  modalSelectedFlavor = current || null;
+  modalSelectedFlavor = null;
   wrap.innerHTML = item.flavor_options.map(f => {
-    const active = f === current;
     const escaped = f.replace(/"/g, '&quot;');
-    return `<button type="button" class="modal-flavor-btn text-left px-4 py-2.5 border text-sm font-light transition-all ${active ? 'border-gold bg-gold/10 text-charcoal font-medium' : 'border-charcoal/15 text-charcoal/70 hover:border-gold'}" data-flavor="${escaped}" onclick="selectModalFlavor(this)">${f}</button>`;
+    return `<button type="button" class="modal-flavor-btn text-left px-4 py-2.5 border text-sm font-light transition-all border-charcoal/15 text-charcoal/70 hover:border-gold" data-flavor="${escaped}" onclick="selectModalFlavor(this)">${f}</button>`;
   }).join('');
-  section.classList.remove('hidden');
 }
 
 function selectModalFlavor(el) {
@@ -401,10 +399,52 @@ function selectModalFlavor(el) {
   document.getElementById('modal-flavor-err').classList.add('hidden');
 }
 
-function openModal(item) {
+function openModal(item, mode) {
   modalItem = item;
-  document.getElementById('modal-item-name').textContent = item.name;
-  renderFlavorOptions(item);
+  modalMode = mode || 'add';
+  const hasFlavors = !!(item.flavor_options && item.flavor_options.length);
+  const qtySoFar = getItemQty(item.name);
+
+  document.getElementById('modal-item-name').textContent =
+    modalMode === 'addUnit' ? `${item.name} — Chicken #${qtySoFar + 1}` : item.name;
+
+  const flavorSection = document.getElementById('modal-flavor-section');
+  const notesSection = document.getElementById('modal-notes-section');
+  const titleEl = document.getElementById('modal-title-text');
+  const saveBtn = document.getElementById('modal-save-btn');
+
+  if (modalMode === 'addUnit') {
+    titleEl.textContent = 'Choose a Flavor';
+    saveBtn.textContent = 'Add This Chicken';
+    flavorSection.classList.remove('hidden');
+    notesSection.classList.add('hidden');
+    renderFlavorOptions(item);
+  } else if (modalMode === 'edit') {
+    titleEl.textContent = 'Special Instructions';
+    saveBtn.textContent = 'Save Changes';
+    flavorSection.classList.add('hidden');
+    notesSection.classList.remove('hidden');
+    modalSelectedFlavor = null;
+    populateNotesFields(item);
+  } else {
+    titleEl.textContent = 'Special Instructions';
+    saveBtn.textContent = 'Save & Add to Cart';
+    notesSection.classList.remove('hidden');
+    if (hasFlavors) {
+      flavorSection.classList.remove('hidden');
+      renderFlavorOptions(item);
+    } else {
+      flavorSection.classList.add('hidden');
+      modalSelectedFlavor = null;
+    }
+    populateNotesFields(item);
+  }
+
+  document.getElementById('instr-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function populateNotesFields(item) {
   const existing = getItemInstructions(item.name);
   document.getElementById('modal-instr-text').value = existing || '';
   const gfRow = document.getElementById('modal-gf-row');
@@ -434,26 +474,42 @@ function openModal(item) {
     optRow.classList.add('hidden');
     optRow.classList.remove('flex');
   }
-  document.getElementById('instr-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   document.getElementById('instr-modal').classList.remove('open');
   document.body.style.overflow = '';
   modalItem = null;
+  modalMode = 'add';
 }
 
 function saveModal() {
   if (!modalItem) return;
-  if (modalItem.flavor_options && modalItem.flavor_options.length && !modalSelectedFlavor) {
+  const hasFlavors = !!(modalItem.flavor_options && modalItem.flavor_options.length);
+
+  if (modalMode !== 'edit' && hasFlavors && !modalSelectedFlavor) {
     document.getElementById('modal-flavor-err').classList.remove('hidden');
     return;
   }
+
+  if (modalMode === 'addUnit') {
+    // One more unit of an existing line item — only its own flavor, notes/GF/allergens stay as they were.
+    deck(modalItem.name, 1, modalItem.price, modalItem.badge, undefined, undefined, undefined, modalSelectedFlavor);
+    closeModal();
+    return;
+  }
+
   const text = document.getElementById('modal-instr-text').value.trim();
   const glutenFree = modalItem.gluten_free_option ? document.getElementById('modal-gf-check').checked : false;
   const avoidAllergens = Array.from(document.querySelectorAll('.modal-allergen-cb:checked')).map(cb => cb.value);
-  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text, glutenFree, avoidAllergens, modalSelectedFlavor);
+
+  if (modalMode === 'edit') {
+    // Editing shared fields on an existing line item — quantity and each unit's flavor are untouched.
+    deck(modalItem.name, 0, modalItem.price, modalItem.badge, text, glutenFree, avoidAllergens);
+  } else {
+    // First unit of a new line item.
+    deck(modalItem.name, 1, modalItem.price, modalItem.badge, text, glutenFree, avoidAllergens, hasFlavors ? modalSelectedFlavor : undefined);
+  }
   closeModal();
 }
 
@@ -462,9 +518,16 @@ function getItemInstructions(name) {
   return found ? found.instructions || '' : '';
 }
 
-function getItemFlavor(name) {
+function getItemFlavors(name) {
   const found = getCart().find(i => i.name === name);
-  return found ? found.flavor || '' : '';
+  return found ? found.flavors || [] : [];
+}
+
+function summarizeFlavors(flavors) {
+  if (!flavors || !flavors.length) return '';
+  const counts = {};
+  flavors.forEach(f => { counts[f] = (counts[f] || 0) + 1; });
+  return Object.entries(counts).map(([f, c]) => c > 1 ? `${f} ×${c}` : f).join(', ');
 }
 
 function getItemGlutenFree(name) {
@@ -502,9 +565,10 @@ function makeCard(item) {
   const instrHint = instructions
     ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-2 truncate" title="${instructions.replace(/"/g,'&quot;')}">Note: ${instructions}</p>`
     : '';
-  const flavor = getItemFlavor(item.name);
-  const flavorHint = (item.flavor_options && item.flavor_options.length && flavor)
-    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-2">Flavor: <strong class="font-medium">${flavor}</strong></p>`
+  const hasFlavors = !!(item.flavor_options && item.flavor_options.length);
+  const flavorsSummary = summarizeFlavors(getItemFlavors(item.name));
+  const flavorHint = (hasFlavors && flavorsSummary)
+    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-2">Flavor: <strong class="font-medium">${flavorsSummary}</strong></p>`
     : '';
 
   // One consistent chip style for every dish attribute (gluten-free + allergens).
@@ -542,10 +606,12 @@ function makeCard(item) {
           ${qty > 0 ? `
           <button onclick="deck('${safeName}',-1,${item.price},'${safeBadge}')" class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">−</button>
           <span class="qty-display text-sm font-light w-5 text-center ${dark?'text-cream':'text-charcoal'}">${qty}</span>
-          <button onclick="openModal(${itemJson})" class="w-9 h-9 border ${btnBase} transition-all text-sm leading-none" title="Special instructions">✎</button>
-          <button onclick="deck('${safeName}',1,${item.price},'${safeBadge}')"  class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>
+          <button onclick="openModal(${itemJson},'edit')" class="w-9 h-9 border ${btnBase} transition-all text-sm leading-none" title="Special instructions">✎</button>
+          ${hasFlavors
+            ? `<button onclick="openModal(${itemJson},'addUnit')" class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>`
+            : `<button onclick="deck('${safeName}',1,${item.price},'${safeBadge}')"  class="w-9 h-9 border ${btnBase} transition-all text-base leading-none">+</button>`}
           ` : `
-          <button onclick="openModal(${itemJson})" class="luxury-link px-5 py-2.5 text-[11px] tracking-[.08em] uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
+          <button onclick="openModal(${itemJson},'add')" class="luxury-link px-5 py-2.5 text-[11px] tracking-[.08em] uppercase bg-gold text-charcoal hover:bg-charcoal hover:text-cream transition-all font-medium">Add</button>
           `}
         </div>
       </div>
@@ -558,6 +624,9 @@ function getItemQty(name) {
   return found ? found.qty : 0;
 }
 
+// delta=0 updates shared fields (notes/GF/allergens) without touching qty or flavors.
+// delta>0 with a flavor pushes exactly one more flavor entry — one ask per new unit.
+// delta<0 trims the flavors array down to the new quantity (drops the most recent unit).
 function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens, flavor) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
@@ -569,10 +638,12 @@ function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergen
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
     if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
-    if (flavor !== undefined) found.flavor = flavor;
+    found.flavors = found.flavors || [];
+    if (delta > 0 && flavor) found.flavors.push(flavor);
+    else if (delta < 0) found.flavors = found.flavors.slice(0, newQty);
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens, flavor);
+    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens, flavor ? [flavor] : []);
   }
   renderAll();
 }

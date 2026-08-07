@@ -250,6 +250,13 @@
     catch { return []; }
   }
 
+  function summarizeFlavors(flavors) {
+    if (!flavors || !flavors.length) return '';
+    const counts = {};
+    flavors.forEach(f => { counts[f] = (counts[f] || 0) + 1; });
+    return Object.entries(counts).map(([f, c]) => c > 1 ? `${f} ×${c}` : f).join(', ');
+  }
+
   function selectTip(type, el) {
     const gridId = type === 'chef' ? 'chef-tip-grid' : 'driver-tip-grid';
     document.querySelectorAll('#' + gridId + ' .pick').forEach(b => b.classList.remove('active'));
@@ -345,7 +352,7 @@
         <div class="flex-1 min-w-0 pr-4">
           <div class="item-name">${escapeHtml(i.name)}</div>
           ${i.badge ? `<div class="item-badge">${escapeHtml(i.badge)}</div>` : ''}
-          ${i.flavor ? `<div class="item-badge">Flavor: ${escapeHtml(i.flavor)}</div>` : ''}
+          ${i.flavors && i.flavors.length ? `<div class="item-badge">Flavor: ${escapeHtml(summarizeFlavors(i.flavors))}</div>` : ''}
           ${i.instructions ? `<div class="item-instr">"${escapeHtml(i.instructions)}"</div>` : ''}
           ${i.glutenFree ? `<div class="item-gf">Gluten-free</div>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<div class="item-gf">Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}
