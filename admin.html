@@ -348,6 +348,7 @@ function productRow(p, cat) {
         }).join('')}
       </div>
       <div class="text-xs text-gray-400 mt-0.5">$${p.price} · ${p.badge||''} · ${catName}</div>
+      <div class="text-xs mt-0.5 truncate ${p.description ? 'text-gray-500' : 'text-red-400 italic'}">${p.description || 'No description'}</div>
     </div>
     <div class="flex items-center gap-2 shrink-0">
       <button onclick="toggleProductVisible('${p.id}',${p.visible})"
