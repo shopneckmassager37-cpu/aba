@@ -72,6 +72,7 @@ export default async function handler(req, res) {
       <tr>
         <td style="padding:10px 14px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px;color:#1a1a1a">
           ${escapeHtml(i.name)}
+          ${i.flavor ? `<div style="font-size:12px;color:#D4AF37;font-weight:600;margin-top:2px">Flavor: ${escapeHtml(i.flavor)}</div>` : ''}
           ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${escapeHtml(i.instructions)}</div>` : ''}
           ${i.glutenFree ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">🌾 Gluten-Free</div>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">⚠️ Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}

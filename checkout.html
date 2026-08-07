@@ -345,6 +345,7 @@
         <div class="flex-1 min-w-0 pr-4">
           <div class="item-name">${escapeHtml(i.name)}</div>
           ${i.badge ? `<div class="item-badge">${escapeHtml(i.badge)}</div>` : ''}
+          ${i.flavor ? `<div class="item-badge">Flavor: ${escapeHtml(i.flavor)}</div>` : ''}
           ${i.instructions ? `<div class="item-instr">"${escapeHtml(i.instructions)}"</div>` : ''}
           ${i.glutenFree ? `<div class="item-gf">Gluten-free</div>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<div class="item-gf">Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}

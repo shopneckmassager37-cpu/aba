@@ -11,7 +11,7 @@ function saveCart(cart) {
   refreshCartUI();
 }
 
-function addItem(name, price, badge, instructions, glutenFree, avoidAllergens) {
+function addItem(name, price, badge, instructions, glutenFree, avoidAllergens, flavor) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   if (found) {
@@ -19,8 +19,9 @@ function addItem(name, price, badge, instructions, glutenFree, avoidAllergens) {
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
     if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
+    if (flavor !== undefined) found.flavor = flavor;
   } else {
-    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree, avoidAllergens: avoidAllergens || [] });
+    cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree, avoidAllergens: avoidAllergens || [], flavor: flavor || '' });
   }
   saveCart(cart);
   if (typeof openDrawer === 'function') openDrawer();
@@ -34,7 +35,7 @@ function setQty(name, qty) {
   saveCart(cart);
 }
 
-function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens) {
+function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens, flavor) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   const newQty = found ? found.qty + delta : delta;
@@ -45,9 +46,10 @@ function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergen
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
     if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
+    if (flavor !== undefined) found.flavor = flavor;
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens);
+    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens, flavor);
   }
   if (typeof renderAll === 'function') renderAll();
 }
@@ -118,6 +120,7 @@ function renderDrawer() {
         <div class="flex-1 min-w-0">
           <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
           <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
+          ${i.flavor ? `<p class="text-[10px] text-gold/70 font-light mt-0.5">Flavor: <strong class="font-medium">${i.flavor}</strong></p>` : ''}
           ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
           ${i.glutenFree ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Gluten-free</p>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Without: ${i.avoidAllergens.join(', ')}</p>` : ''}

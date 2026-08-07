@@ -125,6 +125,11 @@
       <button onclick="closeModal()" aria-label="Close" class="text-charcoal/40 hover:text-charcoal text-xl">✕</button>
     </div>
     <div class="px-6 py-5">
+      <div id="modal-flavor-section" class="hidden mb-5">
+        <label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Choose Your Flavor <span class="text-red-500">*</span></label>
+        <div id="modal-flavor-opts" class="flex flex-col gap-2"></div>
+        <p id="modal-flavor-err" class="hidden text-[11px] text-red-500 font-light mt-2">Please choose a flavor before adding to cart.</p>
+      </div>
       <label class="block text-[10px] tracking-widest text-charcoal/40 uppercase mb-2">Notes for this item</label>
       <textarea id="modal-instr-text" rows="4" placeholder="Allergies, preparation preferences, customizations…"
         class="w-full border border-charcoal/15 bg-white px-4 py-3 text-sm font-light resize-none focus:border-gold outline-none"></textarea>
@@ -363,10 +368,43 @@ let categoriesData = [];
 
 // ── MODAL STATE ──
 let modalItem = null;
+let modalSelectedFlavor = null;
+
+function renderFlavorOptions(item) {
+  const section = document.getElementById('modal-flavor-section');
+  const wrap = document.getElementById('modal-flavor-opts');
+  document.getElementById('modal-flavor-err').classList.add('hidden');
+  if (!item.flavor_options || !item.flavor_options.length) {
+    section.classList.add('hidden');
+    wrap.innerHTML = '';
+    modalSelectedFlavor = null;
+    return;
+  }
+  const current = getItemFlavor(item.name);
+  modalSelectedFlavor = current || null;
+  wrap.innerHTML = item.flavor_options.map(f => {
+    const active = f === current;
+    const escaped = f.replace(/"/g, '&quot;');
+    return `<button type="button" class="modal-flavor-btn text-left px-4 py-2.5 border text-sm font-light transition-all ${active ? 'border-gold bg-gold/10 text-charcoal font-medium' : 'border-charcoal/15 text-charcoal/70 hover:border-gold'}" data-flavor="${escaped}" onclick="selectModalFlavor(this)">${f}</button>`;
+  }).join('');
+  section.classList.remove('hidden');
+}
+
+function selectModalFlavor(el) {
+  document.querySelectorAll('.modal-flavor-btn').forEach(b => {
+    b.classList.remove('border-gold', 'bg-gold/10', 'text-charcoal', 'font-medium');
+    b.classList.add('border-charcoal/15', 'text-charcoal/70');
+  });
+  el.classList.remove('border-charcoal/15', 'text-charcoal/70');
+  el.classList.add('border-gold', 'bg-gold/10', 'text-charcoal', 'font-medium');
+  modalSelectedFlavor = el.dataset.flavor;
+  document.getElementById('modal-flavor-err').classList.add('hidden');
+}
 
 function openModal(item) {
   modalItem = item;
   document.getElementById('modal-item-name').textContent = item.name;
+  renderFlavorOptions(item);
   const existing = getItemInstructions(item.name);
   document.getElementById('modal-instr-text').value = existing || '';
   const gfRow = document.getElementById('modal-gf-row');
@@ -408,16 +446,25 @@ function closeModal() {
 
 function saveModal() {
   if (!modalItem) return;
+  if (modalItem.flavor_options && modalItem.flavor_options.length && !modalSelectedFlavor) {
+    document.getElementById('modal-flavor-err').classList.remove('hidden');
+    return;
+  }
   const text = document.getElementById('modal-instr-text').value.trim();
   const glutenFree = modalItem.gluten_free_option ? document.getElementById('modal-gf-check').checked : false;
   const avoidAllergens = Array.from(document.querySelectorAll('.modal-allergen-cb:checked')).map(cb => cb.value);
-  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text, glutenFree, avoidAllergens);
+  deck(modalItem.name, 1, modalItem.price, modalItem.badge, text, glutenFree, avoidAllergens, modalSelectedFlavor);
   closeModal();
 }
 
 function getItemInstructions(name) {
   const found = getCart().find(i => i.name === name);
   return found ? found.instructions || '' : '';
+}
+
+function getItemFlavor(name) {
+  const found = getCart().find(i => i.name === name);
+  return found ? found.flavor || '' : '';
 }
 
 function getItemGlutenFree(name) {
@@ -455,6 +502,10 @@ function makeCard(item) {
   const instrHint = instructions
     ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-2 truncate" title="${instructions.replace(/"/g,'&quot;')}">Note: ${instructions}</p>`
     : '';
+  const flavor = getItemFlavor(item.name);
+  const flavorHint = (item.flavor_options && item.flavor_options.length && flavor)
+    ? `<p class="text-[10px] ${dark?'text-gold/50':'text-gold/70'} font-light mt-2">Flavor: <strong class="font-medium">${flavor}</strong></p>`
+    : '';
 
   // One consistent chip style for every dish attribute (gluten-free + allergens).
   // Allergens the kitchen can leave out on request read like the GF chip; the rest are informational only.
@@ -483,6 +534,7 @@ function makeCard(item) {
       ${item.badge ? `<p class="text-[10px] ${sizeColor} tracking-[.08em] uppercase font-light mt-1">${item.badge}</p>` : ''}
       <p class="${descColor} text-xs font-light mt-3 leading-relaxed">${item.description||item.desc||''}</p>
       ${chipsRow}
+      ${flavorHint}
       ${instrHint}
       <div class="flex items-center justify-between pt-4 mt-auto border-t ${borderColor}">
         <span class="font-serif ${priceColor} ${item.small?'text-xl':'text-2xl'} font-light">$${item.price}</span>
@@ -506,7 +558,7 @@ function getItemQty(name) {
   return found ? found.qty : 0;
 }
 
-function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens) {
+function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergens, flavor) {
   const cart = getCart();
   const found = cart.find(i => i.name === name);
   const newQty = found ? found.qty + delta : delta;
@@ -517,9 +569,10 @@ function deck(name, delta, price, badge, instructions, glutenFree, avoidAllergen
     if (instructions !== undefined) found.instructions = instructions;
     if (glutenFree !== undefined) found.glutenFree = glutenFree;
     if (avoidAllergens !== undefined) found.avoidAllergens = avoidAllergens;
+    if (flavor !== undefined) found.flavor = flavor;
     saveCart(cart);
   } else {
-    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens);
+    addItem(name, price, badge, instructions || '', glutenFree, avoidAllergens, flavor);
   }
   renderAll();
 }

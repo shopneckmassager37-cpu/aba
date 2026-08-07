@@ -114,6 +114,11 @@
           <textarea id="pm-desc" rows="3" class="input resize-none" placeholder="Short description…"></textarea>
         </div>
         <div class="col-span-2">
+          <label class="label">Flavor / style options</label>
+          <input id="pm-flavors" type="text" class="input" placeholder="Honey Pomegranate, Lemon Herb & Roasted Garlic, Citrus Chili"/>
+          <p class="text-xs text-gray-400 mt-1">Comma-separated. When set, the customer must pick one before adding this item to their cart.</p>
+        </div>
+        <div class="col-span-2">
           <label class="label">Image</label>
           <div class="flex gap-3 items-start">
             <div class="flex-1">
@@ -341,6 +346,7 @@ function productRow(p, cat) {
         <span class="font-medium text-sm text-gray-800 truncate">${p.name}</span>
         ${p.tag ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${p.tag}</span>` : ''}
         ${p.gluten_free_option ? `<span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">GF option</span>` : ''}
+        ${(p.flavor_options||[]).length ? `<span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${p.flavor_options.length} flavors</span>` : ''}
         ${!p.visible ? `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Hidden</span>` : ''}
         ${(p.allergens||[]).map(a => {
           const opt = (p.allergens_optional||[]).includes(a);
@@ -484,6 +490,7 @@ function openProductModal(id) {
     document.getElementById('pm-tag').value = p.tag || '';
     document.getElementById('pm-category').value = p.category_id;
     document.getElementById('pm-desc').value = p.description || '';
+    document.getElementById('pm-flavors').value = (p.flavor_options || []).join(', ');
     document.getElementById('pm-img').value = p.img || '';
     document.getElementById('pm-dark').checked = !!p.dark;
     document.getElementById('pm-small').checked = !!p.small;
@@ -499,6 +506,7 @@ function openProductModal(id) {
     document.getElementById('pm-badge').value = '';
     document.getElementById('pm-tag').value = '';
     document.getElementById('pm-desc').value = '';
+    document.getElementById('pm-flavors').value = '';
     document.getElementById('pm-img').value = '';
     document.getElementById('pm-dark').checked = false;
     document.getElementById('pm-small').checked = false;
@@ -556,6 +564,7 @@ async function saveProduct() {
     tag: document.getElementById('pm-tag').value.trim() || null,
     category_id,
     description: document.getElementById('pm-desc').value.trim() || null,
+    flavor_options: document.getElementById('pm-flavors').value.split(',').map(s => s.trim()).filter(Boolean),
     img: document.getElementById('pm-img').value.trim() || null,
     dark: document.getElementById('pm-dark').checked,
     small: document.getElementById('pm-small').checked,
