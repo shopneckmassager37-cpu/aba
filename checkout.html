@@ -93,9 +93,17 @@
         </div>
       </div>
 
+      <!-- Delivery Date -->
+      <div class="panel p-8 md:p-10">
+        <p class="section-eyebrow">03 · Delivery Date</p>
+        <h2 class="section-title mb-2">Choose Your Shabbat</h2>
+        <p class="text-sm text-charcoal/45 font-light mb-6">Pick any upcoming Friday within the next month.</p>
+        <div id="date-grid" class="grid grid-cols-3 sm:grid-cols-5 gap-2 md:gap-3"></div>
+      </div>
+
       <!-- Customer Details -->
       <div class="panel p-8 md:p-10">
-        <p class="section-eyebrow">03 · Your Details</p>
+        <p class="section-eyebrow">04 · Your Details</p>
         <h2 class="section-title mb-6">Delivery Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -169,7 +177,12 @@
   let driverTipFixed = null;  // dollar amount when driver Custom is used
 
   // ── DELIVERY DATE LOGIC ──
-  function getDeliveryInfo() {
+  // Customers pick any Friday within the upcoming month; the earliest option
+  // still respects the Wednesday 5PM order-by deadline for that week.
+  let availableFridays = [];
+  let selectedFridayIdx = 0;
+
+  function getUpcomingFridays(weeksAhead) {
     const now = new Date();
     const miamiStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
     const miami = new Date(miamiStr);
@@ -180,30 +193,76 @@
     // Past deadline for THIS Friday? (Wed >= 5PM)
     const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) || (day > 3 && day <= 6);
 
-    let deliveryDate = new Date(miami);
+    let firstFriday = new Date(miami);
+    firstFriday.setHours(0, 0, 0, 0);
     if (pastDeadline) {
-      // Order is for NEXT Friday
+      // Earliest available is NEXT Friday
       const daysToNextFriday = (5 - day + 7) % 7 + (day >= 3 ? 7 : 0);
-      deliveryDate.setDate(miami.getDate() + daysToNextFriday);
+      firstFriday.setDate(miami.getDate() + daysToNextFriday);
     } else {
-      // Order is for THIS Friday
+      // Earliest available is THIS Friday
       const daysToFriday = (5 - day + 7) % 7;
-      deliveryDate.setDate(miami.getDate() + daysToFriday);
+      firstFriday.setDate(miami.getDate() + daysToFriday);
     }
-    
-    const dateStr = deliveryDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-    return { pastDeadline, deliveryDate: dateStr };
+
+    const fridays = [];
+    for (let i = 0; i < weeksAhead; i++) {
+      const d = new Date(firstFriday);
+      d.setDate(firstFriday.getDate() + i * 7);
+      fridays.push(d);
+    }
+    return { fridays, pastDeadline };
   }
 
-  function updateDeadlineBanner() {
-    const info = getDeliveryInfo();
+  function formatFriday(d) {
+    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  }
+
+  function renderDateOptions() {
+    // Keep the customer's chosen Friday selected across periodic refreshes,
+    // as long as it's still one of the available options.
+    const previouslySelected = availableFridays[selectedFridayIdx];
+
+    const { fridays, pastDeadline } = getUpcomingFridays(5); // ~1 month of Fridays
+    availableFridays = fridays;
+    selectedFridayIdx = previouslySelected
+      ? Math.max(0, fridays.findIndex(d => d.getTime() === previouslySelected.getTime()))
+      : 0;
+
+    const grid = document.getElementById('date-grid');
+    grid.innerHTML = fridays.map((d, i) => {
+      const short = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return `<div class="pick pick-date text-center${i === selectedFridayIdx ? ' active' : ''}" data-idx="${i}" onclick="selectDeliveryDate(${i})">
+        <div class="pick-date-dow">Fri</div>
+        <div class="pick-date-num">${short}</div>
+      </div>`;
+    }).join('');
+
+    updateDeadlineBanner(pastDeadline);
+  }
+
+  window.selectDeliveryDate = function(idx) {
+    selectedFridayIdx = idx;
+    document.querySelectorAll('#date-grid .pick-date').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.idx) === idx);
+    });
+    updateDeadlineBanner();
+  };
+
+  function updateDeadlineBanner(pastDeadlineOverride) {
     const banner = document.getElementById('deadline-banner');
-    if (info.pastDeadline) {
-      banner.innerHTML = `✨ Now taking orders for <strong class="text-white">Friday, ${info.deliveryDate}</strong> (Deadline for this week has passed)`;
+    const selected = availableFridays[selectedFridayIdx];
+    if (!selected) return;
+    const isEarliest = selectedFridayIdx === 0;
+    const pastDeadline = typeof pastDeadlineOverride === 'boolean' ? pastDeadlineOverride : null;
+    if (isEarliest && pastDeadline) {
+      banner.innerHTML = `✨ Now taking orders for <strong class="text-white">Friday, ${formatFriday(selected)}</strong> (Deadline for this week has passed)`;
       banner.style.background = '#B8941F';
       banner.style.color = '#1A1A1A';
     } else {
-      banner.innerHTML = `⏰ Order now for <strong class="text-gold">Friday, ${info.deliveryDate}</strong> — Order by Wednesday 5:00 PM`;
+      banner.innerHTML = `⏰ Ordering for <strong class="text-gold">Friday, ${formatFriday(selected)}</strong> — choose a different Friday above anytime`;
+      banner.style.background = '';
+      banner.style.color = '';
     }
   }
 
@@ -456,7 +515,7 @@
   });
 
   function submitOrder() {
-    const info = getDeliveryInfo();
+    const selectedFriday = availableFridays[selectedFridayIdx];
     const name = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
     const email = document.getElementById('co-email').value.trim();
@@ -494,7 +553,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name, phone, email, address,
-        deliveryDate: info.deliveryDate,
+        deliveryDate: formatFriday(selectedFriday),
         zone: `Zone ${deliveryZoneNum} ($${deliveryZone})`,
         cart,
         subtotal: sub.toFixed(2),
@@ -521,8 +580,8 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    updateDeadlineBanner();
-    setInterval(updateDeadlineBanner, 60000); // update every minute
+    renderDateOptions();
+    setInterval(renderDateOptions, 60000); // refresh availability every minute
     renderItems();
     updateTotals();
     const addr = document.getElementById('co-address');

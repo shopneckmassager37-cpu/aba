@@ -265,6 +265,11 @@ nav.scrolled .nav-link.active { color: var(--chef-gold) !important; }
 .pick-mini .pick-suf { font-size: .62rem; letter-spacing: .04em; text-transform: none; color: rgba(26,26,26,.45); margin-top: .15rem; display: block; font-family: 'Jost', sans-serif; }
 .pick.active .pick-suf { color: rgba(26,26,26,.65); }
 
+.pick-date { padding: .85rem .5rem; }
+.pick-date .pick-date-dow { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(26,26,26,.4); margin-bottom: .3rem; }
+.pick-date .pick-date-num { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; line-height: 1; }
+.pick.active .pick-date-dow { color: rgba(26,26,26,.65); }
+
 .field {
   width: 100%; background: #F9F7F2; border: 1px solid rgba(26,26,26,.1); border-radius: 6px; padding: .9rem 1rem;
   font-family: 'Jost', sans-serif; font-size: .875rem; font-weight: 300; color: #1A1A1A;
