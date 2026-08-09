@@ -1,5 +1,11 @@
 const CART_KEY = 'chefaleh_cart';
 const TAX_RATE = 0.07;
+const DELIVERY_DATE_KEY = 'chefaleh_delivery_date';
+
+// Fridays with no delivery (holidays). Add more 'YYYY-MM-DD' entries as needed.
+const CLOSED_FRIDAYS = [];
+// Fridays that still deliver as normal but get a special label (e.g. holiday eve).
+const FRIDAY_LABELS = { '2026-10-02': 'Erev Chag' }; // 1st Friday of Oct 2026
 
 function getCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
@@ -82,6 +88,88 @@ function clearCart() {
 
 function fmt(n) { return '$' + n.toFixed(2); }
 
+// ── DELIVERY DATE ──
+function toISODate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function getUpcomingFridays() {
+  const now = new Date();
+  const miamiStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
+  const miami = new Date(miamiStr);
+  const day = miami.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  const hour = miami.getHours();
+  const min = miami.getMinutes();
+
+  // Past deadline for THIS Friday? (Wed >= 5PM)
+  const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) || (day > 3 && day <= 6);
+
+  let firstFriday = new Date(miami);
+  firstFriday.setHours(0, 0, 0, 0);
+  if (pastDeadline) {
+    const daysToNextFriday = (5 - day + 7) % 7 + (day >= 3 ? 7 : 0);
+    firstFriday.setDate(miami.getDate() + daysToNextFriday);
+  } else {
+    const daysToFriday = (5 - day + 7) % 7;
+    firstFriday.setDate(miami.getDate() + daysToFriday);
+  }
+
+  // Offer every Friday through the end of October (next year's once this
+  // year's has passed), skipping any date listed in CLOSED_FRIDAYS.
+  let rangeEnd = new Date(firstFriday.getFullYear(), 9, 31); // Oct 31, month index 9
+  if (rangeEnd < firstFriday) rangeEnd = new Date(firstFriday.getFullYear() + 1, 9, 31);
+
+  const fridays = [];
+  const cursor = new Date(firstFriday);
+  while (cursor <= rangeEnd) {
+    if (!CLOSED_FRIDAYS.includes(toISODate(cursor))) fridays.push(new Date(cursor));
+    cursor.setDate(cursor.getDate() + 7);
+  }
+  return fridays;
+}
+
+function formatFriday(d) {
+  const base = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  const label = FRIDAY_LABELS[toISODate(d)];
+  return label ? `${base} (${label})` : base;
+}
+
+function getSelectedDeliveryDate() {
+  const fridays = getUpcomingFridays();
+  const iso = localStorage.getItem(DELIVERY_DATE_KEY);
+  const match = iso && fridays.find(d => toISODate(d) === iso);
+  return match || fridays[0];
+}
+
+function selectDrawerDate(iso) {
+  localStorage.setItem(DELIVERY_DATE_KEY, iso);
+  renderDrawerDateOptions();
+}
+
+function renderDrawerDateOptions() {
+  const grid = document.getElementById('drawer-date-grid');
+  const section = document.getElementById('drawer-date-section');
+  if (!grid || !section) return;
+  if (getCart().length === 0) { section.classList.add('hidden'); return; }
+  section.classList.remove('hidden');
+
+  const fridays = getUpcomingFridays();
+  const selected = getSelectedDeliveryDate();
+  localStorage.setItem(DELIVERY_DATE_KEY, toISODate(selected));
+
+  grid.innerHTML = fridays.map(d => {
+    const iso = toISODate(d);
+    const active = iso === toISODate(selected);
+    const short = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const label = FRIDAY_LABELS[iso];
+    return `<div class="pick pick-date text-center${active ? ' active' : ''}" style="flex:0 0 60px" onclick="selectDrawerDate('${iso}')">
+      <div class="pick-date-dow">Fri</div>
+      <div class="pick-date-num">${short}</div>
+      ${label ? `<div class="pick-date-tag">${label}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
 /* ── UI helpers ── */
 function refreshCartUI() {
   // nav badge
@@ -150,6 +238,8 @@ function renderDrawer() {
   d('d-sub', '$'+sub.toFixed(2));
   d('d-tax', '$'+tax.toFixed(2));
   d('d-tot', '$'+tot.toFixed(2));
+
+  renderDrawerDateOptions();
 }
 
 function toggleMenu() {

@@ -93,17 +93,9 @@
         </div>
       </div>
 
-      <!-- Delivery Date -->
-      <div class="panel p-8 md:p-10">
-        <p class="section-eyebrow">03 · Delivery Date</p>
-        <h2 class="section-title mb-2">Choose Your Shabbat</h2>
-        <p class="text-sm text-charcoal/45 font-light mb-6">Pick any upcoming Friday within the next month.</p>
-        <div id="date-grid" class="grid grid-cols-3 sm:grid-cols-5 gap-2 md:gap-3"></div>
-      </div>
-
       <!-- Customer Details -->
       <div class="panel p-8 md:p-10">
-        <p class="section-eyebrow">04 · Your Details</p>
+        <p class="section-eyebrow">03 · Your Details</p>
         <h2 class="section-title mb-6">Delivery Information</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -135,6 +127,14 @@
         <div class="panel p-8 md:p-10">
           <p class="section-eyebrow">Order Summary</p>
           <h2 class="section-title mb-6">Total</h2>
+
+          <div class="flex items-center justify-between pb-5 mb-5 border-b border-charcoal/8">
+            <div>
+              <p class="text-[10px] tracking-[.2em] uppercase text-charcoal/35 mb-1 font-light">Delivery Date</p>
+              <p class="font-serif text-lg text-charcoal font-light" id="co-delivery-date">—</p>
+            </div>
+            <a href="/menu" class="text-[10px] tracking-[.1em] uppercase text-gold hover:underline font-light shrink-0">Change</a>
+          </div>
 
           <div>
             <div class="sum-row"><span class="sum-label">Subtotal</span><span class="sum-val" id="co-sub">$0.00</span></div>
@@ -176,11 +176,11 @@
   let driverTipPct = 8;       // percentage-based driver tip
   let driverTipFixed = null;  // dollar amount when driver Custom is used
 
-  // ── DELIVERY DATE LOGIC ──
-  // Customers pick any Friday within the upcoming month; the earliest option
-  // still respects the Wednesday 5PM order-by deadline for that week.
-  let availableFridays = [];
-  let selectedFridayIdx = 0;
+  // ── DELIVERY DATE ──
+  // The date is chosen earlier, in the cart drawer (see cart.js). This page
+  // just reads that choice and falls back to the earliest available Friday
+  // if someone lands here without having picked one.
+  const DELIVERY_DATE_KEY = 'chefaleh_delivery_date';
 
   // Fridays with no delivery (holidays). Add more 'YYYY-MM-DD' entries as needed.
   const CLOSED_FRIDAYS = [];
@@ -237,51 +237,26 @@
     return label ? `${base} (${label})` : base;
   }
 
-  function renderDateOptions() {
-    // Keep the customer's chosen Friday selected across periodic refreshes,
-    // as long as it's still one of the available options.
-    const previouslySelected = availableFridays[selectedFridayIdx];
-
+  function resolveDeliveryDate() {
     const { fridays, pastDeadline } = getUpcomingFridays();
-    availableFridays = fridays;
-    selectedFridayIdx = previouslySelected
-      ? Math.max(0, fridays.findIndex(d => d.getTime() === previouslySelected.getTime()))
-      : 0;
-
-    const grid = document.getElementById('date-grid');
-    grid.innerHTML = fridays.map((d, i) => {
-      const short = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      const label = FRIDAY_LABELS[toISODate(d)];
-      return `<div class="pick pick-date text-center${i === selectedFridayIdx ? ' active' : ''}" data-idx="${i}" onclick="selectDeliveryDate(${i})">
-        <div class="pick-date-dow">Fri</div>
-        <div class="pick-date-num">${short}</div>
-        ${label ? `<div class="pick-date-tag">${label}</div>` : ''}
-      </div>`;
-    }).join('');
-
-    updateDeadlineBanner(pastDeadline);
+    const storedIso = localStorage.getItem(DELIVERY_DATE_KEY);
+    const match = storedIso && fridays.find(d => toISODate(d) === storedIso);
+    return { date: match || fridays[0], pastDeadline, wasStored: !!match };
   }
 
-  window.selectDeliveryDate = function(idx) {
-    selectedFridayIdx = idx;
-    document.querySelectorAll('#date-grid .pick-date').forEach(el => {
-      el.classList.toggle('active', Number(el.dataset.idx) === idx);
-    });
-    updateDeadlineBanner();
-  };
+  function updateDeliveryDateDisplay() {
+    const { date, pastDeadline, wasStored } = resolveDeliveryDate();
+    const label = document.getElementById('co-delivery-date');
+    if (label) label.textContent = formatFriday(date);
 
-  function updateDeadlineBanner(pastDeadlineOverride) {
     const banner = document.getElementById('deadline-banner');
-    const selected = availableFridays[selectedFridayIdx];
-    if (!selected) return;
-    const isEarliest = selectedFridayIdx === 0;
-    const pastDeadline = typeof pastDeadlineOverride === 'boolean' ? pastDeadlineOverride : null;
-    if (isEarliest && pastDeadline) {
-      banner.innerHTML = `✨ Now taking orders for <strong class="text-white">Friday, ${formatFriday(selected)}</strong> (Deadline for this week has passed)`;
+    if (!banner) return;
+    if (!wasStored && pastDeadline) {
+      banner.innerHTML = `✨ Now taking orders for <strong class="text-white">Friday, ${formatFriday(date)}</strong> (Deadline for this week has passed)`;
       banner.style.background = '#B8941F';
       banner.style.color = '#1A1A1A';
     } else {
-      banner.innerHTML = `⏰ Ordering for <strong class="text-gold">Friday, ${formatFriday(selected)}</strong> — choose a different Friday above anytime`;
+      banner.innerHTML = `⏰ Ordering for <strong class="text-gold">Friday, ${formatFriday(date)}</strong> — change it any time from your cart`;
       banner.style.background = '';
       banner.style.color = '';
     }
@@ -536,7 +511,7 @@
   });
 
   function submitOrder() {
-    const selectedFriday = availableFridays[selectedFridayIdx];
+    const selectedFriday = resolveDeliveryDate().date;
     const name = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
     const email = document.getElementById('co-email').value.trim();
@@ -601,8 +576,8 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    renderDateOptions();
-    setInterval(renderDateOptions, 60000); // refresh availability every minute
+    updateDeliveryDateDisplay();
+    setInterval(updateDeliveryDateDisplay, 60000); // keep deadline messaging fresh
     renderItems();
     updateTotals();
     const addr = document.getElementById('co-address');
