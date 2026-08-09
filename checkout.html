@@ -182,7 +182,14 @@
   let availableFridays = [];
   let selectedFridayIdx = 0;
 
-  function getUpcomingFridays(weeksAhead) {
+  // Fridays with no delivery (holidays). Add more 'YYYY-MM-DD' entries as needed.
+  const CLOSED_FRIDAYS = ['2026-10-09']; // 2nd Friday of Oct 2026 — holiday, no delivery
+
+  function toISODate(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  function getUpcomingFridays() {
     const now = new Date();
     const miamiStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
     const miami = new Date(miamiStr);
@@ -205,11 +212,18 @@
       firstFriday.setDate(miami.getDate() + daysToFriday);
     }
 
+    // Offer every Friday through the end of October (next year's October once
+    // this year's has passed), skipping any date listed in CLOSED_FRIDAYS.
+    let rangeEnd = new Date(firstFriday.getFullYear(), 9, 31); // Oct 31, month index 9
+    if (rangeEnd < firstFriday) rangeEnd = new Date(firstFriday.getFullYear() + 1, 9, 31);
+
     const fridays = [];
-    for (let i = 0; i < weeksAhead; i++) {
-      const d = new Date(firstFriday);
-      d.setDate(firstFriday.getDate() + i * 7);
-      fridays.push(d);
+    const cursor = new Date(firstFriday);
+    while (cursor <= rangeEnd) {
+      if (!CLOSED_FRIDAYS.includes(toISODate(cursor))) {
+        fridays.push(new Date(cursor));
+      }
+      cursor.setDate(cursor.getDate() + 7);
     }
     return { fridays, pastDeadline };
   }
@@ -223,7 +237,7 @@
     // as long as it's still one of the available options.
     const previouslySelected = availableFridays[selectedFridayIdx];
 
-    const { fridays, pastDeadline } = getUpcomingFridays(5); // ~1 month of Fridays
+    const { fridays, pastDeadline } = getUpcomingFridays();
     availableFridays = fridays;
     selectedFridayIdx = previouslySelected
       ? Math.max(0, fridays.findIndex(d => d.getTime() === previouslySelected.getTime()))
