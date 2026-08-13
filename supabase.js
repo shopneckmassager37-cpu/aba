@@ -84,6 +84,10 @@ async function deleteAllergen(id) {
   return adminFetch('allergens', { method: 'DELETE', body: JSON.stringify({ id }) });
 }
 
+async function getAnalytics(days) {
+  return adminFetch(`analytics?days=${encodeURIComponent(days)}`);
+}
+
 async function uploadImage(file) {
   const dataBase64 = await new Promise((resolve, reject) => {
     const reader = new FileReader();

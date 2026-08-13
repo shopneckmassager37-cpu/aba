@@ -39,6 +39,7 @@
       <button onclick="showTab('products')" id="tab-products" class="tab-btn px-4 py-1.5 rounded text-sm bg-white text-gray-900 font-medium">Products</button>
       <button onclick="showTab('categories')" id="tab-categories" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Categories</button>
       <button onclick="showTab('allergens')" id="tab-allergens" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Allergens</button>
+      <button onclick="showTab('analytics')" id="tab-analytics" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Analytics</button>
       <a href="/menu" target="_blank" class="text-xs text-gray-400 hover:text-white ml-2">↗ View Menu</a>
       <button onclick="doLogout()" class="text-xs text-gray-500 hover:text-white ml-2">Logout</button>
     </div>
@@ -75,6 +76,19 @@
     </div>
     <p class="text-xs text-gray-400 mb-3">Drag to reorder. This list is what appears as checkboxes when editing a product's allergens, and as tags on the public menu.</p>
     <div id="allergens-list" class="space-y-2"></div>
+  </div>
+
+  <!-- ANALYTICS TAB -->
+  <div id="tab-analytics-panel" class="p-6 hidden">
+    <div class="flex items-center justify-between mb-1 flex-wrap gap-3">
+      <h2 class="text-lg font-semibold text-gray-800">Analytics</h2>
+      <div class="flex items-center gap-2">
+        <div class="flex gap-1" id="an-range-btns"></div>
+        <button onclick="loadAnalytics()" class="border border-gray-200 text-gray-600 px-3 py-1.5 rounded text-xs hover:border-gray-400">↻ Refresh</button>
+      </div>
+    </div>
+    <p class="text-xs text-gray-400 mb-4">Page views on the public site. Not live — the numbers are whatever has been recorded up to the moment you press refresh.</p>
+    <div id="analytics-body" class="space-y-6"></div>
   </div>
 
 </div>
@@ -267,12 +281,13 @@ if (sessionStorage.getItem('admin_auth') === '1') {
 
 // ── TABS ──
 function showTab(name) {
-  ['products','categories','allergens'].forEach(t => {
+  ['products','categories','allergens','analytics'].forEach(t => {
     document.getElementById(`tab-${t}-panel`).classList.toggle('hidden', t !== name);
     const btn = document.getElementById(`tab-${t}`);
     if (t === name) { btn.classList.add('bg-white','text-gray-900','font-medium'); btn.classList.remove('text-gray-400'); }
     else            { btn.classList.remove('bg-white','text-gray-900','font-medium'); btn.classList.add('text-gray-400'); }
   });
+  if (name === 'analytics' && !analyticsData) loadAnalytics();
 }
 
 // ── LOAD DATA ──
@@ -816,7 +831,210 @@ async function deleteAllergenConfirm(id, name) {
   } catch (e) { if (!handleAuthError(e)) flashError(); }
 }
 
+// ══════════════════════════════════════════════════════════
+//  ANALYTICS TAB
+// ══════════════════════════════════════════════════════════
+let analyticsData = null;
+let analyticsDays = 7;
+const AN_RANGES = [{ d: 1, label: '24 hours' }, { d: 7, label: '7 days' }, { d: 30, label: '30 days' }, { d: 90, label: '90 days' }];
+
+// Paths and page titles arrive from visitors' browsers — never inject them raw.
+function anEsc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function anTime(seconds) {
+  const s = Math.max(0, Math.round(seconds || 0));
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  return m < 60 ? `${m}m ${s % 60}s` : `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+
+function anPct(part, whole) {
+  if (!whole) return '0%';
+  return `${Math.round((part / whole) * 100)}%`;
+}
+
+function renderAnalyticsRanges() {
+  document.getElementById('an-range-btns').innerHTML = AN_RANGES.map(r => `
+    <button onclick="setAnalyticsRange(${r.d})"
+      class="px-3 py-1.5 rounded text-xs border ${analyticsDays === r.d ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-600 hover:border-gray-400'}">
+      ${r.label}
+    </button>`).join('');
+}
+
+function setAnalyticsRange(days) {
+  analyticsDays = days;
+  loadAnalytics();
+}
+
+async function loadAnalytics() {
+  renderAnalyticsRanges();
+  const body = document.getElementById('analytics-body');
+  body.innerHTML = `<p class="text-sm text-gray-400">Loading…</p>`;
+  try {
+    analyticsData = await getAnalytics(analyticsDays);
+    renderAnalytics();
+  } catch (e) {
+    if (handleAuthError(e)) return;
+    body.innerHTML = `<div class="bg-white rounded border border-gray-200 p-6">
+      <p class="text-sm text-red-500 mb-1">Couldn't load analytics.</p>
+      <p class="text-xs text-gray-400">${anEsc(e.message)}</p>
+      <p class="text-xs text-gray-400 mt-2">If this says the function is missing, run <code>supabase/analytics.sql</code> in the Supabase SQL editor first.</p>
+    </div>`;
+  }
+}
+
+function anCard(label, value, sub) {
+  return `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400">${label}</p>
+    <p class="text-2xl font-semibold text-gray-800 mt-1">${value}</p>
+    <p class="text-xs text-gray-400 mt-0.5">${sub || ''}</p>
+  </div>`;
+}
+
+function anBarList(title, rows, emptyText) {
+  const max = Math.max(1, ...rows.map(r => r.visitors));
+  const body = rows.length ? rows.slice(0, 8).map(r => `
+    <div class="mb-2">
+      <div class="flex justify-between text-xs text-gray-600 mb-0.5">
+        <span class="truncate pr-2">${anEsc(r.label)}</span>
+        <span class="text-gray-400 shrink-0">${r.visitors}</span>
+      </div>
+      <div class="h-1.5 bg-gray-100 rounded">
+        <div class="h-1.5 bg-gray-800 rounded" style="width:${(r.visitors / max) * 100}%"></div>
+      </div>
+    </div>`).join('') : `<p class="text-xs text-gray-400">${emptyText}</p>`;
+  return `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">${title}</p>${body}</div>`;
+}
+
+function renderAnalytics() {
+  const d = analyticsData;
+  const t = d.totals;
+  const body = document.getElementById('analytics-body');
+
+  if (!t.views) {
+    body.innerHTML = `<div class="bg-white rounded border border-gray-200 p-8 text-center">
+      <p class="text-sm text-gray-500">No page views recorded in this period yet.</p>
+      <p class="text-xs text-gray-400 mt-1">Tracking starts once the updated site is live — give it a few visits and come back.</p>
+    </div>`;
+    return;
+  }
+
+  // ── Headline numbers ──
+  const cards = `<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    ${anCard('Page views', t.views, `across the last ${d.days} day${d.days === 1 ? '' : 's'}`)}
+    ${anCard('Visits', t.sessions, 'browsing sessions')}
+    ${anCard('Avg. time per visit', anTime(t.avg_session_seconds), `${anTime(t.avg_view_seconds)} per page`)}
+    ${anCard('Left after one page', anPct(t.bounced_sessions, t.sessions), `${t.bounced_sessions} of ${t.sessions} visits`)}
+  </div>`;
+
+  // ── Ordering funnel ──
+  const f = d.funnel;
+  const steps = [
+    { label: 'Home page', n: f.home }, { label: 'Menu', n: f.menu },
+    { label: 'Checkout', n: f.checkout }, { label: 'Order confirmed', n: f.confirmation },
+  ];
+  const funnelMax = Math.max(1, ...steps.map(s => s.n));
+  const funnel = `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Where visits stop on the way to an order</p>
+    ${steps.map((s, i) => {
+      const prev = i > 0 ? steps[i - 1].n : null;
+      const dropped = prev !== null ? prev - s.n : 0;
+      return `<div class="mb-3">
+        <div class="flex justify-between text-xs mb-1">
+          <span class="text-gray-700">${s.label}</span>
+          <span class="text-gray-400">${s.n} visit${s.n === 1 ? '' : 's'}${prev !== null && dropped > 0 ? ` · ${dropped} dropped off here` : ''}</span>
+        </div>
+        <div class="h-3 bg-gray-100 rounded">
+          <div class="h-3 bg-gray-800 rounded" style="width:${(s.n / funnelMax) * 100}%"></div>
+        </div>
+      </div>`;
+    }).join('')}
+    <p class="text-[11px] text-gray-400">Counts every visit that opened the page at any point, not a strict step-by-step order.</p>
+  </div>`;
+
+  // ── Per-page table ──
+  const pages = `<div class="bg-white rounded border border-gray-200 overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-[11px] uppercase tracking-wider text-gray-400 border-b border-gray-100">
+          <th class="text-left font-normal px-4 py-3">Page</th>
+          <th class="text-right font-normal px-4 py-3">Views</th>
+          <th class="text-right font-normal px-4 py-3">Visitors</th>
+          <th class="text-right font-normal px-4 py-3">Avg. time</th>
+          <th class="text-right font-normal px-4 py-3">Scrolled</th>
+          <th class="text-right font-normal px-4 py-3">Arrived here</th>
+          <th class="text-right font-normal px-4 py-3">Left from here</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${d.pages.map(p => `
+          <tr class="border-b border-gray-50 last:border-0">
+            <td class="px-4 py-3">
+              <span class="text-gray-800">${anEsc(p.path)}</span>
+              <span class="block text-[11px] text-gray-400 truncate max-w-xs">${anEsc(p.title)}</span>
+            </td>
+            <td class="px-4 py-3 text-right text-gray-700">${p.views}</td>
+            <td class="px-4 py-3 text-right text-gray-700">${p.visitors}</td>
+            <td class="px-4 py-3 text-right text-gray-700">${anTime(p.avg_seconds)}</td>
+            <td class="px-4 py-3 text-right text-gray-500">${p.avg_scroll}%</td>
+            <td class="px-4 py-3 text-right text-gray-500">${p.entries}</td>
+            <td class="px-4 py-3 text-right text-gray-500">${p.exits} <span class="text-gray-400 text-xs">(${anPct(p.exits, p.views)})</span></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+
+  // ── Views per day ──
+  const dayMax = Math.max(1, ...d.daily.map(x => x.views));
+  const daily = `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Views per day</p>
+    <div class="flex items-end gap-1 h-32">
+      ${d.daily.map(x => `
+        <div class="flex-1 flex flex-col items-center justify-end h-full" title="${anEsc(x.day)} — ${x.views} views, ${x.visitors} visitors">
+          <span class="text-[10px] text-gray-400 mb-1">${x.views}</span>
+          <div class="w-full bg-gray-800 rounded-t" style="height:${(x.views / dayMax) * 100}%"></div>
+        </div>`).join('')}
+    </div>
+    <div class="flex gap-1 mt-1">
+      ${d.daily.map(x => `<span class="flex-1 text-center text-[9px] text-gray-400">${anEsc(String(x.day).slice(5))}</span>`).join('')}
+    </div>
+  </div>`;
+
+  // ── Sources / devices / countries ──
+  const breakdown = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    ${anBarList('Where they came from', d.referrers.map(r => ({ label: r.source, visitors: r.visitors })), 'No data yet')}
+    ${anBarList('Device', d.devices.map(r => ({ label: r.device, visitors: r.visitors })), 'No data yet')}
+    ${anBarList('Country', d.countries.map(r => ({ label: r.country === '??' ? 'Unknown' : r.country, visitors: r.visitors })), 'No data yet')}
+  </div>`;
+
+  const campaigns = d.campaigns.length ? `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Campaign links (utm_source)</p>
+    ${d.campaigns.map(c => `<div class="flex justify-between text-xs text-gray-600 py-1 border-b border-gray-50 last:border-0">
+      <span>${anEsc(c.source)} · ${anEsc(c.campaign)}</span><span class="text-gray-400">${c.visitors} visits</span></div>`).join('')}
+  </div>` : '';
+
+  // ── Recent routes through the site ──
+  const journeys = `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Last 25 visits — the path each one took</p>
+    <div class="space-y-2">
+      ${d.journeys.map(j => `
+        <div class="flex justify-between gap-4 text-xs border-b border-gray-50 last:border-0 pb-2">
+          <span class="text-gray-700 break-all">${anEsc(j.route)}</span>
+          <span class="text-gray-400 whitespace-nowrap shrink-0">
+            ${anTime(j.seconds)} · ${anEsc(j.device || '')}${j.country ? ' · ' + anEsc(j.country) : ''} · ${new Date(j.started_at).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+          </span>
+        </div>`).join('')}
+    </div>
+  </div>`;
+
+  body.innerHTML = cards + funnel + pages + daily + breakdown + campaigns + journeys;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  renderAnalyticsRanges();
   if (sessionStorage.getItem('admin_auth') === '1') loadAll();
 });
 </script>
