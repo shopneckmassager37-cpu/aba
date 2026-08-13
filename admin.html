@@ -45,7 +45,8 @@
       <span id="save-error" class="text-xs text-red-400 hidden">✗ Error saving</span>
     </div>
     <div class="flex items-center gap-3">
-      <button onclick="showTab('products')" id="tab-products" class="tab-btn px-4 py-1.5 rounded text-sm bg-white text-gray-900 font-medium">Products</button>
+      <button onclick="showTab('orders')" id="tab-orders" class="tab-btn px-4 py-1.5 rounded text-sm bg-white text-gray-900 font-medium">Orders</button>
+      <button onclick="showTab('products')" id="tab-products" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Products</button>
       <button onclick="showTab('categories')" id="tab-categories" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Categories</button>
       <button onclick="showTab('allergens')" id="tab-allergens" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Allergens</button>
       <button onclick="showTab('analytics')" id="tab-analytics" class="tab-btn px-4 py-1.5 rounded text-sm text-gray-400 hover:text-white">Analytics</button>
@@ -54,8 +55,24 @@
     </div>
   </div>
 
+  <!-- ORDERS TAB -->
+  <div id="tab-orders-panel" class="p-6">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+      <h2 class="text-lg font-semibold text-gray-800">Orders</h2>
+      <div class="flex items-center gap-2">
+        <input id="orders-search" type="search" placeholder="Search name, phone, email, order id…" oninput="renderOrders()"
+          class="border border-gray-200 rounded px-3 py-1.5 text-xs w-64 focus:outline-none focus:border-blue-400"/>
+        <button onclick="exportOrdersCsv()" class="border border-gray-200 text-gray-600 px-3 py-1.5 rounded text-xs hover:border-gray-400">⤓ CSV</button>
+        <button onclick="loadOrders()" class="border border-gray-200 text-gray-600 px-3 py-1.5 rounded text-xs hover:border-gray-400">↻ Refresh</button>
+      </div>
+    </div>
+    <div id="orders-summary" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+    <div id="orders-filter-btns" class="flex gap-2 mb-4 flex-wrap"></div>
+    <div id="orders-list" class="space-y-2"></div>
+  </div>
+
   <!-- PRODUCTS TAB -->
-  <div id="tab-products-panel" class="p-6">
+  <div id="tab-products-panel" class="p-6 hidden">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold text-gray-800">Products</h2>
       <button onclick="openProductModal(null)" class="bg-gray-900 text-white px-4 py-2 rounded text-sm hover:bg-gray-700">+ Add Product</button>
@@ -289,7 +306,7 @@ if (sessionStorage.getItem('admin_auth') === '1') {
 
 // ── TABS ──
 function showTab(name) {
-  ['products','categories','allergens','analytics'].forEach(t => {
+  ['orders','products','categories','allergens','analytics'].forEach(t => {
     document.getElementById(`tab-${t}-panel`).classList.toggle('hidden', t !== name);
     const btn = document.getElementById(`tab-${t}`);
     if (t === name) { btn.classList.add('bg-white','text-gray-900','font-medium'); btn.classList.remove('text-gray-400'); }
@@ -300,6 +317,7 @@ function showTab(name) {
 
 // ── LOAD DATA ──
 async function loadAll() {
+  loadOrders();   // the tab that opens first — let it fill in on its own
   [categories, products, allergens] = await Promise.all([getCategories(), getProducts(), getAllergens()]);
   renderCategoryFilter();
   renderProductsList();
@@ -805,16 +823,248 @@ async function deleteAllergenConfirm(id, name) {
 }
 
 // ══════════════════════════════════════════════════════════
+//  ORDERS TAB
+// ══════════════════════════════════════════════════════════
+let orders = [];
+let orderFilter = 'all';
+const expandedOrders = new Set();
+
+const ORDER_STATUSES = [
+  { key: 'new',       label: 'New',       chip: 'bg-amber-100 text-amber-800' },
+  { key: 'paid',      label: 'Paid',      chip: 'bg-blue-100 text-blue-800' },
+  { key: 'confirmed', label: 'Confirmed', chip: 'bg-green-100 text-green-800' },
+  { key: 'delivered', label: 'Delivered', chip: 'bg-gray-200 text-gray-700' },
+  { key: 'cancelled', label: 'Cancelled', chip: 'bg-red-100 text-red-700' },
+];
+
+// Everything below renders customer-supplied text — never inject it raw.
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function money(n) {
+  return '$' + (Number(n) || 0).toFixed(2);
+}
+
+function orderDate(iso) {
+  return new Date(iso).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+async function loadOrders() {
+  const list = document.getElementById('orders-list');
+  list.innerHTML = `<p class="text-sm text-gray-400">Loading…</p>`;
+  try {
+    orders = await getOrders();
+    renderOrders();
+  } catch (e) {
+    if (handleAuthError(e)) return;
+    list.innerHTML = `<div class="bg-white rounded border border-gray-200 p-6">
+      <p class="text-sm text-red-500 mb-1">Couldn't load orders.</p>
+      <p class="text-xs text-gray-400">${esc(e.message)}</p>
+      <p class="text-xs text-gray-400 mt-2">If this says the table is missing, run <code>supabase/orders.sql</code> in the Supabase SQL editor first.</p>
+    </div>`;
+  }
+}
+
+function visibleOrders() {
+  const q = (document.getElementById('orders-search')?.value || '').trim().toLowerCase();
+  return orders.filter(o => {
+    if (orderFilter !== 'all' && o.status !== orderFilter) return false;
+    if (!q) return true;
+    return [o.name, o.email, o.phone, o.order_code, o.address, o.zone].some(v => String(v || '').toLowerCase().includes(q));
+  });
+}
+
+function renderOrderFilters() {
+  const counts = { all: orders.length };
+  ORDER_STATUSES.forEach(s => { counts[s.key] = orders.filter(o => o.status === s.key).length; });
+  const buttons = [{ key: 'all', label: 'All' }, ...ORDER_STATUSES];
+  document.getElementById('orders-filter-btns').innerHTML = buttons.map(b => `
+    <button onclick="setOrderFilter('${b.key}')"
+      class="px-3 py-1.5 rounded-full text-xs border ${orderFilter === b.key ? 'bg-gray-900 text-white border-gray-900' : 'border-gray-200 text-gray-600 hover:border-gray-400'}">
+      ${b.label} <span class="opacity-60">${counts[b.key] || 0}</span>
+    </button>`).join('');
+}
+
+function setOrderFilter(key) {
+  orderFilter = key;
+  renderOrders();
+}
+
+function renderOrderSummary() {
+  const shown = visibleOrders();
+  const live = shown.filter(o => o.status !== 'cancelled');
+  const revenue = live.reduce((s, o) => s + (Number(o.total) || 0), 0);
+  const waiting = orders.filter(o => o.status === 'new' || o.status === 'paid').length;
+  const week = orders.filter(o => o.status !== 'cancelled' && Date.now() - new Date(o.created_at).getTime() < 7 * 864e5);
+  const weekRevenue = week.reduce((s, o) => s + (Number(o.total) || 0), 0);
+
+  const card = (label, value, sub) => `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400">${label}</p>
+    <p class="text-2xl font-semibold text-gray-800 mt-1">${value}</p>
+    <p class="text-xs text-gray-400 mt-0.5">${sub}</p>
+  </div>`;
+
+  document.getElementById('orders-summary').innerHTML =
+    card('Orders shown', shown.length, `${orders.length} in total`) +
+    card('Revenue shown', money(revenue), 'cancelled orders excluded') +
+    card('Needs attention', waiting, 'new or paid, not yet confirmed') +
+    card('Last 7 days', week.length, `${money(weekRevenue)} in orders`);
+}
+
+function renderOrders() {
+  renderOrderFilters();
+  renderOrderSummary();
+  const list = document.getElementById('orders-list');
+  const shown = visibleOrders();
+
+  if (!shown.length) {
+    list.innerHTML = `<div class="bg-white rounded border border-gray-200 p-8 text-center">
+      <p class="text-sm text-gray-500">${orders.length ? 'No orders match this filter.' : 'No orders yet.'}</p>
+      ${orders.length ? '' : '<p class="text-xs text-gray-400 mt-1">Orders placed on the site from now on will appear here automatically.</p>'}
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = shown.map(o => {
+    const status = ORDER_STATUSES.find(s => s.key === o.status) || ORDER_STATUSES[0];
+    const items = Array.isArray(o.items) ? o.items : [];
+    const open = expandedOrders.has(o.id);
+    return `
+    <div class="bg-white rounded border border-gray-200">
+      <div class="p-4 flex items-start justify-between gap-4 cursor-pointer" onclick="toggleOrder('${o.id}')">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[11px] px-2 py-0.5 rounded-full ${status.chip}">${status.label}</span>
+            <span class="font-medium text-gray-800">${esc(o.name)}</span>
+            <span class="text-xs text-gray-400">${esc(o.order_code)}</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">
+            ${orderDate(o.created_at)} · ${esc(o.phone || '')} · ${esc(o.email || '')}
+          </p>
+          <p class="text-xs text-gray-500 mt-0.5">
+            ${esc(o.address || '')}${o.zone ? ' · ' + esc(o.zone) : ''}${o.delivery_date ? ' · <span class="text-gray-700">' + esc(o.delivery_date) + '</span>' : ''}
+          </p>
+        </div>
+        <div class="text-right shrink-0">
+          <p class="font-semibold text-gray-800">${money(o.total)}</p>
+          <p class="text-[11px] text-gray-400">${items.length} item${items.length === 1 ? '' : 's'} ${open ? '▲' : '▼'}</p>
+        </div>
+      </div>
+
+      <div class="${open ? '' : 'hidden'} border-t border-gray-100 px-4 py-4 bg-gray-50">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-2">Items</p>
+            ${items.map(i => `
+              <div class="flex justify-between text-sm py-1 border-b border-gray-100 last:border-0">
+                <span class="text-gray-700">
+                  ${esc(i.name)} <span class="text-gray-400">×${parseInt(i.qty, 10) || 0}</span>
+                  ${i.instructions ? `<span class="block text-[11px] text-amber-700 italic">Note: ${esc(i.instructions)}</span>` : ''}
+                </span>
+                <span class="text-gray-600 shrink-0 ml-3">${money((Number(i.price) || 0) * (parseInt(i.qty, 10) || 0))}</span>
+              </div>`).join('')}
+            ${o.notes ? `<p class="text-xs text-gray-600 italic mt-3">Customer note: ${esc(o.notes)}</p>` : ''}
+          </div>
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-2">Totals</p>
+            <div class="text-sm space-y-1">
+              <div class="flex justify-between text-gray-600"><span>Subtotal</span><span>${money(o.subtotal)}</span></div>
+              <div class="flex justify-between text-gray-600"><span>Tax</span><span>${money(o.tax)}</span></div>
+              <div class="flex justify-between text-gray-600"><span>Delivery</span><span>${money(o.delivery)}</span></div>
+              <div class="flex justify-between text-gray-600"><span>Chef tip</span><span>${money(o.chef_tip)}</span></div>
+              <div class="flex justify-between text-gray-600"><span>Driver tip</span><span>${money(o.driver_tip)}</span></div>
+              <div class="flex justify-between font-semibold text-gray-800 border-t border-gray-200 pt-1"><span>Total</span><span>${money(o.total)}</span></div>
+            </div>
+
+            <div class="mt-4 flex items-center gap-2 flex-wrap">
+              <label class="text-[11px] uppercase tracking-wider text-gray-400">Status</label>
+              <select onchange="setOrderStatus('${o.id}', this.value)" class="border border-gray-200 rounded px-2 py-1 text-xs bg-white">
+                ${ORDER_STATUSES.map(s => `<option value="${s.key}" ${s.key === o.status ? 'selected' : ''}>${s.label}</option>`).join('')}
+              </select>
+              <a href="mailto:${encodeURIComponent(o.email || '')}" class="text-xs text-blue-600 hover:underline">Email</a>
+              <a href="tel:${encodeURIComponent(o.phone || '')}" class="text-xs text-blue-600 hover:underline">Call</a>
+              <button onclick="deleteOrderConfirm('${o.id}', '${esc(o.order_code)}')" class="text-xs text-red-500 hover:underline ml-auto">Delete</button>
+            </div>
+
+            <div class="mt-3">
+              <label class="text-[11px] uppercase tracking-wider text-gray-400">Private note</label>
+              <textarea rows="2" onchange="setOrderNote('${o.id}', this.value)"
+                class="w-full border border-gray-200 rounded px-2 py-1 text-xs mt-1 focus:outline-none focus:border-blue-400"
+                placeholder="Only you see this">${esc(o.admin_note || '')}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleOrder(id) {
+  if (expandedOrders.has(id)) expandedOrders.delete(id);
+  else expandedOrders.add(id);
+  renderOrders();
+}
+
+async function setOrderStatus(id, status) {
+  const order = orders.find(o => o.id === id);
+  const previous = order ? order.status : null;
+  if (order) order.status = status;
+  renderOrders();
+  try {
+    await updateOrder(id, { status });
+    flashSaved();
+  } catch (e) {
+    if (order) order.status = previous;
+    renderOrders();
+    if (!handleAuthError(e)) flashError();
+  }
+}
+
+async function setOrderNote(id, note) {
+  const order = orders.find(o => o.id === id);
+  if (order) order.admin_note = note;
+  try {
+    await updateOrder(id, { admin_note: note });
+    flashSaved();
+  } catch (e) { if (!handleAuthError(e)) flashError(); }
+}
+
+async function deleteOrderConfirm(id, code) {
+  if (!confirm(`Delete order ${code}? This cannot be undone.`)) return;
+  try {
+    await deleteOrder(id);
+    orders = orders.filter(o => o.id !== id);
+    renderOrders();
+    flashSaved();
+  } catch (e) { if (!handleAuthError(e)) flashError(); }
+}
+
+function exportOrdersCsv() {
+  const rows = visibleOrders();
+  if (!rows.length) return;
+  const cell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const header = ['Order', 'Placed', 'Status', 'Name', 'Phone', 'Email', 'Address', 'Zone', 'Delivery date', 'Items', 'Subtotal', 'Tax', 'Delivery', 'Chef tip', 'Driver tip', 'Total', 'Customer note', 'Private note'];
+  const body = rows.map(o => [
+    o.order_code, o.created_at, o.status, o.name, o.phone, o.email, o.address, o.zone, o.delivery_date,
+    (Array.isArray(o.items) ? o.items : []).map(i => `${i.name} x${i.qty}`).join('; '),
+    o.subtotal, o.tax, o.delivery, o.chef_tip, o.driver_tip, o.total, o.notes, o.admin_note,
+  ].map(cell).join(','));
+
+  const blob = new Blob(['﻿' + [header.map(cell).join(','), ...body].join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `chefaleh-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+// ══════════════════════════════════════════════════════════
 //  ANALYTICS TAB
 // ══════════════════════════════════════════════════════════
 let analyticsData = null;
 let analyticsDays = 7;
 const AN_RANGES = [{ d: 1, label: '24 hours' }, { d: 7, label: '7 days' }, { d: 30, label: '30 days' }, { d: 90, label: '90 days' }];
-
-// Paths and page titles arrive from visitors' browsers — never inject them raw.
-function anEsc(value) {
-  return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
 
 function anTime(seconds) {
   const s = Math.max(0, Math.round(seconds || 0));
@@ -852,7 +1102,7 @@ async function loadAnalytics() {
     if (handleAuthError(e)) return;
     body.innerHTML = `<div class="bg-white rounded border border-gray-200 p-6">
       <p class="text-sm text-red-500 mb-1">Couldn't load analytics.</p>
-      <p class="text-xs text-gray-400">${anEsc(e.message)}</p>
+      <p class="text-xs text-gray-400">${esc(e.message)}</p>
       <p class="text-xs text-gray-400 mt-2">If this says the function is missing, run <code>supabase/analytics.sql</code> in the Supabase SQL editor first.</p>
     </div>`;
   }
@@ -871,7 +1121,7 @@ function anBarList(title, rows, emptyText) {
   const body = rows.length ? rows.slice(0, 8).map(r => `
     <div class="mb-2">
       <div class="flex justify-between text-xs text-gray-600 mb-0.5">
-        <span class="truncate pr-2">${anEsc(r.label)}</span>
+        <span class="truncate pr-2">${esc(r.label)}</span>
         <span class="text-gray-400 shrink-0">${r.visitors}</span>
       </div>
       <div class="h-1.5 bg-gray-100 rounded">
@@ -946,8 +1196,8 @@ function renderAnalytics() {
         ${d.pages.map(p => `
           <tr class="border-b border-gray-50 last:border-0">
             <td class="px-4 py-3">
-              <span class="text-gray-800">${anEsc(p.path)}</span>
-              <span class="block text-[11px] text-gray-400 truncate max-w-xs">${anEsc(p.title)}</span>
+              <span class="text-gray-800">${esc(p.path)}</span>
+              <span class="block text-[11px] text-gray-400 truncate max-w-xs">${esc(p.title)}</span>
             </td>
             <td class="px-4 py-3 text-right text-gray-700">${p.views}</td>
             <td class="px-4 py-3 text-right text-gray-700">${p.visitors}</td>
@@ -966,13 +1216,13 @@ function renderAnalytics() {
     <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Views per day</p>
     <div class="flex items-end gap-1 h-32">
       ${d.daily.map(x => `
-        <div class="flex-1 flex flex-col items-center justify-end h-full" title="${anEsc(x.day)} — ${x.views} views, ${x.visitors} visitors">
+        <div class="flex-1 flex flex-col items-center justify-end h-full" title="${esc(x.day)} — ${x.views} views, ${x.visitors} visitors">
           <span class="text-[10px] text-gray-400 mb-1">${x.views}</span>
           <div class="w-full bg-gray-800 rounded-t" style="height:${(x.views / dayMax) * 100}%"></div>
         </div>`).join('')}
     </div>
     <div class="flex gap-1 mt-1">
-      ${d.daily.map(x => `<span class="flex-1 text-center text-[9px] text-gray-400">${anEsc(String(x.day).slice(5))}</span>`).join('')}
+      ${d.daily.map(x => `<span class="flex-1 text-center text-[9px] text-gray-400">${esc(String(x.day).slice(5))}</span>`).join('')}
     </div>
   </div>`;
 
@@ -986,7 +1236,7 @@ function renderAnalytics() {
   const campaigns = d.campaigns.length ? `<div class="bg-white rounded border border-gray-200 p-4">
     <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Campaign links (utm_source)</p>
     ${d.campaigns.map(c => `<div class="flex justify-between text-xs text-gray-600 py-1 border-b border-gray-50 last:border-0">
-      <span>${anEsc(c.source)} · ${anEsc(c.campaign)}</span><span class="text-gray-400">${c.visitors} visits</span></div>`).join('')}
+      <span>${esc(c.source)} · ${esc(c.campaign)}</span><span class="text-gray-400">${c.visitors} visits</span></div>`).join('')}
   </div>` : '';
 
   // ── Recent routes through the site ──
@@ -995,9 +1245,9 @@ function renderAnalytics() {
     <div class="space-y-2">
       ${d.journeys.map(j => `
         <div class="flex justify-between gap-4 text-xs border-b border-gray-50 last:border-0 pb-2">
-          <span class="text-gray-700 break-all">${anEsc(j.route)}</span>
+          <span class="text-gray-700 break-all">${esc(j.route)}</span>
           <span class="text-gray-400 whitespace-nowrap shrink-0">
-            ${anTime(j.seconds)} · ${anEsc(j.device || '')}${j.country ? ' · ' + anEsc(j.country) : ''} · ${new Date(j.started_at).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+            ${anTime(j.seconds)} · ${esc(j.device || '')}${j.country ? ' · ' + esc(j.country) : ''} · ${new Date(j.started_at).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
           </span>
         </div>`).join('')}
     </div>

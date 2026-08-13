@@ -1,5 +1,6 @@
 import { createHmac } from 'crypto';
 import { Resend } from 'resend';
+import { sbAdminFetch } from '../lib/supabaseAdmin.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -150,6 +151,32 @@ export default async function handler(req, res) {
     || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
     || 'http://localhost:3000';
   const confirmUrl = `${baseUrl}/api/confirm-order?${confirmParams.toString()}`;
+
+  // Keep a copy of the order so it shows up in the admin panel. A database
+  // hiccup must never cost us the order itself, so failures are logged and the
+  // emails still go out.
+  try {
+    await sbAdminFetch('orders', {
+      method: 'POST',
+      body: JSON.stringify({
+        order_code: orderId,
+        status: 'new',
+        name, email, phone, address,
+        zone: zoneLabel,
+        delivery_date: deliveryDate || null,
+        notes: notes || null,
+        items: cart,
+        subtotal: Number(fmt(subtotal)),
+        tax: Number(fmt(tax)),
+        delivery: Number(fmt(delivery)),
+        chef_tip: Number(fmt(chefTip)),
+        driver_tip: Number(fmt(driverTip)),
+        total: Number(fmt(total)),
+      }),
+    });
+  } catch (e) {
+    console.error('Could not save order', orderId, e.message);
+  }
 
   try {
     // Send payment instructions email to customer immediately
