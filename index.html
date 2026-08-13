@@ -86,31 +86,7 @@
       { "@type": "City", "name": "Fort Lauderdale" },
       { "@type": "City", "name": "Pompano Beach" },
       { "@type": "City", "name": "Boca Raton" }
-    ],
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Delivery Zones",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "name": "Zone 1 — Local Delivery (Miami Beach, Surfside, Bal Harbour, North Bay Village)",
-          "price": "20",
-          "priceCurrency": "USD"
-        },
-        {
-          "@type": "Offer",
-          "name": "Zone 2 — Extended Delivery (Aventura, Sunny Isles Beach, North Miami Beach, Hollywood, Hallandale Beach)",
-          "price": "40",
-          "priceCurrency": "USD"
-        },
-        {
-          "@type": "Offer",
-          "name": "Zone 3 — Long Range Delivery (Fort Lauderdale, Pompano Beach, Boca Raton)",
-          "price": "75",
-          "priceCurrency": "USD"
-        }
-      ]
-    }
+    ]
   }
   </script>
   <script type="application/ld+json">
@@ -197,7 +173,7 @@
             "name": "Which areas do you deliver to in South Florida?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "We deliver across three zones. Zone 1 ($20): Miami Beach, Surfside, Bal Harbour and North Bay Village. Zone 2 ($40): Aventura, Sunny Isles Beach, North Miami Beach, Hollywood and Hallandale Beach. Zone 3 ($75): Fort Lauderdale, Pompano Beach and Boca Raton."
+              "text": "We deliver every Friday across South Florida: Miami Beach, Surfside, Bal Harbour, North Bay Village, Sunny Isles Beach, Aventura, North Miami Beach, Hollywood, Hallandale Beach, Fort Lauderdale, Pompano Beach and Boca Raton. Your delivery fee is worked out from your address at checkout."
             }
           },
           {
@@ -526,70 +502,39 @@
 </section>
 
 <!-- ─────────────────────────────────────────────────────────────
-     DELIVERY ZONES
+     WHERE WE DELIVER
 ──────────────────────────────────────────────────────────────── -->
 <section class="py-24 md:py-28 bg-charcoal">
-  <div class="max-w-7xl mx-auto px-5 md:px-10">
-    <div class="text-center mb-14 md:mb-18">
+  <div class="max-w-4xl mx-auto px-5 md:px-10">
+    <div class="text-center mb-12 md:mb-14">
       <p class="text-gold text-[10px] tracking-[.45em] uppercase mb-4 font-light">Service Area</p>
-      <h2 class="heading-md font-serif text-cream font-light">Delivery Zones</h2>
+      <h2 class="heading-md font-serif text-cream font-light">Where We Deliver</h2>
+      <div class="gold-bar max-w-xs mx-auto my-7"></div>
+      <p class="text-cream/45 text-sm md:text-base font-light leading-relaxed max-w-xl mx-auto">
+        Every Friday afternoon we drive the coast from Miami Beach up to Boca Raton, so your table is set long before candle lighting.
+      </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
-      <!-- Zone 1 -->
-      <div class="section-card bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
-        <div class="flex items-start justify-between mb-6">
-          <div>
-            <p class="text-gold text-[10px] tracking-[.35em] uppercase mb-2 font-light">Zone 1 · Local</p>
-            <h3 class="font-serif text-cream text-2xl font-light">Core Area</h3>
-          </div>
-          <span class="font-serif text-gold text-3xl font-light">$20</span>
-        </div>
-        <div class="gold-bar mb-6"></div>
-        <ul class="space-y-2.5 text-cream/38 text-sm font-light">
-          <li>Miami Beach (all)</li>
-          <li>Surfside</li>
-          <li>Bal Harbour</li>
-          <li>North Bay Village</li>
-        </ul>
-      </div>
-
-      <!-- Zone 2 — highlighted -->
-      <div class="section-card zone-featured p-9 md:p-11">
-        <div class="flex items-start justify-between mb-6">
-          <div>
-            <p class="text-gold text-[10px] tracking-[.35em] uppercase mb-2 font-light">Zone 2 · Mid Range</p>
-            <h3 class="font-serif text-cream text-2xl font-light">Extended Area</h3>
-          </div>
-          <span class="font-serif text-gold text-3xl font-light">$40</span>
-        </div>
-        <div class="gold-bar mb-6"></div>
-        <ul class="space-y-2.5 text-cream/38 text-sm font-light">
-          <li>Aventura</li>
-          <li>Sunny Isles Beach</li>
-          <li>North Miami Beach</li>
-          <li>Hollywood</li>
-          <li>Hallandale Beach</li>
-        </ul>
-      </div>
-
-      <!-- Zone 3 -->
-      <div class="section-card bg-charcoal p-9 md:p-11 hover:bg-charcoal-soft transition-colors duration-300">
-        <div class="flex items-start justify-between mb-6">
-          <div>
-            <p class="text-gold text-[10px] tracking-[.35em] uppercase mb-2 font-light">Zone 3 · Premium</p>
-            <h3 class="font-serif text-cream text-2xl font-light">Long Range</h3>
-          </div>
-          <span class="font-serif text-gold text-3xl font-light">$75</span>
-        </div>
-        <div class="gold-bar mb-6"></div>
-        <ul class="space-y-2.5 text-cream/38 text-sm font-light">
-          <li>Fort Lauderdale</li>
-          <li>Pompano Beach</li>
-          <li>Boca Raton</li>
-        </ul>
-      </div>
+    <div class="section-card bg-charcoal-soft/40 p-8 md:p-12">
+      <ul class="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Miami Beach</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Surfside</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Bal Harbour</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>North Bay Village</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Sunny Isles Beach</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Aventura</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>North Miami Beach</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Hollywood</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Hallandale Beach</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Fort Lauderdale</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Pompano Beach</li>
+        <li class="flex items-start gap-3 text-cream/55 text-sm font-light"><span class="w-1 h-1 bg-gold rounded-full shrink-0 mt-2"></span>Boca Raton</li>
+      </ul>
     </div>
+
+    <p class="text-center text-cream/35 text-xs font-light mt-8 leading-relaxed">
+      Not sure we reach you? <a href="/checkout" class="text-gold hover:text-cream transition-colors duration-300">Enter your address at checkout</a> and we'll take it from there.
+    </p>
   </div>
 </section>
 
@@ -630,7 +575,7 @@
           <h3 class="faq-q font-serif text-charcoal font-light">Which areas do you deliver to in South Florida?</h3>
           <span class="faq-plus text-gold" aria-hidden="true">+</span>
         </summary>
-        <p class="faq-a text-charcoal/55 text-sm font-light leading-relaxed">We deliver across three zones. Zone 1 ($20): Miami Beach, Surfside, Bal Harbour and North Bay Village. Zone 2 ($40): Aventura, Sunny Isles Beach, North Miami Beach, Hollywood and Hallandale Beach. Zone 3 ($75): Fort Lauderdale, Pompano Beach and Boca Raton.</p>
+        <p class="faq-a text-charcoal/55 text-sm font-light leading-relaxed">We deliver every Friday across South Florida: Miami Beach, Surfside, Bal Harbour, North Bay Village, Sunny Isles Beach, Aventura, North Miami Beach, Hollywood, Hallandale Beach, Fort Lauderdale, Pompano Beach and Boca Raton. Your delivery fee is worked out from your address at checkout.</p>
       </details>
       <details class="faq-item">
         <summary>
