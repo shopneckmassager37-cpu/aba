@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { Resend } from 'resend';
+import { sbAdminFetch } from '../lib/supabaseAdmin.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const CONFIRM_FIELDS = ['orderId', 'name', 'email', 'phone', 'address', 'zone', 'subtotal', 'tax', 'delivery', 'driverTip', 'chefTip', 'total', 'notes', 'items'];
@@ -161,6 +162,17 @@ export default async function handler(req, res) {
         </div>
       `,
     });
+
+    // Reflect the confirmation in the admin panel. Never let a database
+    // problem turn a sent confirmation into an error page.
+    try {
+      await sbAdminFetch(`orders?order_code=eq.${encodeURIComponent(orderId)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'confirmed', confirmed_at: new Date().toISOString() }),
+      });
+    } catch (e) {
+      console.error('Could not mark order confirmed', orderId, e.message);
+    }
 
     // Return a simple success page
     return res.status(200).send(`

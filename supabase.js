@@ -84,6 +84,18 @@ async function deleteAllergen(id) {
   return adminFetch('allergens', { method: 'DELETE', body: JSON.stringify({ id }) });
 }
 
+async function getOrders() {
+  return adminFetch('orders');
+}
+
+async function updateOrder(id, data) {
+  return adminFetch('orders', { method: 'PATCH', body: JSON.stringify({ id, ...data }) });
+}
+
+async function deleteOrder(id) {
+  return adminFetch('orders', { method: 'DELETE', body: JSON.stringify({ id }) });
+}
+
 async function getAnalytics(days) {
   return adminFetch(`analytics?days=${encodeURIComponent(days)}`);
 }
