@@ -42,7 +42,51 @@ function addItem(name, price, badge, instructions, glutenFree, avoidAllergens, f
   }
   saveCart(cart);
   if (typeof window.chefalehTrack === 'function') window.chefalehTrack('add_to_cart', name, parseFloat(price));
-  if (typeof openDrawer === 'function') openDrawer();
+  showAddedToast(name);
+}
+
+// A quick, non-blocking confirmation instead of forcing the cart drawer open
+// on every add — so browsing the menu and adding a few things isn't
+// interrupted each time.
+let addToastTimer = null;
+function showAddedToast(name) {
+  let el = document.getElementById('add-toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'add-toast';
+    const style = document.createElement('style');
+    style.textContent = `
+      #add-toast {
+        position: fixed;
+        top: 84px;
+        left: 50%;
+        z-index: 60;
+        background: #1A1A1A;
+        color: #D4AF37;
+        padding: 12px 22px;
+        border: 1px solid rgba(212,175,55,.4);
+        font-family: 'Jost', sans-serif;
+        font-size: 12px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        max-width: calc(100vw - 32px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, -10px);
+        transition: opacity .25s ease, transform .25s ease;
+      }
+      #add-toast.show { opacity: 1; transform: translate(-50%, 0); }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(el);
+  }
+  el.textContent = `✓ Added ${name} to cart`;
+  el.classList.add('show');
+  clearTimeout(addToastTimer);
+  addToastTimer = setTimeout(() => el.classList.remove('show'), 1800);
 }
 
 function setQty(name, qty) {
