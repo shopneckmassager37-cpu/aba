@@ -18,8 +18,8 @@ const CONFIRM_FIELDS = ['orderId', 'name', 'email', 'phone', 'address', 'zone', 
 // basePrice up to basePrice + the single most expensive fish upgrade + the
 // single most expensive main upgrade.
 const PACKAGE_NAME = 'Chefaleh Shabbat Dinner';
-const PACKAGE_MIN_PRICE = 279;
-const PACKAGE_MAX_PRICE = 279 + 20 + 110;
+const PACKAGE_MIN_PRICE = 250;
+const PACKAGE_MAX_PRICE = 250 + 20 + 110;
 
 // "Complete Your Shabbat Table" items (also from package.html) are regular
 // menu items at a flat discount — accept either the full catalog price or

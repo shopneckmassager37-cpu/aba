@@ -13,7 +13,7 @@
 const PACKAGE = {
   name: 'Chefaleh Shabbat Dinner',
   serves: 'Serves 4–6',
-  basePrice: 279,
+  basePrice: 250,
 
   saladCount: 4,
   saladsCategorySlug: 'salads',
