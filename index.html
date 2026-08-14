@@ -202,11 +202,6 @@
 <a href="#main-content" class="skip-link">Skip to content</a>
 
 <!-- COOKIE BANNER -->
-<div id="cookie" class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500">
-  <p class="text-xs font-light opacity-70 tracking-wide">We use cookies to enhance your experience. <a href="/cookie-policy" class="underline hover:text-gold transition-colors">Learn more</a></p>
-  <button onclick="dismissCookieBanner()" class="text-xs tracking-[.12em] uppercase border border-gold text-gold px-6 py-2 hover:bg-gold hover:text-charcoal transition-all shrink-0">Accept</button>
-</div>
-
 <!-- NAV -->
 <nav id="main-nav" class="site-nav-initial fixed top-0 left-0 right-0 z-40 transition-all duration-400">
   <div class="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between">
@@ -670,16 +665,6 @@
 <script src="cart.js"></script>
 
 <script>
-  /* ── Cookie banner ── */
-  function dismissCookieBanner() {
-    const c = document.getElementById('cookie');
-    if (c) c.remove();
-  }
-  setTimeout(() => {
-    const c = document.getElementById('cookie');
-    if (c) c.classList.remove('translate-y-full');
-  }, 1500);
-
   /* ── Nav scroll effect ── */
   const nav = document.getElementById('main-nav');
   window.addEventListener('scroll', () => {
