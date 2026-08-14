@@ -89,8 +89,8 @@
         <div>
           <p class="text-xs tracking-[.12em] uppercase text-charcoal/55 mb-3 font-medium">For the Driver</p>
           <div id="driver-tip-grid" class="grid grid-cols-4 gap-2 md:gap-3">
-            <div class="pick pick-mini text-center tip-driver" data-val="5" onclick="selectTip('driver',this)"><div class="pick-num">5<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="5">$0.00</div></div>
-            <div class="pick pick-mini text-center tip-driver active" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num">8<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="8">$0.00</div></div>
+            <div class="pick pick-mini text-center tip-driver" data-val="8" onclick="selectTip('driver',this)"><div class="pick-num">8<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="8">$0.00</div></div>
+            <div class="pick pick-mini text-center tip-driver active" data-val="10" onclick="selectTip('driver',this)"><div class="pick-num">10<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="10">$0.00</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="12" onclick="selectTip('driver',this)"><div class="pick-num">12<span class="text-base">%</span></div><div class="pick-suf tip-amt" data-group="driver" data-pct="12">$0.00</div></div>
             <div class="pick pick-mini text-center tip-driver" data-val="custom" onclick="selectTip('driver',this)"><div class="pick-num" style="font-size:.85rem">Custom</div></div>
           </div>
@@ -125,6 +125,9 @@
             <div id="address-results" class="address-results"></div>
             <p id="err-co-address" class="field-err">Please enter your delivery address.</p>
           </div>
+          <div id="area-warning" class="hidden md:col-span-2 p-4 text-xs leading-relaxed" style="background:#FBEAEA;border:1px solid #E3B4B4;color:#8A2E2E">
+            We don't currently deliver to this address. Message us on <a href="https://wa.me/13053076800" target="_blank" rel="noopener noreferrer" class="underline font-medium">WhatsApp</a> or call <a href="tel:+13059850770" class="underline font-medium">(305) 985-0770</a> to check availability before placing your order.
+          </div>
           <textarea id="co-notes" class="field md:col-span-2" rows="3" placeholder="Special instructions (optional)" style="resize:none"></textarea>
         </div>
       </div>
@@ -148,9 +151,9 @@
           <div>
             <div class="sum-row"><span class="sum-label">Subtotal</span><span class="sum-val" id="co-sub">$0.00</span></div>
             <div class="sum-row"><span class="sum-label">Tax (7%)</span><span class="sum-val" id="co-tax">$0.00</span></div>
-            <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">Zone 2</span></span><span class="sum-val" id="co-delivery">$40.00</span></div>
+            <div class="sum-row"><span class="sum-label">Delivery <span id="co-zone-label" class="text-charcoal/35 ml-1">Area 2</span></span><span class="sum-val" id="co-delivery">Free</span></div>
             <div class="sum-row"><span class="sum-label">Chef Tip <span id="co-chef-label" class="text-charcoal/35 ml-1">15%</span></span><span class="sum-val" id="co-chef-tip">$0.00</span></div>
-            <div class="sum-row"><span class="sum-label">Driver Tip <span id="co-driver-label" class="text-charcoal/35 ml-1">8%</span></span><span class="sum-val" id="co-driver-tip">$0.00</span></div>
+            <div class="sum-row"><span class="sum-label">Driver Tip <span id="co-driver-label" class="text-charcoal/35 ml-1">10%</span></span><span class="sum-val" id="co-driver-tip">$0.00</span></div>
           </div>
 
           <div class="sum-divider"></div>
@@ -178,11 +181,11 @@
 
 <script>
   const CART_KEY = 'chefaleh_cart';
-  let deliveryZone = 40;
+  let deliveryZone = 0;
   let deliveryZoneNum = 2;
   let chefTipPct = 15;
   let chefTipFixed = null;    // dollar amount when chef Custom is used
-  let driverTipPct = 8;       // percentage-based driver tip
+  let driverTipPct = 10;      // percentage-based driver tip
   let driverTipFixed = null;  // dollar amount when driver Custom is used
 
   // ── DELIVERY DATE ──
@@ -213,8 +216,8 @@
     const hour = miami.getHours();
     const min = miami.getMinutes();
 
-    // Past deadline for THIS Friday? (Wed >= 5PM)
-    const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) || (day > 3 && day <= 6);
+    // Past deadline for THIS Friday? (Thu >= 2PM)
+    const pastDeadline = (day === 4 && (hour > 14 || (hour === 14 && min >= 0))) || (day > 4 && day <= 6);
 
     let firstFriday = new Date(miami);
     firstFriday.setHours(0, 0, 0, 0);
@@ -275,42 +278,36 @@
     }
   }
 
-  // Zone detection: keyword → fee
-  const ZONE_RULES = [
+  // Delivery areas: keyword → fee. Area 1 & 2 are free; Area 3 has a flat
+  // fee; anything that matches nothing is outside our normal delivery area.
+  const AREA_RULES = [
     {
-      fee: 20, num: 1, label: 'Zone 1',
+      fee: 0, num: 1, label: 'Area 1',
       keywords: ['miami beach', 'bal harbour', 'surfside', 'aventura', 'hallandale', 'hollywood', 'sunny isles', 'bay harbor', 'north bay village', 'golden beach']
     },
     {
-      fee: 40, num: 2, label: 'Zone 2',
+      fee: 0, num: 2, label: 'Area 2',
       keywords: ['miami', 'coral gables', 'coconut grove', 'brickell', 'downtown', 'wynwood', 'doral', 'hialeah', 'pembroke pines', 'miramar', 'north miami', 'miami springs', 'edgewater', 'midtown']
     },
     {
-      fee: 75, num: 3, label: 'Zone 3',
+      fee: 20, num: 3, label: 'Area 3',
       keywords: ['fort lauderdale', 'boca raton', 'delray', 'pompano', 'weston', 'plantation', 'davie', 'sunrise', 'tamarac', 'coral springs', 'deerfield beach']
     },
   ];
 
   function detectZone(address) {
     const lower = address.toLowerCase();
-    console.log("Detecting zone for:", lower);
-    
-    // Check Zone 1 first (most local)
-    for (const zone of ZONE_RULES) {
+
+    for (const zone of AREA_RULES) {
       for (const k of zone.keywords) {
         // Regex for whole phrase/word match
         const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(`\\b${escaped}\\b`, 'i');
-        if (regex.test(lower)) {
-          console.log("Matched:", k, "->", zone.label);
-          return zone;
-        }
+        if (regex.test(lower)) return zone;
       }
     }
-    
-    // Fallback if no specific match found
-    console.log("No match found, defaulting to Zone 2");
-    return { fee: 40, num: 2, label: 'Zone 2' };
+
+    return null; // outside our normal delivery area
   }
 
   function readCart() {
@@ -381,18 +378,21 @@
     const tax = sub * 0.07;
     const chefTip = chefTipFixed !== null ? chefTipFixed : sub * chefTipPct / 100;
     const driverTipAmt = driverTipFixed !== null ? driverTipFixed : sub * driverTipPct / 100;
-    const total = sub + tax + deliveryZone + chefTip + driverTipAmt;
+    const deliveryForTotal = deliveryZone !== null ? deliveryZone : 0;
+    const total = sub + tax + deliveryForTotal + chefTip + driverTipAmt;
 
     const fmt = n => '$' + n.toFixed(2);
     const set = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
     set('co-sub', fmt(sub));
     set('co-tax', fmt(tax));
-    set('co-delivery', fmt(deliveryZone));
+    set('co-delivery', deliveryZone === null ? 'Contact us' : (deliveryZone === 0 ? 'Free' : fmt(deliveryZone)));
     set('co-chef-tip', fmt(chefTip));
     set('co-driver-tip', fmt(driverTipAmt));
     set('co-tot', fmt(total));
     const zEl = document.getElementById('co-zone-label');
-    if (zEl) zEl.textContent = `Zone ${deliveryZoneNum}`;
+    if (zEl) zEl.textContent = deliveryZoneNum !== null ? `Area ${deliveryZoneNum}` : 'Outside Area';
+    const areaWarning = document.getElementById('area-warning');
+    if (areaWarning) areaWarning.classList.toggle('hidden', deliveryZoneNum !== null);
     const chefLbl = document.getElementById('co-chef-label');
     if (chefLbl) chefLbl.textContent = chefTipFixed !== null ? '$' + chefTip.toFixed(2) : chefTipPct + '%';
     const driverLbl = document.getElementById('co-driver-label');
@@ -421,7 +421,7 @@
           <div class="item-name">${escapeHtml(i.name)}</div>
           ${i.badge ? `<div class="item-badge">${escapeHtml(i.badge)}</div>` : ''}
           ${i.flavors && i.flavors.length ? `<div class="item-badge">Flavor: ${escapeHtml(summarizeFlavors(i.flavors))}</div>` : ''}
-          ${i.instructions ? `<div class="item-instr">"${escapeHtml(i.instructions)}"</div>` : ''}
+          ${i.instructions ? `<div class="item-instr" style="white-space:pre-line">"${escapeHtml(i.instructions)}"</div>` : ''}
           ${i.glutenFree ? `<div class="item-gf">Gluten-free</div>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<div class="item-gf">Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}
         </div>
@@ -492,17 +492,28 @@
     resultsDiv.style.display = 'none';
     // Use the specific area (city/suburb) for better detection, but fall back to full string
     onAddressInput(area + ' | ' + full);
-    if (typeof window.chefalehTrack === 'function') window.chefalehTrack('select_zone', `Zone ${deliveryZoneNum}`, deliveryZone);
+    if (typeof window.chefalehTrack === 'function') {
+      window.chefalehTrack('select_zone', deliveryZoneNum !== null ? `Area ${deliveryZoneNum}` : 'Outside area', deliveryZone);
+    }
   };
 
   function onAddressInput(address) {
     const zone = detectZone(address);
-    deliveryZone = zone.fee;
-    deliveryZoneNum = zone.num;
     const badge = document.getElementById('zone-badge');
-    if (badge) {
-      badge.textContent = zone.label;
-      badge.style.color = '#D4AF37';
+    if (zone) {
+      deliveryZone = zone.fee;
+      deliveryZoneNum = zone.num;
+      if (badge) {
+        badge.textContent = zone.fee === 0 ? `${zone.label} · Free` : zone.label;
+        badge.style.color = '#D4AF37';
+      }
+    } else {
+      deliveryZone = null;
+      deliveryZoneNum = null;
+      if (badge) {
+        badge.textContent = 'Outside area';
+        badge.style.color = '#C0392B';
+      }
     }
     updateTotals();
   }
@@ -545,6 +556,11 @@
       document.querySelector('.field.invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
+    if (deliveryZoneNum === null) {
+      alert("We don't currently deliver to this address. Please message us on WhatsApp or call (305) 985-0770 to check availability before placing your order.");
+      document.getElementById('area-warning')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     const cart = readCart();
     if (!cart.length) { alert('Your cart is empty.'); return; }
 
@@ -567,7 +583,7 @@
       body: JSON.stringify({
         name, phone, email, address,
         deliveryDate: formatFriday(selectedFriday),
-        zone: `Zone ${deliveryZoneNum} ($${deliveryZone})`,
+        zone: `Area ${deliveryZoneNum} (${deliveryZone === 0 ? 'Free' : '$' + deliveryZone})`,
         cart,
         subtotal: sub.toFixed(2),
         tax: tax.toFixed(2),

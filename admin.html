@@ -987,7 +987,7 @@ function renderOrders() {
               <div class="flex justify-between text-sm py-1 border-b border-gray-100 last:border-0">
                 <span class="text-gray-700">
                   ${esc(i.name)} <span class="text-gray-400">×${parseInt(i.qty, 10) || 0}</span>
-                  ${i.instructions ? `<span class="block text-[11px] text-amber-700 italic">Note: ${esc(i.instructions)}</span>` : ''}
+                  ${i.instructions ? `<span class="block text-[11px] text-amber-700 italic" style="white-space:pre-line">Note: ${esc(i.instructions)}</span>` : ''}
                 </span>
                 <span class="text-gray-600 shrink-0 ml-3">${money((Number(i.price) || 0) * (parseInt(i.qty, 10) || 0))}</span>
               </div>`).join('')}
@@ -1166,6 +1166,9 @@ const CTA_LABELS = {
   hero_our_story: 'Hero — Our Story',
   sticky_bar_menu: 'Sticky bar — Order for Friday',
   sticky_bar_checkout: 'Sticky bar — Proceed to Checkout',
+  sticky_bar_package: 'Sticky bar — Build Your Table',
+  home_package_banner: 'Homepage — Shabbat Package banner',
+  menu_package_banner: 'Menu page — Shabbat Package banner',
   drawer_checkout: 'Cart drawer — Proceed to Checkout',
   menu_proceed_order: 'Menu page — Proceed to Order',
   whatsapp: 'WhatsApp chat button',

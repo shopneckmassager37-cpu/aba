@@ -2,7 +2,7 @@
 
 > Chefaleh is an ORB certified kosher private chef and Shabbat catering service delivering fresh Friday meals across South Florida.
 
-Chefaleh prepares small-batch kosher Shabbat meals, event catering and private chef style menus with Israeli and Mediterranean influences. Orders placed by Wednesday at 5:00 PM Miami time are scheduled for Friday delivery between 3:00 and 5:00 PM.
+Chefaleh prepares small-batch kosher Shabbat meals, event catering and private chef style menus with Israeli and Mediterranean influences. Orders placed by Thursday at 2:00 PM Miami time are scheduled for Friday delivery between 3:00 and 5:00 PM.
 
 ## Core Pages
 
@@ -23,4 +23,4 @@ Chefaleh prepares small-batch kosher Shabbat meals, event catering and private c
 
 ## Ordering
 
-Chefaleh accepts pre-orders for Friday Shabbat delivery. Orders placed after Wednesday at 5:00 PM Miami time are scheduled for the following Friday.
+Chefaleh accepts pre-orders for Friday Shabbat delivery. Orders placed after Thursday at 2:00 PM Miami time are scheduled for the following Friday.

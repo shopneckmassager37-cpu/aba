@@ -11,6 +11,21 @@ const TAX_RATE = 0.07;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONFIRM_FIELDS = ['orderId', 'name', 'email', 'phone', 'address', 'zone', 'subtotal', 'tax', 'delivery', 'driverTip', 'chefTip', 'total', 'notes', 'items'];
 
+// The Shabbat Dinner package (package.html / package.js) isn't a row in the
+// products table — it's priced client-side from PACKAGE.basePrice plus
+// whichever fish/main upgrade was chosen. Keep this range in sync with
+// package.js's PACKAGE config if those numbers ever change: it must cover
+// basePrice up to basePrice + the single most expensive fish upgrade + the
+// single most expensive main upgrade.
+const PACKAGE_NAME = 'Chefaleh Shabbat Dinner';
+const PACKAGE_MIN_PRICE = 279;
+const PACKAGE_MAX_PRICE = 279 + 20 + 110;
+
+// "Complete Your Shabbat Table" items (also from package.html) are regular
+// menu items at a flat discount — accept either the full catalog price or
+// exactly this discounted price, never anything else.
+const PACKAGE_EXTRA_DISCOUNT = 0.05;
+
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -109,17 +124,34 @@ export default async function handler(req, res) {
 
   const cart = [];
   for (const item of rawCart) {
-    const price = byName.get(item?.name);
     const qty = parseInt(item?.qty, 10);
-    if (price === undefined || !Number.isFinite(qty) || qty <= 0 || qty > 100) {
-      return res.status(400).json({ error: `Unknown or invalid item: ${clampText(item?.name, 100)}` });
+    if (!Number.isFinite(qty) || qty <= 0 || qty > 100) {
+      return res.status(400).json({ error: `Invalid quantity for: ${clampText(item?.name, 100)}` });
     }
+
+    let price;
+    if (item?.name === PACKAGE_NAME) {
+      const clientPrice = parseFloat(item?.price);
+      if (!Number.isFinite(clientPrice) || clientPrice < PACKAGE_MIN_PRICE || clientPrice > PACKAGE_MAX_PRICE) {
+        return res.status(400).json({ error: 'Invalid Shabbat Dinner package price' });
+      }
+      price = Math.round(clientPrice * 100) / 100;
+    } else {
+      const catalogPrice = byName.get(item?.name);
+      if (catalogPrice === undefined) {
+        return res.status(400).json({ error: `Unknown or invalid item: ${clampText(item?.name, 100)}` });
+      }
+      const discountedPrice = Math.round(catalogPrice * (1 - PACKAGE_EXTRA_DISCOUNT) * 100) / 100;
+      const clientPrice = parseFloat(item?.price);
+      price = (Number.isFinite(clientPrice) && Math.abs(clientPrice - discountedPrice) < 0.01) ? discountedPrice : catalogPrice;
+    }
+
     cart.push({
       name: item.name,
       qty,
       price,
       badge: clampText(item.badge, 60),
-      instructions: clampText(item.instructions, 300),
+      instructions: clampText(item.instructions, 700),
       glutenFree: !!item.glutenFree,
       avoidAllergens: clampAllergenList(item.avoidAllergens),
       flavors: clampFlavorList(item.flavors).slice(0, qty),
@@ -136,7 +168,7 @@ export default async function handler(req, res) {
         <td style="padding:10px 12px;border-bottom:1px solid #f0ede6;font-family:Georgia,serif;font-size:15px">
           ${escapeHtml(i.name)}
           ${i.flavors && i.flavors.length ? `<div style="font-size:12px;color:#D4AF37;font-weight:600;margin-top:2px">Flavor: ${escapeHtml(summarizeFlavors(i.flavors))}</div>` : ''}
-          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px">Note: ${escapeHtml(i.instructions)}</div>` : ''}
+          ${i.instructions ? `<div style="font-size:12px;color:#D4AF37;font-style:italic;margin-top:2px;white-space:pre-line">Note: ${escapeHtml(i.instructions)}</div>` : ''}
           ${i.glutenFree ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">🌾 Gluten-Free</div>` : ''}
           ${i.avoidAllergens && i.avoidAllergens.length ? `<div style="font-size:12px;color:#4B7A3C;font-weight:600;margin-top:2px">⚠️ Without: ${escapeHtml(i.avoidAllergens.join(', '))}</div>` : ''}
         </td>

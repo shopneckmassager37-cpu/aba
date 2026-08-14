@@ -6,6 +6,7 @@ module.exports = {
     './cart.js',
     './cart-drawer.js',
     './analytics.js',
+    './package.js',
   ],
   safelist: [
     { pattern: /^(text|bg|border)-(cream|charcoal|gold|white|black|charcoal-soft|cream-dark|cream-darker|gold-dark|terracotta)(\/\d{1,3})?$/ },

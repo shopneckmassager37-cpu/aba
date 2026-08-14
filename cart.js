@@ -11,6 +11,13 @@ const FRIDAY_LABELS = {
   '2026-10-02': 'Erev Chag',
 };
 
+// Cart contents render as HTML in the drawer — escape anything that came
+// from user input (item names are admin-controlled, but instructions and
+// allergen notes are typed by the customer).
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function getCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
   catch { return []; }
@@ -150,8 +157,8 @@ function getUpcomingFridays() {
   const hour = miami.getHours();
   const min = miami.getMinutes();
 
-  // Past deadline for THIS Friday? (Wed >= 5PM)
-  const pastDeadline = (day === 3 && (hour > 17 || (hour === 17 && min >= 0))) || (day > 3 && day <= 6);
+  // Past deadline for THIS Friday? (Thu >= 2PM)
+  const pastDeadline = (day === 4 && (hour > 14 || (hour === 14 && min >= 0))) || (day > 4 && day <= 6);
 
   let firstFriday = new Date(miami);
   firstFriday.setHours(0, 0, 0, 0);
@@ -265,12 +272,12 @@ function renderDrawer() {
       return `
       <div class="flex items-start gap-3 py-3 border-b border-charcoal/8">
         <div class="flex-1 min-w-0">
-          <p class="text-sm text-charcoal font-light leading-snug">${i.name}</p>
-          <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${i.badge}</p>
-          ${i.flavors && i.flavors.length ? `<p class="text-[10px] text-gold/70 font-light mt-0.5">Flavor: <strong class="font-medium">${summarizeFlavorsList(i.flavors)}</strong></p>` : ''}
-          ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic">${i.instructions}</p>` : ''}
+          <p class="text-sm text-charcoal font-light leading-snug">${escHtml(i.name)}</p>
+          <p class="text-[11px] text-charcoal/40 font-light mt-0.5">${escHtml(i.badge)}</p>
+          ${i.flavors && i.flavors.length ? `<p class="text-[10px] text-gold/70 font-light mt-0.5">Flavor: <strong class="font-medium">${escHtml(summarizeFlavorsList(i.flavors))}</strong></p>` : ''}
+          ${i.instructions ? `<p class="text-[10px] text-gold/70 font-light mt-0.5 italic" style="white-space:pre-line">${escHtml(i.instructions)}</p>` : ''}
           ${i.glutenFree ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Gluten-free</p>` : ''}
-          ${i.avoidAllergens && i.avoidAllergens.length ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Without: ${i.avoidAllergens.join(', ')}</p>` : ''}
+          ${i.avoidAllergens && i.avoidAllergens.length ? `<p class="text-[10px] font-medium mt-0.5" style="color:#6B8F5A">Without: ${escHtml(i.avoidAllergens.join(', '))}</p>` : ''}
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <button onclick="deck('${n}',-1,${i.price},'${b}')" class="w-6 h-6 border border-charcoal/15 text-charcoal hover:bg-charcoal hover:text-cream transition-all text-xs leading-none">−</button>
@@ -335,11 +342,12 @@ function injectStickyOrderBar() {
   if (path === '/checkout') return;
 
   const onMenu = path === '/menu';
+  const onPackage = path === '/package';
   const bar = document.createElement('a');
   bar.id = 'order-bar';
-  bar.href = onMenu ? '/checkout' : '/menu';
-  bar.dataset.track = onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu';
-  bar.innerHTML = (onMenu ? 'Proceed to Checkout' : 'Order for Friday') + ' <span aria-hidden="true">&rarr;</span>';
+  bar.href = onPackage ? '#pkg-total' : (onMenu ? '/checkout' : '/menu');
+  bar.dataset.track = onPackage ? 'sticky_bar_package' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu');
+  bar.innerHTML = (onPackage ? 'Build Your Table' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday')) + ' <span aria-hidden="true">&rarr;</span>';
 
   const style = document.createElement('style');
   style.textContent = `
