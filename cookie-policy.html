@@ -85,17 +85,17 @@
         </div>
         <div class="border-l-2 border-charcoal/20 pl-5">
           <p class="text-charcoal font-medium text-xs tracking-[.15em] uppercase mb-1">Analytics</p>
-          <p>With your permission, we measure how visitors interact with our website — which pages are visited most, how long visitors stay, where they came from, and actions like adding an item to the cart. This is done with our own software, without cookies and without sharing anything with advertising networks: a random identifier is kept in your browser only until you close the tab, and we do not store your IP address or anything that identifies you personally. The data is aggregated and anonymous.</p>
+          <p>We measure how visitors interact with our website — which pages are visited most, how long visitors stay, where they came from, and actions like adding an item to the cart. This is done with our own software, without cookies and without sharing anything with advertising networks: a random identifier is kept in your browser only until you close the tab, and we do not store your IP address or anything that identifies you personally. The data is aggregated and anonymous. Chefaleh delivers only within South Florida, so this analytics runs by default for visitors outside the EU, UK and EEA; visitors browsing from those regions are shown a notice instead of the site and are never measured. You can opt out below at any time.</p>
         </div>
       </div>
     </section>
 
     <section>
       <h2 class="font-serif text-charcoal font-light text-2xl mb-3">Your Choice</h2>
-      <p class="mb-3">The first time you visit, a banner asks whether we can turn on analytics for your visit. Nothing is measured before you answer. Choosing "No thanks" means we never turn it on, and we won't ask again on that device. This choice only covers analytics — essential and functional cookies keep the site itself (cart, checkout) working regardless, since the site can't take orders without them.</p>
-      <button type="button" onclick="localStorage.removeItem('chefaleh_consent'); location.reload();"
+      <p class="mb-3" id="consent-status-text">Analytics is on by default for this site. If you'd rather not be counted, you can opt out below at any time — your choice is remembered on this device. This only covers analytics — essential and functional cookies keep the site itself (cart, checkout) working regardless, since the site can't take orders without them.</p>
+      <button type="button" id="consent-toggle-btn"
         class="text-xs tracking-[.12em] uppercase border border-gold text-gold px-6 py-2.5 hover:bg-gold hover:text-charcoal transition-all">
-        Update your choice
+        Opt out of analytics
       </button>
     </section>
 
@@ -175,6 +175,32 @@ function toggleMenu() {
     h3.style.transform = '';
   }
 }
+
+function refreshConsentButton() {
+  var btn = document.getElementById('consent-toggle-btn');
+  var text = document.getElementById('consent-status-text');
+  if (!btn) return;
+  var optedOut = (function () { try { return localStorage.getItem('chefaleh_consent') === 'denied'; } catch (e) { return false; } })();
+  if (optedOut) {
+    btn.textContent = 'Opt back in to analytics';
+    text.textContent = "You're opted out — nothing about your visits is measured. Essential and functional cookies still keep the site itself (cart, checkout) working.";
+  } else {
+    btn.textContent = 'Opt out of analytics';
+    text.textContent = "Analytics is on by default for this site. If you'd rather not be counted, you can opt out below at any time — your choice is remembered on this device. This only covers analytics — essential and functional cookies keep the site itself (cart, checkout) working regardless, since the site can't take orders without them.";
+  }
+}
+document.getElementById('consent-toggle-btn').addEventListener('click', function () {
+  var optedOut = (function () { try { return localStorage.getItem('chefaleh_consent') === 'denied'; } catch (e) { return false; } })();
+  if (optedOut) {
+    try { localStorage.removeItem('chefaleh_consent'); } catch (e) {}
+  } else if (window.chefalehOptOut) {
+    window.chefalehOptOut();
+  } else {
+    try { localStorage.setItem('chefaleh_consent', 'denied'); } catch (e) {}
+  }
+  refreshConsentButton();
+});
+refreshConsentButton();
 </script>
 <script src="/analytics.js" defer></script>
 </body>

@@ -7,13 +7,16 @@
 // and disappears the moment the tab is closed. Numbers show up in the
 // admin panel's Analytics tab.
 //
-// Nothing is sent until the visitor actively accepts the banner this file
-// injects on first visit (a localStorage flag remembers the choice so it's
-// only asked once per browser). Declining, or never answering, means
-// tracking simply never starts.
+// Chefaleh delivers only within South Florida. Visitors browsing from the
+// EU, UK or EEA never reach this script at all — middleware.js blocks
+// those regions at the edge before any page loads, which is what removes
+// the GDPR / UK-GDPR "consent before tracking" obligation for this site.
+// Everyone else is tracked by default, the way any US-based first-party
+// analytics tool works; there's a quiet opt-out (see cookie-policy.html)
+// for anyone who prefers not to be counted, honored via CONSENT_KEY below.
 (function () {
   var ENDPOINT = '/api/track';
-  var CONSENT_KEY = 'chefaleh_consent'; // 'granted' | 'denied'
+  var CONSENT_KEY = 'chefaleh_consent'; // undefined | 'denied'
   var isBot = !!navigator.webdriver
     || location.hostname === 'localhost'
     || location.hostname === '127.0.0.1';
@@ -24,8 +27,14 @@
   function setConsent(value) {
     try { localStorage.setItem(CONSENT_KEY, value); } catch (e) { /* ignore */ }
   }
+  // Exposed globally so cookie-policy.html's opt-out control can flip this
+  // without needing to know the storage key or reload the page itself.
+  window.chefalehOptOut = function () {
+    setConsent('denied');
+    tracking = false;
+  };
 
-  var tracking = !isBot && getConsent() === 'granted';
+  var tracking = !isBot && getConsent() !== 'denied';
 
   // /index.html → "/", /menu.html → "/menu", /menu/ → "/menu"
   function currentPath() {
@@ -106,8 +115,7 @@
   }
 
   // Starts the actual page-view + time-on-page + scroll-depth measurement
-  // for the CURRENT page. Called immediately if consent was already granted
-  // on an earlier visit, or the moment the banner is accepted.
+  // for the CURRENT page. No-op if an earlier visit opted out.
   function startTracking() {
     if (!tracking) return;
 
@@ -168,48 +176,7 @@
     window.addEventListener('pagehide', flush);
   }
 
-  // ── Consent banner ──
-  // Same element id ("cookie") the site always used, so cart.js's sticky
-  // order bar — which already knows to duck out of this banner's way —
-  // keeps working without any changes there.
-  function injectConsentBanner() {
-    if (document.getElementById('cookie') || !document.body) return;
+  if (isBot) return; // crawlers / automated browsers / local dev: never tracked
 
-    var el = document.createElement('div');
-    el.id = 'cookie';
-    el.className = 'fixed bottom-0 left-0 right-0 z-50 bg-charcoal text-cream px-6 py-4 flex flex-wrap items-center justify-between gap-4 translate-y-full transition-transform duration-500';
-    el.innerHTML =
-      '<p class="text-xs font-light opacity-70 tracking-wide max-w-xl">' +
-        'We use privacy-friendly analytics to see how visitors use the site — no cookies, no ad networks, nothing sold. ' +
-        '<a href="/cookie-policy" class="underline hover:text-gold transition-colors">Learn more</a>' +
-      '</p>' +
-      '<div class="flex items-center gap-2 shrink-0">' +
-        '<button type="button" id="consent-decline" class="text-xs tracking-[.12em] uppercase text-cream/50 hover:text-cream px-3 py-2 transition-colors">No thanks</button>' +
-        '<button type="button" id="consent-accept" class="text-xs tracking-[.12em] uppercase border border-gold text-gold px-6 py-2 hover:bg-gold hover:text-charcoal transition-all">Accept</button>' +
-      '</div>';
-    document.body.appendChild(el);
-
-    setTimeout(function () { el.classList.remove('translate-y-full'); }, 1200);
-
-    document.getElementById('consent-accept').addEventListener('click', function () {
-      setConsent('granted');
-      el.remove();
-      tracking = !isBot;
-      startTracking();
-    });
-    document.getElementById('consent-decline').addEventListener('click', function () {
-      setConsent('denied');
-      el.remove();
-    });
-  }
-
-  if (isBot) return; // crawlers / automated browsers / local dev: no banner, no tracking, ever
-
-  var consent = getConsent();
-  if (consent === 'granted') {
-    startTracking();
-  } else if (consent !== 'denied') {
-    injectConsentBanner();
-  }
-  // consent === 'denied': respect it silently — no banner, no tracking, no nagging.
+  startTracking(); // no-op internally if an earlier visit opted out
 })();
