@@ -492,6 +492,7 @@
     resultsDiv.style.display = 'none';
     // Use the specific area (city/suburb) for better detection, but fall back to full string
     onAddressInput(area + ' | ' + full);
+    if (typeof window.chefalehTrack === 'function') window.chefalehTrack('select_zone', `Zone ${deliveryZoneNum}`, deliveryZone);
   };
 
   function onAddressInput(address) {
@@ -557,6 +558,9 @@
     btn.textContent = 'Placing Order...';
     btn.disabled = true;
 
+    let analyticsSessionId = null;
+    try { analyticsSessionId = sessionStorage.getItem('chefaleh_sid'); } catch (e) {}
+
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -571,12 +575,14 @@
         driverTip: driverTip.toFixed(2),
         chefTip: chefTip.toFixed(2),
         total: total.toFixed(2),
-        notes
+        notes,
+        sessionId: analyticsSessionId
       })
     })
     .then(async r => {
       const data = await r.json().catch(() => ({}));
       if (!r.ok || data.error) throw new Error(data.error || 'Failed to place order');
+      if (typeof window.chefalehTrack === 'function') window.chefalehTrack('order_submitted', `Zone ${deliveryZoneNum}`, total);
       sessionStorage.setItem('chefaleh_last_total', total.toFixed(2));
       localStorage.removeItem(CART_KEY);
       window.location.href = '/confirmation';

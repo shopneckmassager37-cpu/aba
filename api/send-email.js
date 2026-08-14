@@ -79,6 +79,10 @@ export default async function handler(req, res) {
   const notes = clampText(body.notes, 500);
   const deliveryDate = clampText(body.deliveryDate, 60);
   const rawCart = Array.isArray(body.cart) ? body.cart : [];
+  // Best-effort link back to the analytics session that placed this order —
+  // never required, never blocks the order if missing or malformed.
+  const sessionIdRaw = clampText(body.sessionId, 40);
+  const sessionId = /^[0-9a-f-]{8,40}$/i.test(sessionIdRaw) ? sessionIdRaw : null;
 
   if (!name || !phone || !EMAIL_RE.test(email) || !address) {
     return res.status(400).json({ error: 'Missing or invalid contact details' });
@@ -187,6 +191,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         order_code: orderId,
         status: 'new',
+        session_id: sessionId,
         name, email, phone, address,
         zone: zoneLabel,
         delivery_date: deliveryDate || null,

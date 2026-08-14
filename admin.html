@@ -1144,20 +1144,33 @@ function anCard(label, value, sub) {
 }
 
 function anBarList(title, rows, emptyText) {
-  const max = Math.max(1, ...rows.map(r => r.visitors));
+  const max = Math.max(1, ...rows.map(r => r.value));
   const body = rows.length ? rows.slice(0, 8).map(r => `
     <div class="mb-2">
       <div class="flex justify-between text-xs text-gray-600 mb-0.5">
         <span class="truncate pr-2">${esc(r.label)}</span>
-        <span class="text-gray-400 shrink-0">${r.visitors}</span>
+        <span class="text-gray-400 shrink-0">${r.value}${r.sub ? ` <span class="text-gray-300">· ${esc(r.sub)}</span>` : ''}</span>
       </div>
       <div class="h-1.5 bg-gray-100 rounded">
-        <div class="h-1.5 bg-gray-800 rounded" style="width:${(r.visitors / max) * 100}%"></div>
+        <div class="h-1.5 bg-gray-800 rounded" style="width:${(r.value / max) * 100}%"></div>
       </div>
     </div>`).join('') : `<p class="text-xs text-gray-400">${emptyText}</p>`;
   return `<div class="bg-white rounded border border-gray-200 p-4">
     <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">${title}</p>${body}</div>`;
 }
+
+// Friendly names for data-track ids — falls back to the raw id for anything new.
+const CTA_LABELS = {
+  hero_view_menu: 'Hero — View Menu',
+  hero_rosh_hashanah: 'Hero — Order for Rosh Hashanah',
+  hero_our_story: 'Hero — Our Story',
+  sticky_bar_menu: 'Sticky bar — Order for Friday',
+  sticky_bar_checkout: 'Sticky bar — Proceed to Checkout',
+  drawer_checkout: 'Cart drawer — Proceed to Checkout',
+  menu_proceed_order: 'Menu page — Proceed to Order',
+  whatsapp: 'WhatsApp chat button',
+};
+function ctaLabel(id) { return CTA_LABELS[id] || id; }
 
 function renderAnalytics() {
   const d = analyticsData;
@@ -1173,11 +1186,29 @@ function renderAnalytics() {
   }
 
   // ── Headline numbers ──
-  const cards = `<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+  const sc = d.session_conversion || { sessions: 0, ordering_sessions: 0, orders_total: 0 };
+  const cards = `<div class="grid grid-cols-2 md:grid-cols-5 gap-3">
     ${anCard('Page views', t.views, `across the last ${d.days} day${d.days === 1 ? '' : 's'}`)}
     ${anCard('Visits', t.sessions, 'browsing sessions')}
     ${anCard('Avg. time per visit', anTime(t.avg_session_seconds), `${anTime(t.avg_view_seconds)} per page`)}
     ${anCard('Left after one page', anPct(t.bounced_sessions, t.sessions), `${t.bounced_sessions} of ${t.sessions} visits`)}
+    ${anCard('Visits → orders', anPct(sc.ordering_sessions, sc.sessions), `${sc.orders_total} order${sc.orders_total === 1 ? '' : 's'} placed`)}
+  </div>`;
+
+  // ── What visitors actually do, not just which pages they open ──
+  const ac = d.action_counts || {};
+  const tile = (label, key, sub) => {
+    const a = ac[key] || { count: 0, sessions: 0 };
+    return anCard(label, a.count, a.sessions ? `${a.sessions} session${a.sessions === 1 ? '' : 's'}${sub ? ' · ' + sub : ''}` : sub || 'none yet');
+  };
+  const actions = `<div>
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-2">What visitors do, not just which pages they open</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      ${tile('Added to cart', 'add_to_cart')}
+      ${tile('Opened the cart', 'cart_open')}
+      ${tile('Delivery zone detected', 'select_zone')}
+      ${tile('Orders placed', 'order_submitted')}
+    </div>
   </div>`;
 
   // ── Ordering funnel ──
@@ -1237,6 +1268,27 @@ function renderAnalytics() {
     </table>
   </div>`;
 
+  // ── Exactly how far people scroll before they stop ──
+  const SCROLL_BUCKETS = ['0–24%', '25–49%', '50–74%', '75–100%'];
+  const scrollByBucket = Object.fromEntries((d.scroll_histogram || []).map(s => [s.bucket, s.views]));
+  const scrollRows = SCROLL_BUCKETS.map(b => ({ bucket: b, views: scrollByBucket[b] || 0 }));
+  const scrollMax = Math.max(1, ...scrollRows.map(r => r.views));
+  const scrollTotal = scrollRows.reduce((s, r) => s + r.views, 0);
+  const scrollChart = `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-1">How far down the page people scroll</p>
+    <p class="text-xs text-gray-400 mb-3">Furthest point reached in each page view, across every page.</p>
+    <div class="flex items-end gap-3 h-32">
+      ${scrollRows.map(r => `
+        <div class="flex-1 flex flex-col items-center justify-end h-full" title="${esc(r.bucket)} — ${r.views} views (${anPct(r.views, scrollTotal)})">
+          <span class="text-[10px] text-gray-400 mb-1">${r.views}</span>
+          <div class="w-full bg-gray-800 rounded-t" style="height:${(r.views / scrollMax) * 100}%"></div>
+        </div>`).join('')}
+    </div>
+    <div class="flex gap-3 mt-1">
+      ${scrollRows.map(r => `<span class="flex-1 text-center text-[10px] text-gray-400">${esc(r.bucket)}</span>`).join('')}
+    </div>
+  </div>`;
+
   // ── Views per day ──
   const dayMax = Math.max(1, ...d.daily.map(x => x.views));
   const daily = `<div class="bg-white rounded border border-gray-200 p-4">
@@ -1253,11 +1305,36 @@ function renderAnalytics() {
     </div>
   </div>`;
 
+  // ── What time of day people actually show up (Miami time) ──
+  const hourByHour = Object.fromEntries((d.hourly || []).map(h => [h.hour, h]));
+  const hourRows = Array.from({ length: 24 }, (_, h) => hourByHour[h] || { hour: h, views: 0, visitors: 0 });
+  const hourMax = Math.max(1, ...hourRows.map(h => h.views));
+  const hourLabel = h => (h === 0 ? '12a' : h === 12 ? '12p' : h < 12 ? `${h}a` : `${h - 12}p`);
+  const hourlyChart = `<div class="bg-white rounded border border-gray-200 p-4">
+    <p class="text-[11px] uppercase tracking-wider text-gray-400 mb-3">Traffic by hour of day (Miami time)</p>
+    <div class="flex items-end gap-0.5 h-28">
+      ${hourRows.map(h => `
+        <div class="flex-1 flex flex-col items-center justify-end h-full" title="${hourLabel(h.hour)} — ${h.views} views, ${h.visitors} visitors">
+          <div class="w-full bg-gray-800 rounded-t" style="height:${(h.views / hourMax) * 100}%; min-height:${h.views ? '2px' : '0'}"></div>
+        </div>`).join('')}
+    </div>
+    <div class="flex gap-0.5 mt-1">
+      ${hourRows.map(h => `<span class="flex-1 text-center text-[9px] text-gray-400">${h.hour % 3 === 0 ? hourLabel(h.hour) : ''}</span>`).join('')}
+    </div>
+  </div>`;
+
   // ── Sources / devices / countries ──
   const breakdown = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-    ${anBarList('Where they came from', d.referrers.map(r => ({ label: r.source, visitors: r.visitors })), 'No data yet')}
-    ${anBarList('Device', d.devices.map(r => ({ label: r.device, visitors: r.visitors })), 'No data yet')}
-    ${anBarList('Country', d.countries.map(r => ({ label: r.country === '??' ? 'Unknown' : r.country, visitors: r.visitors })), 'No data yet')}
+    ${anBarList('Where they came from', d.referrers.map(r => ({ label: r.source, value: r.visitors })), 'No data yet')}
+    ${anBarList('Device', d.devices.map(r => ({ label: r.device, value: r.visitors })), 'No data yet')}
+    ${anBarList('Country', d.countries.map(r => ({ label: r.country === '??' ? 'Unknown' : r.country, value: r.visitors })), 'No data yet')}
+  </div>`;
+
+  // ── What gets added to the cart, which zone gets detected, which buttons get clicked ──
+  const interactions = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    ${anBarList('Most added to cart', (d.top_products || []).map(p => ({ label: p.label, value: p.count, sub: `${p.sessions} session${p.sessions === 1 ? '' : 's'}` })), 'No items added to cart yet')}
+    ${anBarList('Delivery zone detected', (d.zones || []).map(z => ({ label: z.label, value: z.count, sub: `${z.sessions} session${z.sessions === 1 ? '' : 's'}` })), 'No addresses entered yet')}
+    ${anBarList('Buttons clicked', (d.ctas || []).map(c => ({ label: ctaLabel(c.label), value: c.count, sub: `${c.sessions} session${c.sessions === 1 ? '' : 's'}` })), 'No tracked clicks yet')}
   </div>`;
 
   const campaigns = d.campaigns.length ? `<div class="bg-white rounded border border-gray-200 p-4">
@@ -1280,7 +1357,7 @@ function renderAnalytics() {
     </div>
   </div>`;
 
-  body.innerHTML = cards + funnel + pages + daily + breakdown + campaigns + journeys;
+  body.innerHTML = cards + actions + funnel + pages + scrollChart + daily + hourlyChart + breakdown + interactions + campaigns + journeys;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

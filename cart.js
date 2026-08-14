@@ -41,6 +41,7 @@ function addItem(name, price, badge, instructions, glutenFree, avoidAllergens, f
     cart.push({ name, price: parseFloat(price), badge, qty: 1, instructions: instructions || '', glutenFree: !!glutenFree, avoidAllergens: avoidAllergens || [], flavors: flavors || [] });
   }
   saveCart(cart);
+  if (typeof window.chefalehTrack === 'function') window.chefalehTrack('add_to_cart', name, parseFloat(price));
   if (typeof openDrawer === 'function') openDrawer();
 }
 
@@ -192,6 +193,7 @@ function openDrawer() {
   const o = document.getElementById('drawer-overlay');
   if (d) d.classList.add('open');
   if (o) o.classList.remove('hidden');
+  if (typeof window.chefalehTrack === 'function') window.chefalehTrack('cart_open');
   renderDrawer();
 }
 
@@ -270,7 +272,72 @@ document.addEventListener('DOMContentLoaded', () => {
   refreshCartUI();
   renderDrawer();
   injectWhatsAppButton();
+  injectStickyOrderBar();
 });
+
+// /index.html → "/", /menu.html → "/menu", /menu/ → "/menu"
+function normalizedPath() {
+  let p = location.pathname.replace(/\/index\.html$/i, '/').replace(/\.html$/i, '');
+  if (p.length > 1) p = p.replace(/\/+$/, '');
+  return p || '/';
+}
+
+// A persistent bottom bar on mobile so the next step is always one tap away,
+// instead of relying on visitors scrolling back up to find a CTA. Hidden on
+// checkout itself — you're already there.
+function injectStickyOrderBar() {
+  if (document.getElementById('order-bar')) return;
+  const path = normalizedPath();
+  if (path === '/checkout') return;
+
+  const onMenu = path === '/menu';
+  const bar = document.createElement('a');
+  bar.id = 'order-bar';
+  bar.href = onMenu ? '/checkout' : '/menu';
+  bar.dataset.track = onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu';
+  bar.innerHTML = (onMenu ? 'Proceed to Checkout' : 'Order for Friday') + ' <span aria-hidden="true">&rarr;</span>';
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #order-bar {
+      display: none;
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 40;
+      background: #D4AF37;
+      color: #1A1A1A;
+      text-align: center;
+      text-decoration: none;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 15px 16px calc(15px + env(safe-area-inset-bottom));
+      box-shadow: 0 -6px 20px rgba(0,0,0,.18);
+    }
+    #order-bar:active { background: #B8941F; }
+    @media (max-width: 768px) {
+      #order-bar { display: block; }
+      #whatsapp-btn { bottom: calc(76px + env(safe-area-inset-bottom)); }
+    }
+  `;
+  document.head.appendChild(style);
+  document.body.appendChild(bar);
+
+  // The homepage also shows a bottom cookie banner on first visit — keep the
+  // order bar out of its way instead of the two stacking on top of each other.
+  const cookieBanner = document.getElementById('cookie');
+  if (cookieBanner) {
+    const syncWithCookieBanner = () => {
+      const visible = document.body.contains(cookieBanner) && !cookieBanner.classList.contains('translate-y-full');
+      bar.style.display = visible ? 'none' : '';
+    };
+    syncWithCookieBanner();
+    new MutationObserver(syncWithCookieBanner).observe(cookieBanner, { attributes: true, attributeFilter: ['class'] });
+    new MutationObserver(syncWithCookieBanner).observe(document.body, { childList: true });
+  }
+}
 
 function injectWhatsAppButton() {
   if (document.getElementById('whatsapp-btn')) return;
@@ -279,6 +346,7 @@ function injectWhatsAppButton() {
   btn.href = 'https://wa.me/13053076800';
   btn.target = '_blank';
   btn.rel = 'noopener noreferrer';
+  btn.dataset.track = 'whatsapp';
   btn.innerHTML = `
     <div class="whatsapp-inner">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

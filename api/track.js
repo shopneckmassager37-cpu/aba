@@ -26,6 +26,27 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+
+    if (body.type === 'event') {
+      const sessionId = str(body.session_id, 40);
+      const eventType = str(body.event_type, 40);
+      if (!sessionId || !UUID_RE.test(sessionId)) return res.status(400).json({ error: 'Bad session' });
+      if (!eventType) return res.status(400).json({ error: 'Bad event type' });
+
+      const value = Number(body.value);
+      await sbAdminFetch('events', {
+        method: 'POST',
+        body: JSON.stringify({
+          session_id: sessionId,
+          path: str(body.path, 200),
+          type: eventType,
+          label: str(body.label, 200),
+          value: Number.isFinite(value) ? value : null,
+        }),
+      });
+      return res.status(204).end();
+    }
+
     const id = str(body.id, 40);
     if (!id || !UUID_RE.test(id)) return res.status(400).json({ error: 'Bad id' });
 
