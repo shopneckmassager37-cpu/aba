@@ -1,20 +1,23 @@
 // Vercel Edge Middleware — runs before any page is served.
 //
-// Chefaleh delivers only within South Florida and has no EU/UK/EEA
-// customers, so visitors browsing from those regions are shown a short
-// notice instead of the site. This removes the GDPR / UK-GDPR "consent
-// before tracking" obligation for this site entirely, rather than trying
-// to satisfy it with a banner — see analytics.js, cookie-policy.html and
-// privacy-policy.html.
+// Chefaleh delivers only within South Florida, so two groups of visitors
+// are shown a short notice instead of the site:
 //
-// To add or remove a country, edit BLOCKED_COUNTRIES below — nothing else
-// needs to change. Codes are ISO 3166-1 alpha-2, matching the
-// x-vercel-ip-country header Vercel sets on every request.
+//  - EU / UK / EEA (PRIVACY_BLOCKED_COUNTRIES): no customers there, so this
+//    removes the GDPR / UK-GDPR "consent before tracking" obligation
+//    entirely rather than trying to satisfy it with a banner — see
+//    analytics.js, cookie-policy.html and privacy-policy.html.
+//  - Africa-wide (FRAUD_BLOCKED_COUNTRIES): blocked at the owner's request
+//    after repeated scam/fraud attempts traced to the continent.
+//
+// To add or remove a country from either reason, edit the matching set
+// below — nothing else needs to change. Codes are ISO 3166-1 alpha-2,
+// matching the x-vercel-ip-country header Vercel sets on every request.
 export const config = {
   matcher: '/((?!api/).*)',
 };
 
-const BLOCKED_COUNTRIES = new Set([
+const PRIVACY_BLOCKED_COUNTRIES = new Set([
   // European Union (27)
   'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT',
   'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE',
@@ -23,6 +26,16 @@ const BLOCKED_COUNTRIES = new Set([
   // United Kingdom (UK-GDPR mirrors EU GDPR)
   'GB',
 ]);
+
+const FRAUD_BLOCKED_COUNTRIES = new Set([
+  // All of Africa (54 UN member states + Western Sahara)
+  'DZ', 'AO', 'BJ', 'BW', 'BF', 'BI', 'CV', 'CM', 'CF', 'TD', 'KM', 'CG', 'CD', 'DJ', 'EG',
+  'GQ', 'ER', 'SZ', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'CI', 'KE', 'LS', 'LR', 'LY', 'MG',
+  'MW', 'ML', 'MR', 'MU', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO',
+  'ZA', 'SS', 'SD', 'TZ', 'TG', 'TN', 'UG', 'ZM', 'ZW', 'EH',
+]);
+
+const BLOCKED_COUNTRIES = new Set([...PRIVACY_BLOCKED_COUNTRIES, ...FRAUD_BLOCKED_COUNTRIES]);
 
 const BLOCK_PAGE = `<!doctype html>
 <html lang="en">
@@ -42,7 +55,7 @@ const BLOCK_PAGE = `<!doctype html>
 <body>
   <div class="box">
     <h1>Chefaleh</h1>
-    <p>Chefaleh is a Shabbat delivery service serving South Florida only, and isn't available to visitors browsing from the EU, UK or EEA.</p>
+    <p>Chefaleh is a Shabbat delivery service serving South Florida only, and this website isn't available in your region.</p>
     <p>Questions? <a href="mailto:chefaleh@gmail.com">chefaleh@gmail.com</a></p>
   </div>
 </body>
