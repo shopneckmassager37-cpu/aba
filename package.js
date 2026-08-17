@@ -38,6 +38,7 @@ const PACKAGE = {
     { name: 'Chefaleh Brisket', price: 75 },
     { name: 'Pomegranate Braised Short Ribs', price: 110 },
   ],
+  mainsCategorySlug: 'meat', // for extra (non-included) main courses, below
 
   additionalItemDiscount: 0.05, // 5% off anything added from "Complete Your Shabbat Table"
 };
@@ -49,6 +50,8 @@ let selectedSalads = new Set();
 let selectedSides = new Set();
 let selectedFish = 'included';   // 'included' | fish upgrade name
 let selectedMain = 'included';   // 'included' | main upgrade name
+let extraSalads = [];            // extra salads beyond the included 4, full menu price, duplicates allowed
+let extraMains = [];             // extra main courses beyond the included 1, full menu price, duplicates allowed
 
 function fmt(n) { return '$' + n.toFixed(2); }
 
@@ -60,6 +63,16 @@ function categoryProducts(slug) {
 
 function isPremiumSide(product) {
   return product.price > PACKAGE.sidePremiumThreshold;
+}
+
+function productPrice(slug, name) {
+  const p = categoryProducts(slug).find(x => x.name === name);
+  return p ? p.price : 0;
+}
+
+function extrasTotal() {
+  return extraSalads.reduce((s, n) => s + productPrice(PACKAGE.saladsCategorySlug, n), 0)
+       + extraMains.reduce((s, n) => s + productPrice(PACKAGE.mainsCategorySlug, n), 0);
 }
 
 // ── Pricing ──
@@ -104,6 +117,33 @@ function renderSalads() {
   const count = document.getElementById('salad-count');
   if (count) count.textContent = `${selectedSalads.size} / ${PACKAGE.saladCount} chosen`;
 }
+
+// Extra salads beyond the included 4 — full menu price, added as their own cart line.
+function renderSaladExtras() {
+  const picks = document.getElementById('salad-extra-picks');
+  const list = document.getElementById('salad-extra-list');
+  if (!picks || !list) return;
+  const items = categoryProducts(PACKAGE.saladsCategorySlug)
+    .filter(p => !PACKAGE.saladsExcludeNames.includes(p.name));
+
+  picks.innerHTML = items.map(p => `
+    <button type="button" onclick="addExtraSalad('${escJs(p.name)}')"
+      class="text-xs tracking-wide border border-charcoal/15 text-charcoal/65 px-3 py-1.5 rounded-full hover:border-gold hover:text-charcoal transition-colors">
+      + ${esc(p.name)} <span class="text-charcoal/35">+${fmt(p.price)}</span>
+    </button>`).join('');
+
+  list.innerHTML = extraSalads.map((name, i) => `
+    <div class="flex items-center justify-between text-xs text-charcoal/60 font-light py-1">
+      <span>${esc(name)}</span>
+      <span class="flex items-center gap-2">
+        ${fmt(productPrice(PACKAGE.saladsCategorySlug, name))}
+        <button type="button" onclick="removeExtraSalad(${i})" aria-label="Remove extra salad" class="text-charcoal/40 hover:text-charcoal">&times;</button>
+      </span>
+    </div>`).join('');
+}
+
+function addExtraSalad(name) { extraSalads.push(name); renderAll(); }
+function removeExtraSalad(i) { extraSalads.splice(i, 1); renderAll(); }
 
 function renderSides() {
   const el = document.getElementById('side-picks');
@@ -154,6 +194,32 @@ function renderMain() {
     </div>`).join('');
 }
 
+// Extra main courses beyond the included one — full menu price, added as their own cart line.
+function renderMainExtras() {
+  const picks = document.getElementById('main-extra-picks');
+  const list = document.getElementById('main-extra-list');
+  if (!picks || !list) return;
+  const items = categoryProducts(PACKAGE.mainsCategorySlug);
+
+  picks.innerHTML = items.map(p => `
+    <button type="button" onclick="addExtraMain('${escJs(p.name)}')"
+      class="text-xs tracking-wide border border-charcoal/15 text-charcoal/65 px-3 py-1.5 rounded-full hover:border-gold hover:text-charcoal transition-colors">
+      + ${esc(p.name)} <span class="text-charcoal/35">+${fmt(p.price)}</span>
+    </button>`).join('');
+
+  list.innerHTML = extraMains.map((name, i) => `
+    <div class="flex items-center justify-between text-xs text-charcoal/60 font-light py-1">
+      <span>${esc(name)}</span>
+      <span class="flex items-center gap-2">
+        ${fmt(productPrice(PACKAGE.mainsCategorySlug, name))}
+        <button type="button" onclick="removeExtraMain(${i})" aria-label="Remove extra main" class="text-charcoal/40 hover:text-charcoal">&times;</button>
+      </span>
+    </div>`).join('');
+}
+
+function addExtraMain(name) { extraMains.push(name); renderAll(); }
+function removeExtraMain(i) { extraMains.splice(i, 1); renderAll(); }
+
 function renderSummary() {
   const el = document.getElementById('pkg-total');
   if (el) el.textContent = fmt(packageTotal());
@@ -177,13 +243,37 @@ function renderSummary() {
       `<div class="sum-row"><span class="sum-label">Base package</span><span class="sum-val">${fmt(PACKAGE.basePrice)}</span></div>` +
       lines.map(l => `<div class="sum-row"><span class="sum-label">${esc(l.label)}</span><span class="sum-val">+${fmt(l.amt)}</span></div>`).join('');
   }
+
+  const extrasEl = document.getElementById('pkg-extras-summary');
+  if (extrasEl) {
+    const hasExtras = extraSalads.length || extraMains.length;
+    if (hasExtras) {
+      const rows = [
+        ...extraSalads.map(n => `<div class="sum-row"><span class="sum-label">Extra: ${esc(n)}</span><span class="sum-val">${fmt(productPrice(PACKAGE.saladsCategorySlug, n))}</span></div>`),
+        ...extraMains.map(n => `<div class="sum-row"><span class="sum-label">Extra: ${esc(n)}</span><span class="sum-val">${fmt(productPrice(PACKAGE.mainsCategorySlug, n))}</span></div>`),
+      ];
+      extrasEl.innerHTML =
+        `<p class="text-[10px] tracking-[.15em] uppercase text-charcoal/40 mb-1 mt-3">Extra items · added at menu price</p>` +
+        rows.join('') +
+        `<div class="flex justify-between items-baseline pt-2 mt-1 border-t border-charcoal/10">
+           <span class="text-xs text-charcoal/50 font-light">Order total (package + extras)</span>
+           <span class="text-sm text-charcoal font-medium">${fmt(packageTotal() + extrasTotal())}</span>
+         </div>`;
+      extrasEl.classList.remove('hidden');
+    } else {
+      extrasEl.innerHTML = '';
+      extrasEl.classList.add('hidden');
+    }
+  }
 }
 
 function renderAll() {
   renderSalads();
+  renderSaladExtras();
   renderSides();
   renderFish();
   renderMain();
+  renderMainExtras();
   renderSummary();
 }
 
@@ -232,11 +322,20 @@ function addPackageToCart() {
 
   addItem(PACKAGE.name, packageTotal(), PACKAGE.serves, lines.join('\n'), false, [], []);
 
+  extraSalads.forEach(name => {
+    addItem(name, productPrice(PACKAGE.saladsCategorySlug, name), 'Extra · Shabbat Dinner', '', false, [], []);
+  });
+  extraMains.forEach(name => {
+    addItem(name, productPrice(PACKAGE.mainsCategorySlug, name), 'Extra · Shabbat Dinner', '', false, [], []);
+  });
+
   // Reset selections for a second package, if they want one.
   selectedSalads = new Set();
   selectedSides = new Set();
   selectedFish = 'included';
   selectedMain = 'included';
+  extraSalads = [];
+  extraMains = [];
   renderAll();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
