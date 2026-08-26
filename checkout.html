@@ -163,6 +163,10 @@
             <span class="sum-total-val" id="co-tot">$0.00</span>
           </div>
 
+          <div id="min-order-warning" class="hidden mb-6 p-4 text-xs leading-relaxed" style="background:#FBEAEA;border:1px solid #E3B4B4;color:#8A2E2E">
+            We have a $250 order minimum (subtotal, before tax/tip/delivery). Add <span id="min-order-remaining">$0.00</span> more to your cart to check out.
+          </div>
+
           <div class="notice mb-6">
             Orders are confirmed only upon payment receipt. You will receive a confirmation email shortly with payment instructions.
           </div>
@@ -181,6 +185,7 @@
 
 <script>
   const CART_KEY = 'chefaleh_cart';
+  const MIN_ORDER_SUBTOTAL = 250;
   let deliveryZone = 0;
   let deliveryZoneNum = 2;
   let chefTipPct = 15;
@@ -395,6 +400,15 @@
     if (zEl) zEl.textContent = deliveryZoneNum !== null ? `Area ${deliveryZoneNum}` : 'Outside Area';
     const areaWarning = document.getElementById('area-warning');
     if (areaWarning) areaWarning.classList.toggle('hidden', deliveryZoneNum !== null);
+
+    const belowMin = cart.length > 0 && sub < MIN_ORDER_SUBTOTAL;
+    const minWarning = document.getElementById('min-order-warning');
+    if (minWarning) {
+      minWarning.classList.toggle('hidden', !belowMin);
+      if (belowMin) set('min-order-remaining', fmt(MIN_ORDER_SUBTOTAL - sub));
+    }
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) submitBtn.disabled = belowMin;
     const chefLbl = document.getElementById('co-chef-label');
     if (chefLbl) chefLbl.textContent = chefTipFixed !== null ? '$' + chefTip.toFixed(2) : chefTipPct + '%';
     const driverLbl = document.getElementById('co-driver-label');
@@ -567,6 +581,10 @@
     if (!cart.length) { alert('Your cart is empty.'); return; }
 
     const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    if (sub < MIN_ORDER_SUBTOTAL) {
+      alert(`We have a $${MIN_ORDER_SUBTOTAL.toFixed(2)} order minimum. Please add $${(MIN_ORDER_SUBTOTAL - sub).toFixed(2)} more to your cart before checking out.`);
+      return;
+    }
     const tax = sub * 0.07;
     const chefTip = chefTipFixed !== null ? chefTipFixed : sub * chefTipPct / 100;
     const driverTip = driverTipFixed !== null ? driverTipFixed : sub * driverTipPct / 100;

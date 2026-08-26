@@ -1,5 +1,6 @@
 const CART_KEY = 'chefaleh_cart';
 const TAX_RATE = 0.07;
+const MIN_ORDER_SUBTOTAL = 250;
 const DELIVERY_DATE_KEY = 'chefaleh_delivery_date';
 
 // Fridays with no delivery (holidays). Add more 'YYYY-MM-DD' entries as needed.
@@ -295,6 +296,24 @@ function renderDrawer() {
   d('d-sub', '$'+sub.toFixed(2));
   d('d-tax', '$'+tax.toFixed(2));
   d('d-tot', '$'+tot.toFixed(2));
+
+  const checkoutLink = document.querySelector('a[data-track="drawer_checkout"]');
+  if (checkoutLink) {
+    const remaining = MIN_ORDER_SUBTOTAL - sub;
+    if (cart.length > 0 && remaining > 0.004) {
+      checkoutLink.removeAttribute('href');
+      checkoutLink.style.pointerEvents = 'none';
+      checkoutLink.style.opacity = '0.4';
+      checkoutLink.style.cursor = 'not-allowed';
+      checkoutLink.textContent = `$${remaining.toFixed(2)} More to Reach $250 Minimum`;
+    } else {
+      checkoutLink.setAttribute('href', '/checkout');
+      checkoutLink.style.pointerEvents = '';
+      checkoutLink.style.opacity = '';
+      checkoutLink.style.cursor = '';
+      checkoutLink.textContent = 'Proceed to Checkout';
+    }
+  }
 
   renderDrawerDateOptions();
 }

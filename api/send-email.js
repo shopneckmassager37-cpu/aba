@@ -8,6 +8,7 @@ const SUPABASE_URL = 'https://gubckjmffliwukroluxm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1YmNram1mZmxpd3Vrcm9sdXhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDA4NDYsImV4cCI6MjA5MzExNjg0Nn0.qDuyWCltbNlIPsDdX8tUzZMF1VJgPXipH9wageTqTQw';
 
 const TAX_RATE = 0.07;
+const MIN_ORDER_SUBTOTAL = 250;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONFIRM_FIELDS = ['orderId', 'name', 'email', 'phone', 'address', 'zone', 'subtotal', 'tax', 'delivery', 'driverTip', 'chefTip', 'total', 'notes', 'items'];
 
@@ -159,6 +160,9 @@ export default async function handler(req, res) {
   }
 
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  if (subtotal < MIN_ORDER_SUBTOTAL) {
+    return res.status(400).json({ error: `We have a $${MIN_ORDER_SUBTOTAL.toFixed(2)} order minimum. Please add more to your cart.` });
+  }
   const tax = subtotal * TAX_RATE;
   const total = subtotal + tax + delivery + driverTip + chefTip;
 
