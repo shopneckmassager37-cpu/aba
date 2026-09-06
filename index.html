@@ -197,7 +197,7 @@
             "name": "Do you deliver for Rosh Hashanah?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Rosh Hashanah eve falls on Friday, September 11, 2026 — order through our regular menu or Shabbat Dinner package and we'll deliver it that Friday afternoon, ahead of candle lighting, the same way we deliver every week."
+              "text": "Yes. Rosh Hashanah eve falls on Friday, September 11, 2026 — order through our regular menu or Rosh Hashanah Dinner package and we'll deliver it that Friday afternoon, ahead of candle lighting, the same way we deliver every week."
             }
           },
           {
@@ -228,7 +228,7 @@
       <a href="/" class="nav-link active text-gold transition-colors duration-200">Home</a>
       <a href="/about" class="nav-link text-white/60 hover:text-gold transition-colors duration-200">About</a>
       <a href="/menu"  class="nav-link text-white/60 hover:text-gold transition-colors duration-200">Menu</a>
-      <a href="/package" class="nav-link text-gold hover:text-white transition-colors duration-200">Shabbat Package</a>
+      <a href="/package" data-pkg-nav-label class="nav-link text-gold hover:text-white transition-colors duration-200">Shabbat Package</a>
       <a href="/rosh-hashanah" class="nav-link text-white/60 hover:text-gold transition-colors duration-200">Rosh Hashanah</a>
       <button onclick="openDrawer()" class="relative flex items-center gap-2 bg-gold text-charcoal px-5 py-2.5 text-[11px] tracking-[.1em] uppercase font-medium hover:bg-white transition-all duration-300">
         Cart
@@ -255,7 +255,7 @@
     <a href="/" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-gold border-b border-white/8">Home</a>
     <a href="/about" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">About</a>
     <a href="/menu"  class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">Menu</a>
-    <a href="/package" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-gold border-b border-white/8">Shabbat Package</a>
+    <a href="/package" data-pkg-nav-label class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-gold border-b border-white/8">Shabbat Package</a>
     <a href="/rosh-hashanah" class="block py-3 text-xs tracking-[.12em] uppercase font-medium text-white/55 hover:text-gold transition-colors border-b border-white/8">Rosh Hashanah</a>
     <button onclick="openDrawer()" class="w-full text-left block py-3 text-xs tracking-[.12em] uppercase font-medium text-white/55 hover:text-gold transition-colors">Cart</button>
   </div>
@@ -295,14 +295,14 @@
     <h1 class="hero-title-display hero-shadow-strong font-serif text-white font-semibold leading-[1.07] mb-7">
       Fresh Shabbat Dinner,<br/><em class="font-light italic text-white/90">Delivered Every Friday</em>
     </h1>
-    <p class="hero-shadow-body text-white/80 font-light text-sm md:text-[15px] leading-relaxed mb-4 md:mb-6 max-w-md md:max-w-xl mx-auto">
+    <p id="hero-subtext" class="hero-shadow-body text-white/80 font-light text-sm md:text-[15px] leading-relaxed mb-4 md:mb-6 max-w-md md:max-w-xl mx-auto">
       A complete Shabbat table, chef-prepared and delivered to your door — $125 per person, 4-person minimum.
     </p>
     <p class="hero-shadow-soft text-gold/95 text-[11px] md:text-xs tracking-[.2em] uppercase font-light mb-7 md:mb-9">
       ORB Certified Kosher &nbsp;·&nbsp; Miami Beach to Boca Raton &nbsp;·&nbsp; Order by Thu 2PM
     </p>
     <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
-      <a href="/package" data-track="hero_order_shabbat" class="luxury-link bg-gold text-charcoal px-10 py-4 text-[11px] tracking-[.14em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">
+      <a href="/package" id="hero-order-cta" data-track="hero_order_shabbat" class="luxury-link bg-gold text-charcoal px-10 py-4 text-[11px] tracking-[.14em] uppercase font-medium hover:bg-white transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">
         Order This Week's Shabbat &rarr;
       </a>
       <a href="/menu" data-track="hero_view_menu" class="luxury-link border border-gold text-gold px-10 py-4 text-[11px] tracking-[.14em] uppercase font-medium hover:bg-gold hover:text-charcoal transition-all duration-300 w-full sm:w-auto text-center min-w-[180px]">

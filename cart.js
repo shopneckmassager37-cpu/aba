@@ -367,6 +367,18 @@ function syncPackageBanners() {
   if (challahText) challahText.innerHTML = '<span class="text-gold font-medium">Chefaleh Rosh Hashanah Dinner</span> — $125/person, 6-person minimum';
   const challahCta = document.getElementById('challah-package-banner-cta');
   if (challahCta) challahCta.innerHTML = 'View Your Order &rarr;';
+
+  // Same swap for every "Shabbat Package" nav link (nav bar, mobile dropdown,
+  // footer) sitewide — they all point to /package, which is showing the Rosh
+  // Hashanah Dinner this week. Named distinctly from the plain "Rosh Hashanah"
+  // nav item (which links to the standalone /rosh-hashanah page) so the two
+  // don't read as duplicates.
+  document.querySelectorAll('[data-pkg-nav-label]').forEach(el => { el.textContent = 'RH Package'; });
+
+  const heroCta = document.getElementById('hero-order-cta');
+  if (heroCta) heroCta.innerHTML = 'Order for Rosh Hashanah &rarr;';
+  const heroSubtext = document.getElementById('hero-subtext');
+  if (heroSubtext) heroSubtext.textContent = 'A complete Rosh Hashanah table, chef-prepared and delivered to your door — $125 per person, 6-person minimum.';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
