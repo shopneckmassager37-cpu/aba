@@ -1,24 +1,26 @@
 // ══════════════════════════════════════════════════════════════════════
-//  ROSH HASHANAH DINNER — temporary holiday menu
+//  ROSH HASHANAH DINNER — temporary holiday package
 //
-//  Fixed menu, $125/person, 6-person minimum. Unlike the Shabbat Dinner
-//  package this is NOT added to the website cart or checkout — it's
-//  ordered directly through WhatsApp, prefilled with the guest count,
-//  fish choice and total so the customer doesn't have to retype it.
+//  Ordered exactly like the Shabbat Dinner package (package.js): a
+//  fixed-price-per-person package added to the website cart and paid
+//  for through the normal checkout. Unlike the Shabbat package the menu
+//  itself is fixed — the only choice is which salmon to include.
 //
-//  The optional add-ons below (Simanim platter, kugel, honey cake, babka)
-//  reuse the real menu products and their live (post-increase) prices,
-//  and DO go through the normal cart/checkout like any à la carte item.
+//  The optional add-ons below reuse the real menu products and their
+//  live (post-increase) prices, and go through the normal cart/checkout
+//  the same way.
 // ══════════════════════════════════════════════════════════════════════
-const RH_PRICE_PER_PERSON = 125;
-const RH_MIN_GUESTS = 6;
-const RH_MAX_GUESTS = 30;
-const RH_FISH_OPTIONS = ['Pomegranate Glazed Salmon', 'Moroccan Salmon'];
+const RH_PACKAGE = {
+  name: 'Chefaleh Rosh Hashanah Dinner',
+  pricePerPerson: 125,
+  minGuests: 6,
+  maxGuests: 30,
+  fishOptions: ['Pomegranate Glazed Salmon', 'Moroccan Salmon'],
+};
 const RH_ADDON_NAMES = ['Chefaleh Simanim Platter', 'Classic Potato Kugel', 'Classic Honey Cake', 'Chocolate Babka'];
-const RH_WHATSAPP_NUMBER = '13053076800';
 
-let rhGuestCount = RH_MIN_GUESTS;
-let rhSelectedFish = RH_FISH_OPTIONS[1];
+let rhGuestCount = RH_PACKAGE.minGuests;
+let rhSelectedFish = RH_PACKAGE.fishOptions[1];
 let rhCategories = [];
 let rhProducts = [];
 
@@ -31,41 +33,32 @@ function escJs(s) {
 }
 
 function rhTotal() {
-  return RH_PRICE_PER_PERSON * rhGuestCount;
-}
-
-function updateWhatsAppLink() {
-  const btn = document.getElementById('rh-whatsapp-btn');
-  if (!btn) return;
-  const msg = `Hi! I'd like to order the Rosh Hashanah Dinner for ${rhGuestCount} guests (${fmt(rhTotal())} total), with ${rhSelectedFish} as the fish, for delivery Friday, September 11.`;
-  btn.href = `https://wa.me/${RH_WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  return RH_PACKAGE.pricePerPerson * rhGuestCount;
 }
 
 function renderRhGuests() {
   const count = document.getElementById('rh-guest-count');
   if (count) count.textContent = rhGuestCount;
   const minus = document.getElementById('rh-guest-minus');
-  if (minus) minus.disabled = rhGuestCount <= RH_MIN_GUESTS;
+  if (minus) minus.disabled = rhGuestCount <= RH_PACKAGE.minGuests;
   const plus = document.getElementById('rh-guest-plus');
-  if (plus) plus.disabled = rhGuestCount >= RH_MAX_GUESTS;
-  const grand = document.getElementById('rh-grand-total');
-  if (grand) grand.textContent = fmt(rhTotal());
-  updateWhatsAppLink();
+  if (plus) plus.disabled = rhGuestCount >= RH_PACKAGE.maxGuests;
+  renderRhSummary();
 }
 
 function rhIncrementGuests() {
-  if (rhGuestCount < RH_MAX_GUESTS) rhGuestCount++;
+  if (rhGuestCount < RH_PACKAGE.maxGuests) rhGuestCount++;
   renderRhGuests();
 }
 function rhDecrementGuests() {
-  if (rhGuestCount > RH_MIN_GUESTS) rhGuestCount--;
+  if (rhGuestCount > RH_PACKAGE.minGuests) rhGuestCount--;
   renderRhGuests();
 }
 
 function renderRhFish() {
   const el = document.getElementById('rh-fish-picks');
   if (el) {
-    el.innerHTML = RH_FISH_OPTIONS.map(name => `
+    el.innerHTML = RH_PACKAGE.fishOptions.map(name => `
       <div class="pick pick-mini text-center${rhSelectedFish === name ? ' active' : ''}" onclick="selectRhFish('${escJs(name)}')">
         <div class="pick-label" style="font-size:1.05rem">${esc(name)}</div>
       </div>`).join('');
@@ -75,7 +68,27 @@ function renderRhFish() {
 function selectRhFish(name) {
   rhSelectedFish = name;
   renderRhFish();
-  updateWhatsAppLink();
+}
+
+function renderRhSummary() {
+  const breakdown = document.getElementById('rh-breakdown');
+  if (breakdown) {
+    breakdown.innerHTML = `<div class="sum-row"><span class="sum-label">${rhGuestCount} guests &times; ${fmt(RH_PACKAGE.pricePerPerson)}</span><span class="sum-val">${fmt(rhTotal())}</span></div>`;
+  }
+  const total = document.getElementById('rh-grand-total');
+  if (total) total.textContent = fmt(rhTotal());
+}
+
+// ── Add the package to cart as a single line item, same as the Shabbat Dinner package ──
+function addRhPackageToCart() {
+  const lines = [`Guests: ${rhGuestCount}`, `Fish: ${rhSelectedFish}`];
+  addItem(RH_PACKAGE.name, rhTotal(), `Serves ${rhGuestCount}`, lines.join('\n'), false, [], []);
+
+  rhGuestCount = RH_PACKAGE.minGuests;
+  rhSelectedFish = RH_PACKAGE.fishOptions[1];
+  renderRhFish();
+  renderRhGuests();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ── Optional add-ons — real menu products, real cart, current à la carte price ──
@@ -109,7 +122,7 @@ async function loadRhData() {
     [rhCategories, rhProducts] = await Promise.all([getCategories(), getProducts()]);
     renderAddons();
   } catch (e) {
-    console.error('Could not load Rosh Hashanah add-on data:', e);
+    console.error('Could not load Rosh Hashanah data:', e);
     if (errBox) errBox.classList.remove('hidden');
   }
 }

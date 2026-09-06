@@ -358,18 +358,16 @@ function normalizedPath() {
 function injectStickyOrderBar() {
   if (document.getElementById('order-bar')) return;
   const path = normalizedPath();
-  // Checkout is the destination already; Rosh Hashanah has its own
-  // always-visible WhatsApp ordering button and isn't a "browse the
-  // regular menu, then check out" page like this generic bar assumes.
-  if (path === '/checkout' || path === '/rosh-hashanah') return;
+  if (path === '/checkout') return; // checkout is the destination already
 
   const onMenu = path === '/menu';
   const onPackage = path === '/package';
+  const onRH = path === '/rosh-hashanah';
   const bar = document.createElement('a');
   bar.id = 'order-bar';
-  bar.href = onPackage ? '#pkg-total' : (onMenu ? '/checkout' : '/menu');
-  bar.dataset.track = onPackage ? 'sticky_bar_package' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu');
-  bar.innerHTML = (onPackage ? 'Build Your Table' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday')) + ' <span aria-hidden="true">&rarr;</span>';
+  bar.href = onPackage ? '#pkg-total' : (onRH ? '#rh-grand-total' : (onMenu ? '/checkout' : '/menu'));
+  bar.dataset.track = onPackage ? 'sticky_bar_package' : (onRH ? 'sticky_bar_rosh_hashanah' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu'));
+  bar.innerHTML = (onPackage ? 'Build Your Table' : (onRH ? 'View Your Order' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday'))) + ' <span aria-hidden="true">&rarr;</span>';
 
   const style = document.createElement('style');
   style.textContent = `
@@ -415,10 +413,6 @@ function injectStickyOrderBar() {
 
 function injectWhatsAppButton() {
   if (document.getElementById('whatsapp-btn')) return;
-  // Rosh Hashanah already IS a WhatsApp-ordering page with its own large,
-  // prefilled "Order via WhatsApp" button — a floating duplicate on top of
-  // it is clutter, not a second option.
-  if (normalizedPath() === '/rosh-hashanah') return;
   const btn = document.createElement('a');
   btn.id = 'whatsapp-btn';
   btn.href = 'https://wa.me/13053076800';

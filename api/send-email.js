@@ -26,6 +26,17 @@ const PACKAGE_MAX_GUESTS = 30;
 const PACKAGE_MIN_PRICE = PACKAGE_PRICE_PER_PERSON * PACKAGE_MIN_GUESTS;
 const PACKAGE_MAX_PRICE = PACKAGE_PRICE_PER_PERSON * PACKAGE_MAX_GUESTS + 20 + 110 + 2 * 8;
 
+// The Rosh Hashanah Dinner package (rosh-hashanah.html / rosh-hashanah.js) is
+// the same model as the Shabbat package above, but fixed-menu — the only
+// choice is which salmon, at no price difference — so the valid price is
+// simply guests × price-per-person, guests between the min and max.
+const RH_PACKAGE_NAME = 'Chefaleh Rosh Hashanah Dinner';
+const RH_PACKAGE_PRICE_PER_PERSON = 125;
+const RH_PACKAGE_MIN_GUESTS = 6;
+const RH_PACKAGE_MAX_GUESTS = 30;
+const RH_PACKAGE_MIN_PRICE = RH_PACKAGE_PRICE_PER_PERSON * RH_PACKAGE_MIN_GUESTS;
+const RH_PACKAGE_MAX_PRICE = RH_PACKAGE_PRICE_PER_PERSON * RH_PACKAGE_MAX_GUESTS;
+
 // "Complete Your Shabbat Table" items (also from package.html) are regular
 // menu items at a flat discount — accept either the full catalog price or
 // exactly this discounted price, never anything else.
@@ -139,6 +150,12 @@ export default async function handler(req, res) {
       const clientPrice = parseFloat(item?.price);
       if (!Number.isFinite(clientPrice) || clientPrice < PACKAGE_MIN_PRICE || clientPrice > PACKAGE_MAX_PRICE) {
         return res.status(400).json({ error: 'Invalid Shabbat Dinner package price' });
+      }
+      price = Math.round(clientPrice * 100) / 100;
+    } else if (item?.name === RH_PACKAGE_NAME) {
+      const clientPrice = parseFloat(item?.price);
+      if (!Number.isFinite(clientPrice) || clientPrice < RH_PACKAGE_MIN_PRICE || clientPrice > RH_PACKAGE_MAX_PRICE) {
+        return res.status(400).json({ error: 'Invalid Rosh Hashanah Dinner package price' });
       }
       price = Math.round(clientPrice * 100) / 100;
     } else {

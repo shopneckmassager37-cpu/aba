@@ -13,8 +13,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rosh Hashanah Dinner — $125 Per Person | Chefaleh</title>
-  <meta name="description" content="Chefaleh's Rosh Hashanah Dinner: round challah, dips and salads, your choice of salmon, brisket and pargit, sides and fresh fruit. $125 per person, 6-person minimum. Ordered through WhatsApp."/>
-  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="description" content="Chefaleh's Rosh Hashanah Dinner: round challah, dips and salads, your choice of salmon, brisket and pargit, sides and fresh fruit. $125 per person, 6-person minimum. Order online, same as our Shabbat Dinner package."/>
   <link rel="canonical" href="https://chefaleh.com/rosh-hashanah"/>
   <meta property="og:type" content="product"/>
   <meta property="og:site_name" content="Chefaleh"/>
@@ -24,7 +23,7 @@
   <meta property="og:image" content="https://chefaleh.com/images/food1.jpg"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Rosh Hashanah Dinner — $125 Per Person"/>
-  <meta name="twitter:description" content="A complete Chefaleh Rosh Hashanah table. $125 per person, 6-person minimum. Ordered through WhatsApp."/>
+  <meta name="twitter:description" content="A complete Chefaleh Rosh Hashanah table. $125 per person, 6-person minimum."/>
   <meta name="twitter:image" content="https://chefaleh.com/images/food1.jpg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -142,7 +141,6 @@
     <p class="text-cream/70 text-sm font-light tracking-widest uppercase mt-3">$125 Per Person &nbsp;·&nbsp; 6-Person Minimum</p>
     <div class="gold-bar max-w-xs mx-auto my-6"></div>
     <p class="text-cream/70 text-sm md:text-base font-light leading-relaxed">A complete Chefaleh table for the New Year — round challah, dips and salads, your choice of salmon, both brisket and pargit, sides and fresh fruit.</p>
-    <p class="text-gold/90 text-xs tracking-wide uppercase mt-6 font-light">Packages are ordered through WhatsApp &middot; &Agrave; la carte ordering remains available online</p>
   </div>
 </section>
 
@@ -150,12 +148,12 @@
 <section class="py-12 md:py-16 bg-cream">
   <div class="max-w-lg mx-auto px-5">
     <div id="rh-load-error" class="hidden mb-6 p-4 border border-red-300 bg-red-50 text-red-700 text-sm">
-      Couldn't load add-on pricing right now. Please refresh, or <a href="https://wa.me/13053076800" class="underline font-medium">message us on WhatsApp</a> to order.
+      Couldn't load the fish and add-on options right now. Please refresh the page, or <a href="https://wa.me/13053076800" class="underline font-medium">message us on WhatsApp</a> to order.
     </div>
 
     <div class="panel p-6 md:p-10">
-      <p class="section-eyebrow text-center">Your Rosh Hashanah Order</p>
-      <h2 class="section-title text-center mb-8" style="font-size:1.6rem">$125 Per Person</h2>
+      <p class="section-eyebrow text-center">Your Rosh Hashanah Dinner</p>
+      <h2 class="section-title text-center mb-8" style="font-size:1.6rem">Order Summary</h2>
 
       <div class="flex items-center justify-between mb-8 pb-8 border-b border-charcoal/10">
         <div>
@@ -174,18 +172,18 @@
       <p class="text-base text-charcoal font-medium mb-3">Choose Your Fish</p>
       <div id="rh-fish-picks" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8"></div>
 
-      <div class="flex justify-between items-baseline pt-2 pb-8 border-t border-charcoal/10">
+      <div id="rh-breakdown"></div>
+      <div class="sum-divider"></div>
+
+      <div class="flex justify-between items-baseline pt-2 pb-6">
         <span class="sum-total-label">Total</span>
         <span class="sum-total-val" id="rh-grand-total">$750.00</span>
       </div>
 
-      <a id="rh-whatsapp-btn" href="https://wa.me/13053076800" target="_blank" rel="noopener noreferrer" data-track="rh_whatsapp_order"
-        class="cta luxury-link w-full flex items-center justify-center gap-2" style="padding-top:1.1rem;padding-bottom:1.1rem;font-size:.85rem">
-        Order via WhatsApp &rarr;
-      </a>
+      <button onclick="addRhPackageToCart()" class="cta luxury-link w-full">Add Package to Cart</button>
 
-      <p class="text-center text-[.7rem] tracking-[.1em] uppercase text-charcoal/40 mt-4 font-light leading-relaxed">
-        Rosh Hashanah packages are ordered directly through WhatsApp
+      <p class="text-center text-[.65rem] tracking-[.15em] uppercase text-charcoal/40 mt-4 font-light">
+        Same Friday delivery &amp; ordering cutoff as the full menu
       </p>
     </div>
   </div>
