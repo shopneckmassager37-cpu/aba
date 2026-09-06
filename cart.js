@@ -358,7 +358,10 @@ function normalizedPath() {
 function injectStickyOrderBar() {
   if (document.getElementById('order-bar')) return;
   const path = normalizedPath();
-  if (path === '/checkout') return;
+  // Checkout is the destination already; Rosh Hashanah has its own
+  // always-visible WhatsApp ordering button and isn't a "browse the
+  // regular menu, then check out" page like this generic bar assumes.
+  if (path === '/checkout' || path === '/rosh-hashanah') return;
 
   const onMenu = path === '/menu';
   const onPackage = path === '/package';
@@ -412,6 +415,10 @@ function injectStickyOrderBar() {
 
 function injectWhatsAppButton() {
   if (document.getElementById('whatsapp-btn')) return;
+  // Rosh Hashanah already IS a WhatsApp-ordering page with its own large,
+  // prefilled "Order via WhatsApp" button — a floating duplicate on top of
+  // it is clutter, not a second option.
+  if (normalizedPath() === '/rosh-hashanah') return;
   const btn = document.createElement('a');
   btn.id = 'whatsapp-btn';
   btn.href = 'https://wa.me/13053076800';

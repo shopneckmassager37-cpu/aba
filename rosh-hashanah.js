@@ -48,8 +48,6 @@ function renderRhGuests() {
   if (minus) minus.disabled = rhGuestCount <= RH_MIN_GUESTS;
   const plus = document.getElementById('rh-guest-plus');
   if (plus) plus.disabled = rhGuestCount >= RH_MAX_GUESTS;
-  const total = document.getElementById('rh-total');
-  if (total) total.textContent = fmt(rhTotal());
   const grand = document.getElementById('rh-grand-total');
   if (grand) grand.textContent = fmt(rhTotal());
   updateWhatsAppLink();
@@ -72,8 +70,6 @@ function renderRhFish() {
         <div class="pick-label" style="font-size:1.05rem">${esc(name)}</div>
       </div>`).join('');
   }
-  const label = document.getElementById('rh-fish-label');
-  if (label) label.textContent = rhSelectedFish;
 }
 
 function selectRhFish(name) {
