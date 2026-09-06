@@ -10,10 +10,13 @@
 //  managed in the admin panel's Products tab), so adding, removing or
 //  repricing a salad/side there updates this page automatically.
 // ══════════════════════════════════════════════════════════════════════
+const RH_DATE = '2026-09-11'; // Erev Rosh Hashanah — the Shabbat package steps aside for the RH Menu that week
+
 const PACKAGE = {
   name: 'Chefaleh Shabbat Dinner',
-  serves: 'Serves 4–6',
-  basePrice: 250,
+  pricePerPerson: 125,
+  minGuests: 4,
+  maxGuests: 30,
 
   saladCount: 4,
   saladsCategorySlug: 'salads',
@@ -51,6 +54,7 @@ let selectedSalads = new Set();
 let selectedSides = new Set();
 let selectedFish = 'included';   // 'included' | fish upgrade name
 let selectedMain = 'included';   // 'included' | main upgrade name
+let guestCount = PACKAGE.minGuests;
 let extraSalads = [];            // extra salads beyond the included 4, full menu price, duplicates allowed
 let extraSides = [];             // extra sides beyond the included 2, full menu price, duplicates allowed
 let extraFish = [];              // extra fish beyond the included 1, full menu price, duplicates allowed
@@ -98,7 +102,28 @@ function upgradeTotal() {
 }
 
 function packageTotal() {
-  return PACKAGE.basePrice + upgradeTotal();
+  return PACKAGE.pricePerPerson * guestCount + upgradeTotal();
+}
+
+// ── Guest count ──
+function renderGuests() {
+  const el = document.getElementById('guest-count');
+  if (el) el.textContent = guestCount;
+  const serves = document.getElementById('pkg-serves');
+  if (serves) serves.textContent = `Serves ${guestCount}`;
+  const minus = document.getElementById('guest-minus');
+  if (minus) minus.disabled = guestCount <= PACKAGE.minGuests;
+  const plus = document.getElementById('guest-plus');
+  if (plus) plus.disabled = guestCount >= PACKAGE.maxGuests;
+}
+
+function incrementGuests() {
+  if (guestCount < PACKAGE.maxGuests) guestCount++;
+  renderAll();
+}
+function decrementGuests() {
+  if (guestCount > PACKAGE.minGuests) guestCount--;
+  renderAll();
 }
 
 // ── Rendering ──
@@ -297,7 +322,7 @@ function renderSummary() {
   const breakdown = document.getElementById('pkg-breakdown');
   if (breakdown) {
     breakdown.innerHTML =
-      `<div class="sum-row"><span class="sum-label">Base package</span><span class="sum-val">${fmt(PACKAGE.basePrice)}</span></div>` +
+      `<div class="sum-row"><span class="sum-label">${guestCount} guests &times; ${fmt(PACKAGE.pricePerPerson)}</span><span class="sum-val">${fmt(PACKAGE.pricePerPerson * guestCount)}</span></div>` +
       lines.map(l => `<div class="sum-row"><span class="sum-label">${esc(l.label)}</span><span class="sum-val">+${fmt(l.amt)}</span></div>`).join('');
   }
 
@@ -327,6 +352,7 @@ function renderSummary() {
 }
 
 function renderAll() {
+  renderGuests();
   renderSalads();
   renderSaladExtras();
   renderSides();
@@ -372,6 +398,7 @@ function addPackageToCart() {
   errEl.classList.add('hidden');
 
   const lines = [];
+  lines.push(`Guests: ${guestCount}`);
   lines.push(`Salads: ${Array.from(selectedSalads).join(', ')}`);
   const sideNames = Array.from(selectedSides).map(name => {
     const p = categoryProducts(PACKAGE.sidesCategorySlug).find(x => x.name === name);
@@ -381,7 +408,7 @@ function addPackageToCart() {
   lines.push(`Fish: ${selectedFish === 'included' ? PACKAGE.includedFish : selectedFish + ' (+' + fmt(PACKAGE.fishUpgrades.find(f => f.name === selectedFish).price) + ')'}`);
   lines.push(`Main: ${selectedMain === 'included' ? PACKAGE.includedMain : selectedMain + ' (+' + fmt(PACKAGE.mainUpgrades.find(m => m.name === selectedMain).price) + ')'}`);
 
-  addItem(PACKAGE.name, packageTotal(), PACKAGE.serves, lines.join('\n'), false, [], []);
+  addItem(PACKAGE.name, packageTotal(), `Serves ${guestCount}`, lines.join('\n'), false, [], []);
 
   extraSalads.forEach(name => {
     addItem(name, productPrice(PACKAGE.saladsCategorySlug, name), 'Extra · Shabbat Dinner', '', false, [], []);
@@ -401,6 +428,7 @@ function addPackageToCart() {
   selectedSides = new Set();
   selectedFish = 'included';
   selectedMain = 'included';
+  guestCount = PACKAGE.minGuests;
   extraSalads = [];
   extraSides = [];
   extraFish = [];
@@ -467,9 +495,24 @@ async function loadPackageData() {
   }
 }
 
+// The Shabbat Dinner package steps aside for Rosh Hashanah week — reuses
+// cart.js's own delivery-date resolution (an explicit choice in localStorage,
+// or the next upcoming Friday) rather than a separate scheduling system.
+function isRoshHashanahWeek() {
+  try { return toISODate(getSelectedDeliveryDate()) === RH_DATE; }
+  catch (e) { return false; }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pkg-name').textContent = PACKAGE.name;
-  document.getElementById('pkg-serves').textContent = PACKAGE.serves;
-  document.getElementById('pkg-base-price').textContent = fmt(PACKAGE.basePrice);
+
+  if (isRoshHashanahWeek()) {
+    const builder = document.getElementById('pkg-builder-section');
+    const unavailable = document.getElementById('pkg-unavailable');
+    if (builder) builder.classList.add('hidden');
+    if (unavailable) unavailable.classList.remove('hidden');
+    return;
+  }
+
   loadPackageData();
 });
