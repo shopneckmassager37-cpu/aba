@@ -198,6 +198,16 @@ function getSelectedDeliveryDate() {
   return match || fridays[0];
 }
 
+// Shared by package.js (which package to show at /package) and cart.js's own
+// sticky order bar below — computed from the selected delivery date directly
+// rather than by inspecting the DOM, so it's correct regardless of script
+// load order or whether package.js has run its own render yet.
+const RH_DATE = '2026-09-11';
+function isRoshHashanahWeek() {
+  try { return toISODate(getSelectedDeliveryDate()) === RH_DATE; }
+  catch (e) { return false; }
+}
+
 function selectDrawerDate(iso) {
   localStorage.setItem(DELIVERY_DATE_KEY, iso);
   renderDrawerDateOptions();
@@ -338,11 +348,33 @@ function toggleMenu() {
   }
 }
 
+// The homepage and menu page both tease "the package" with a banner that
+// links to /package. During Rosh Hashanah week /package shows the Rosh
+// Hashanah Dinner instead of the Shabbat one (see package.js) — swap these
+// banners' copy too so they match what visitors actually land on.
+function syncPackageBanners() {
+  if (!isRoshHashanahWeek()) return;
+
+  const homeText = document.getElementById('home-package-banner-text');
+  if (homeText) homeText.innerHTML = 'Chefaleh Rosh Hashanah Dinner <span class="text-gold">— $125/person</span> <span class="text-cream/50 text-lg">· 6-Person Minimum</span>';
+  const homeCta = document.getElementById('home-package-banner-cta');
+  if (homeCta) homeCta.innerHTML = 'View Your Order &rarr;';
+
+  const menuText = document.getElementById('menu-package-banner-text');
+  if (menuText) menuText.innerHTML = 'Not sure where to start? Get the <span class="underline">Chefaleh Rosh Hashanah Dinner</span> — $125/person, 6-person minimum &rarr;';
+
+  const challahText = document.getElementById('challah-package-banner-text');
+  if (challahText) challahText.innerHTML = '<span class="text-gold font-medium">Chefaleh Rosh Hashanah Dinner</span> — $125/person, 6-person minimum';
+  const challahCta = document.getElementById('challah-package-banner-cta');
+  if (challahCta) challahCta.innerHTML = 'View Your Order &rarr;';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   refreshCartUI();
   renderDrawer();
   injectWhatsAppButton();
   injectStickyOrderBar();
+  syncPackageBanners();
 });
 
 // /index.html → "/", /menu.html → "/menu", /menu/ → "/menu"
@@ -362,12 +394,14 @@ function injectStickyOrderBar() {
 
   const onMenu = path === '/menu';
   const onPackage = path === '/package';
-  const onRH = path === '/rosh-hashanah';
+  // /package shows the Rosh Hashanah package instead of the Shabbat one
+  // during RH week (see package.js) — match its anchor and label here too.
+  const onRH = path === '/rosh-hashanah' || (onPackage && isRoshHashanahWeek());
   const bar = document.createElement('a');
   bar.id = 'order-bar';
-  bar.href = onPackage ? '#pkg-total' : (onRH ? '#rh-grand-total' : (onMenu ? '/checkout' : '/menu'));
-  bar.dataset.track = onPackage ? 'sticky_bar_package' : (onRH ? 'sticky_bar_rosh_hashanah' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu'));
-  bar.innerHTML = (onPackage ? 'Build Your Table' : (onRH ? 'View Your Order' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday'))) + ' <span aria-hidden="true">&rarr;</span>';
+  bar.href = onRH ? '#rh-grand-total' : (onPackage ? '#pkg-total' : (onMenu ? '/checkout' : '/menu'));
+  bar.dataset.track = onRH ? 'sticky_bar_rosh_hashanah' : (onPackage ? 'sticky_bar_package' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu'));
+  bar.innerHTML = (onRH ? 'View Your Order' : (onPackage ? 'Build Your Table' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday'))) + ' <span aria-hidden="true">&rarr;</span>';
 
   const style = document.createElement('style');
   style.textContent = `
