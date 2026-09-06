@@ -10,8 +10,6 @@
 //  managed in the admin panel's Products tab), so adding, removing or
 //  repricing a salad/side there updates this page automatically.
 // ══════════════════════════════════════════════════════════════════════
-const RH_DATE = '2026-09-11'; // Erev Rosh Hashanah — the Shabbat package steps aside for the RH Menu that week
-
 const PACKAGE = {
   name: 'Chefaleh Shabbat Dinner',
   pricePerPerson: 125,
@@ -495,24 +493,7 @@ async function loadPackageData() {
   }
 }
 
-// The Shabbat Dinner package steps aside for Rosh Hashanah week — reuses
-// cart.js's own delivery-date resolution (an explicit choice in localStorage,
-// or the next upcoming Friday) rather than a separate scheduling system.
-function isRoshHashanahWeek() {
-  try { return toISODate(getSelectedDeliveryDate()) === RH_DATE; }
-  catch (e) { return false; }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pkg-name').textContent = PACKAGE.name;
-
-  if (isRoshHashanahWeek()) {
-    const builder = document.getElementById('pkg-builder-section');
-    const unavailable = document.getElementById('pkg-unavailable');
-    if (builder) builder.classList.add('hidden');
-    if (unavailable) unavailable.classList.remove('hidden');
-    return;
-  }
-
   loadPackageData();
 });
