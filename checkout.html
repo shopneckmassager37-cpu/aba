@@ -462,8 +462,15 @@
       resultsDiv.style.display = 'none';
       return;
     }
-    onAddressInput(val);
-    searchTimeout = setTimeout(() => fetchAddresses(val), 400);
+    // Wait for a pause in typing before judging the delivery zone — checking
+    // on every keystroke means a real Fort Lauderdale address flashes "we
+    // don't deliver here" the moment someone types "123 Main St, Fort L...",
+    // which is exactly the kind of scary false alarm that makes people leave
+    // mid-checkout.
+    searchTimeout = setTimeout(() => {
+      onAddressInput(val);
+      fetchAddresses(val);
+    }, 400);
   });
 
   // Close results on click outside
