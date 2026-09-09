@@ -200,7 +200,9 @@
   const DELIVERY_DATE_KEY = 'chefaleh_delivery_date';
 
   // Fridays with no delivery (holidays). Add more 'YYYY-MM-DD' entries as needed.
-  const CLOSED_FRIDAYS = [];
+  // 2026-09-11 (Erev Rosh Hashanah): closed to new orders — demand outpaced
+  // kitchen capacity. Keep this array in sync with cart.js's copy.
+  const CLOSED_FRIDAYS = ['2026-09-11'];
 
   // Fridays that still deliver as normal but get a special label (e.g. holiday eve).
   const FRIDAY_LABELS = {
