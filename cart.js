@@ -203,7 +203,11 @@ function getSelectedDeliveryDate() {
 // rather than by inspecting the DOM, so it's correct regardless of script
 // load order or whether package.js has run its own render yet.
 const RH_DATE = '2026-09-11';
+// Demand outpaced kitchen capacity — closed early so every order already in
+// gets the attention it deserves. Flip back to false to reopen.
+const RH_ORDERS_CLOSED = true;
 function isRoshHashanahWeek() {
+  if (RH_ORDERS_CLOSED) return false; // /package reverts to the normal Shabbat Dinner once RH orders are closed
   try { return toISODate(getSelectedDeliveryDate()) === RH_DATE; }
   catch (e) { return false; }
 }
@@ -403,6 +407,9 @@ function injectStickyOrderBar() {
   if (document.getElementById('order-bar')) return;
   const path = normalizedPath();
   if (path === '/checkout') return; // checkout is the destination already
+
+  // Orders are closed on /rosh-hashanah — there's no order form to jump to.
+  if (path === '/rosh-hashanah' && RH_ORDERS_CLOSED) return;
 
   const onMenu = path === '/menu';
   const onPackage = path === '/package';

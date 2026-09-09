@@ -128,6 +128,13 @@ async function loadRhData() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // RH_ORDERS_CLOSED comes from cart.js, loaded before this file.
+  if (RH_ORDERS_CLOSED) {
+    document.getElementById('rh-order-card')?.classList.add('hidden');
+    document.getElementById('rh-closed-card')?.classList.remove('hidden');
+    document.getElementById('rh-addons-section')?.classList.add('hidden');
+    return;
+  }
   renderRhFish();
   renderRhGuests();
   loadRhData();
