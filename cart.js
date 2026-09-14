@@ -4,13 +4,9 @@ const MIN_ORDER_SUBTOTAL = 250;
 const DELIVERY_DATE_KEY = 'chefaleh_delivery_date';
 
 // Fridays with no delivery (holidays). Add more 'YYYY-MM-DD' entries as needed.
-// 2026-09-11 (Erev Rosh Hashanah): closed to new orders of any kind — demand
-// outpaced kitchen capacity, so it's off the calendar entirely, not just the
-// RH package. Existing orders already placed for that date are unaffected.
-const CLOSED_FRIDAYS = ['2026-09-11'];
+const CLOSED_FRIDAYS = [];
 // Fridays that still deliver as normal but get a special label (e.g. holiday eve).
 const FRIDAY_LABELS = {
-  '2026-09-11': 'Erev Rosh Hashanah',
   '2026-09-25': 'Erev Sukkot',
   '2026-10-02': 'Erev Chag',
 };
@@ -201,20 +197,6 @@ function getSelectedDeliveryDate() {
   return match || fridays[0];
 }
 
-// Shared by package.js (which package to show at /package) and cart.js's own
-// sticky order bar below — computed from the selected delivery date directly
-// rather than by inspecting the DOM, so it's correct regardless of script
-// load order or whether package.js has run its own render yet.
-const RH_DATE = '2026-09-11';
-// Demand outpaced kitchen capacity — closed early so every order already in
-// gets the attention it deserves. Flip back to false to reopen.
-const RH_ORDERS_CLOSED = true;
-function isRoshHashanahWeek() {
-  if (RH_ORDERS_CLOSED) return false; // /package reverts to the normal Shabbat Dinner once RH orders are closed
-  try { return toISODate(getSelectedDeliveryDate()) === RH_DATE; }
-  catch (e) { return false; }
-}
-
 function selectDrawerDate(iso) {
   localStorage.setItem(DELIVERY_DATE_KEY, iso);
   renderDrawerDateOptions();
@@ -355,45 +337,11 @@ function toggleMenu() {
   }
 }
 
-// The homepage and menu page both tease "the package" with a banner that
-// links to /package. During Rosh Hashanah week /package shows the Rosh
-// Hashanah Dinner instead of the Shabbat one (see package.js) — swap these
-// banners' copy too so they match what visitors actually land on.
-function syncPackageBanners() {
-  if (!isRoshHashanahWeek()) return;
-
-  const homeText = document.getElementById('home-package-banner-text');
-  if (homeText) homeText.innerHTML = 'Chefaleh Rosh Hashanah Dinner <span class="text-gold">— $125/person</span> <span class="text-cream/50 text-lg">· 6-Person Minimum</span>';
-  const homeCta = document.getElementById('home-package-banner-cta');
-  if (homeCta) homeCta.innerHTML = 'View Your Order &rarr;';
-
-  const menuText = document.getElementById('menu-package-banner-text');
-  if (menuText) menuText.innerHTML = 'Not sure where to start? Get the <span class="underline">Chefaleh Rosh Hashanah Dinner</span> — $125/person, 6-person minimum &rarr;';
-
-  const challahText = document.getElementById('challah-package-banner-text');
-  if (challahText) challahText.innerHTML = '<span class="text-gold font-medium">Chefaleh Rosh Hashanah Dinner</span> — $125/person, 6-person minimum';
-  const challahCta = document.getElementById('challah-package-banner-cta');
-  if (challahCta) challahCta.innerHTML = 'View Your Order &rarr;';
-
-  // Same swap for every "Shabbat Package" nav link (nav bar, mobile dropdown,
-  // footer) sitewide — they all point to /package, which is showing the Rosh
-  // Hashanah Dinner this week. Named distinctly from the plain "Rosh Hashanah"
-  // nav item (which links to the standalone /rosh-hashanah page) so the two
-  // don't read as duplicates.
-  document.querySelectorAll('[data-pkg-nav-label]').forEach(el => { el.textContent = 'RH Package'; });
-
-  const heroCta = document.getElementById('hero-order-cta');
-  if (heroCta) heroCta.innerHTML = 'Order for Rosh Hashanah &rarr;';
-  const heroSubtext = document.getElementById('hero-subtext');
-  if (heroSubtext) heroSubtext.textContent = 'A complete Rosh Hashanah table, chef-prepared and delivered to your door — $125 per person, 6-person minimum.';
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   refreshCartUI();
   renderDrawer();
   injectWhatsAppButton();
   injectStickyOrderBar();
-  syncPackageBanners();
 });
 
 // /index.html → "/", /menu.html → "/menu", /menu/ → "/menu"
@@ -411,19 +359,14 @@ function injectStickyOrderBar() {
   const path = normalizedPath();
   if (path === '/checkout') return; // checkout is the destination already
 
-  // Orders are closed on /rosh-hashanah — there's no order form to jump to.
-  if (path === '/rosh-hashanah' && RH_ORDERS_CLOSED) return;
-
   const onMenu = path === '/menu';
   const onPackage = path === '/package';
-  // /package shows the Rosh Hashanah package instead of the Shabbat one
-  // during RH week (see package.js) — match its anchor and label here too.
-  const onRH = path === '/rosh-hashanah' || (onPackage && isRoshHashanahWeek());
+  const onGrandTable = path === '/grand-table';
   const bar = document.createElement('a');
   bar.id = 'order-bar';
-  bar.href = onRH ? '#rh-grand-total' : (onPackage ? '#pkg-total' : (onMenu ? '/checkout' : '/menu'));
-  bar.dataset.track = onRH ? 'sticky_bar_rosh_hashanah' : (onPackage ? 'sticky_bar_package' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu'));
-  bar.innerHTML = (onRH ? 'View Your Order' : (onPackage ? 'Build Your Table' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday'))) + ' <span aria-hidden="true">&rarr;</span>';
+  bar.href = onPackage ? '#pkg-total' : (onGrandTable ? '#gt-grand-total' : (onMenu ? '/checkout' : '/menu'));
+  bar.dataset.track = onPackage ? 'sticky_bar_package' : (onGrandTable ? 'sticky_bar_grand_table' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu'));
+  bar.innerHTML = (onPackage ? 'Build Your Table' : (onGrandTable ? 'View Your Order' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday'))) + ' <span aria-hidden="true">&rarr;</span>';
 
   const style = document.createElement('style');
   style.textContent = `
