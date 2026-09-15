@@ -361,12 +361,11 @@ function injectStickyOrderBar() {
 
   const onMenu = path === '/menu';
   const onPackage = path === '/package';
-  const onGrandTable = path === '/grand-table';
   const bar = document.createElement('a');
   bar.id = 'order-bar';
-  bar.href = onPackage ? '#pkg-total' : (onGrandTable ? '#gt-grand-total' : (onMenu ? '/checkout' : '/menu'));
-  bar.dataset.track = onPackage ? 'sticky_bar_package' : (onGrandTable ? 'sticky_bar_grand_table' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu'));
-  bar.innerHTML = (onPackage ? 'Build Your Table' : (onGrandTable ? 'View Your Order' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday'))) + ' <span aria-hidden="true">&rarr;</span>';
+  bar.href = onPackage ? '#pkg-total' : (onMenu ? '/checkout' : '/menu');
+  bar.dataset.track = onPackage ? 'sticky_bar_package' : (onMenu ? 'sticky_bar_checkout' : 'sticky_bar_menu');
+  bar.innerHTML = (onPackage ? 'Build Your Table' : (onMenu ? 'Proceed to Checkout' : 'Order for Friday')) + ' <span aria-hidden="true">&rarr;</span>';
 
   const style = document.createElement('style');
   style.textContent = `
