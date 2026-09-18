@@ -3,6 +3,10 @@
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/rosh-hashanah", "destination": "/package", "permanent": true },
+    { "source": "/grand-table", "destination": "/package", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/images/(.*)",
