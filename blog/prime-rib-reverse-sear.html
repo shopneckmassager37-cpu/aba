@@ -35,19 +35,31 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": "Prime Rib, Done Right: The Reverse Sear",
-    "description": "The low-oven-then-hot-sear method that gets an edge-to-edge pink center with a deep, crackling crust.",
-    "image": "https://chefaleh.com/images/new_meat.jpg",
-    "datePublished": "2026-07-22",
-    "dateModified": "2026-07-22",
-    "author": { "@type": "Organization", "name": "Chefaleh" },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Chefaleh",
-      "logo": { "@type": "ImageObject", "url": "https://chefaleh.com/images/logo.png" }
-    },
-    "mainEntityOfPage": "https://chefaleh.com/blog/prime-rib-reverse-sear.html"
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "headline": "Prime Rib, Done Right: The Reverse Sear",
+        "description": "The low-oven-then-hot-sear method that gets an edge-to-edge pink center with a deep, crackling crust.",
+        "image": "https://chefaleh.com/images/new_meat.jpg",
+        "datePublished": "2026-07-22",
+        "dateModified": "2026-07-22",
+        "author": { "@type": "Organization", "name": "Chefaleh" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Chefaleh",
+          "logo": { "@type": "ImageObject", "url": "https://chefaleh.com/images/logo.png" }
+        },
+        "mainEntityOfPage": "https://chefaleh.com/blog/prime-rib-reverse-sear"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://chefaleh.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Journal", "item": "https://chefaleh.com/blogs" },
+          { "@type": "ListItem", "position": 3, "name": "Prime Rib, Done Right: The Reverse Sear", "item": "https://chefaleh.com/blog/prime-rib-reverse-sear" }
+        ]
+      }
+    ]
   }
   </script>
 </head>

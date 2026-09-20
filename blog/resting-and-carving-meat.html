@@ -35,19 +35,31 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": "Why Resting Your Meat Matters",
-    "description": "The most skipped step in home cooking, and the one most likely to ruin an otherwise perfect roast.",
-    "image": "https://chefaleh.com/images/food1.jpg",
-    "datePublished": "2026-07-22",
-    "dateModified": "2026-07-22",
-    "author": { "@type": "Organization", "name": "Chefaleh" },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Chefaleh",
-      "logo": { "@type": "ImageObject", "url": "https://chefaleh.com/images/logo.png" }
-    },
-    "mainEntityOfPage": "https://chefaleh.com/blog/resting-and-carving-meat.html"
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "headline": "Why Resting Your Meat Matters",
+        "description": "The most skipped step in home cooking, and the one most likely to ruin an otherwise perfect roast.",
+        "image": "https://chefaleh.com/images/food1.jpg",
+        "datePublished": "2026-07-22",
+        "dateModified": "2026-07-22",
+        "author": { "@type": "Organization", "name": "Chefaleh" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Chefaleh",
+          "logo": { "@type": "ImageObject", "url": "https://chefaleh.com/images/logo.png" }
+        },
+        "mainEntityOfPage": "https://chefaleh.com/blog/resting-and-carving-meat"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://chefaleh.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Journal", "item": "https://chefaleh.com/blogs" },
+          { "@type": "ListItem", "position": 3, "name": "Why Resting Your Meat Matters", "item": "https://chefaleh.com/blog/resting-and-carving-meat" }
+        ]
+      }
+    ]
   }
   </script>
 </head>
