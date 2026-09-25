@@ -12,19 +12,21 @@ const MIN_ORDER_SUBTOTAL = 250;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONFIRM_FIELDS = ['orderId', 'name', 'email', 'phone', 'address', 'zone', 'subtotal', 'tax', 'delivery', 'driverTip', 'chefTip', 'total', 'notes', 'items'];
 
-// The Shabbat Dinner package (package.html / package.js) isn't a row in the
-// products table — it's priced client-side at $125/person (4-person minimum)
-// plus whichever fish/main/side upgrades were chosen. Keep this range in
-// sync with package.js's PACKAGE config if those numbers ever change:
-// min covers the 4-guest floor with no upgrades, max covers PACKAGE.maxGuests
-// guests plus the single most expensive fish upgrade, main upgrade, and two
-// premium-side surcharges.
-const PACKAGE_NAME = 'Chefaleh Shabbat Dinner';
+// The Shabbat/Chag Dinner package (package.html / package.js) isn't a row in
+// the products table — it's priced client-side at $125/person (4-person
+// minimum) plus the optional fish-to-salmon upgrade. The included main,
+// sides and soup/protein add-ons don't change the package line's own price
+// (add-ons are their own separate cart lines, validated against the real
+// catalog like any other item). Keep this range in sync with package.js's
+// PACKAGE config if those numbers ever change: min covers the 4-guest floor
+// with no upgrade, max covers PACKAGE.maxGuests guests plus the $20 salmon
+// upgrade.
+const PACKAGE_NAME = 'Chefaleh Shabbat/Chag Dinner';
 const PACKAGE_PRICE_PER_PERSON = 125;
 const PACKAGE_MIN_GUESTS = 4;
 const PACKAGE_MAX_GUESTS = 30;
 const PACKAGE_MIN_PRICE = PACKAGE_PRICE_PER_PERSON * PACKAGE_MIN_GUESTS;
-const PACKAGE_MAX_PRICE = PACKAGE_PRICE_PER_PERSON * PACKAGE_MAX_GUESTS + 20 + 110 + 2 * 8;
+const PACKAGE_MAX_PRICE = PACKAGE_PRICE_PER_PERSON * PACKAGE_MAX_GUESTS + 20;
 
 // "Complete Your Shabbat Table" items (also from package.html) are regular
 // menu items at a flat discount — accept either the full catalog price or
@@ -138,7 +140,7 @@ export default async function handler(req, res) {
     if (item?.name === PACKAGE_NAME) {
       const clientPrice = parseFloat(item?.price);
       if (!Number.isFinite(clientPrice) || clientPrice < PACKAGE_MIN_PRICE || clientPrice > PACKAGE_MAX_PRICE) {
-        return res.status(400).json({ error: 'Invalid Shabbat Dinner package price' });
+        return res.status(400).json({ error: 'Invalid Shabbat/Chag Dinner package price' });
       }
       price = Math.round(clientPrice * 100) / 100;
     } else {
